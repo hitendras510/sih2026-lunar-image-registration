@@ -9,12 +9,15 @@ from selene.config import PipelineConfig
 from selene.ingest.pair import Pair
 from .sift_baseline import match_sift
 from .lightglue_matcher import match_lightglue
+from .loftr_matcher import match_loftr
+from .xfeat_matcher import match_xfeat
 from .phase_correlation import match_phase_correlation
 from .mutual_information import match_mutual_information
 from selene.craters.detector import detect_craters
 from selene.craters.graph_match import build_crater_graph, match_crater_graphs
 from selene.illum.phase_congruency import phase_congruency
 from selene.illum.hillshade import relight
+from selene.illum.census import census_transform
 
 
 def select_matcher(pair: Pair, config: PipelineConfig | None = None) -> str:
@@ -55,6 +58,9 @@ def route_and_match(
         (pts_src, pts_ref, scores, chosen_matcher_name)
     """
     strategy = select_matcher(pair, config)
+    # The registration pipeline is also used without a config in a few tests;
+    # retain CPU as the safe default for those callers.
+    device = config.device if config is not None else "cpu"
 
     if strategy == "crater_graph":
         # Preprocess with Phase Congruency or Relighting to overcome polarity flip
@@ -68,13 +74,36 @@ def route_and_match(
         if len(pts_src) >= 4:
             scores = np.ones(len(pts_src), dtype=np.float32)
             return pts_src, pts_ref, scores, "crater_graph"
-        # Fallback to SIFT on phase congruency map if crater graph found too few
+
+        # Fallback 1: Phase Congruency representation
         pc_src = phase_congruency(img_src)
         pc_ref = phase_congruency(img_ref)
         pts_s, pts_r, scores = match_sift(pc_src, pc_ref)
         if len(pts_s) >= 4:
             return pts_s, pts_r, scores, "phase_congruency_sift"
+
+        # Fallback 2: Census Transform structural representation
+        c_src = census_transform(img_src).astype(np.float32)
+        c_ref = census_transform(img_ref).astype(np.float32)
+        pts_s, pts_r, scores = match_sift(c_src, c_ref)
+        if len(pts_s) >= 4:
+            return pts_s, pts_r, scores, "census_sift"
+
         return match_sift(img_src, img_ref) + ("sift_fallback",)
+
+    elif strategy == "loftr":
+        pts_s, pts_r, scores = match_loftr(img_src, img_ref, device=device)
+        if len(pts_s) >= 4:
+            return pts_s, pts_r, scores, "loftr"
+        pts_s, pts_r, scores = match_sift(img_src, img_ref)
+        return pts_s, pts_r, scores, "sift_fallback"
+
+    elif strategy == "xfeat":
+        pts_s, pts_r, scores = match_xfeat(img_src, img_ref, device=device)
+        if len(pts_s) >= 4:
+            return pts_s, pts_r, scores, "xfeat"
+        pts_s, pts_r, scores = match_sift(img_src, img_ref)
+        return pts_s, pts_r, scores, "sift_fallback"
 
     elif strategy == "mutual_info":
         pts_s, pts_r, scores = match_mutual_information(img_src, img_ref)
@@ -85,7 +114,7 @@ def route_and_match(
         return pts_s, pts_r, scores, "phase_corr"
 
     elif strategy == "lightglue":
-        pts_s, pts_r, scores = match_lightglue(img_src, img_ref)
+        pts_s, pts_r, scores = match_lightglue(img_src, img_ref, device=device)
         if len(pts_s) >= 4:
             return pts_s, pts_r, scores, "lightglue"
         pts_s, pts_r, scores = match_sift(img_src, img_ref)

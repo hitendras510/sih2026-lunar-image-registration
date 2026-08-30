@@ -1,10 +1,10 @@
 {
     "metrics": {
-        "total_matches": 1522,
-        "ransac_inliers": 1501,
-        "inlier_ratio_pct": 98.62023653088042,
-        "warp_rmse_px": 0.05170431028134238,
-        "nni_spatial_score": 0.6639769462085214,
+        "total_matches": 1520,
+        "ransac_inliers": 1503,
+        "inlier_ratio_pct": 98.88157894736842,
+        "warp_rmse_px": 0.052952910640693206,
+        "nni_spatial_score": 0.6625859804911322,
         "grid_occupied_cells": 16,
         "grid_coverage_pct": 100.0
     },
@@ -16,15 +16,15 @@
         "gamma_illumination": 0.7
     },
     "recovered_params": {
-        "rotation_deg": 6.9994233277716225,
-        "scale": 0.9199852091672738,
-        "tx_px": 34.995343685554076,
-        "ty_px": 20.050901257029636
+        "rotation_deg": 6.999779573876728,
+        "scale": 0.9199840608784451,
+        "tx_px": 34.9934455699339,
+        "ty_px": 20.052033926618265
     },
     "errors": {
-        "rotation_err_deg": 0.0005766722283775394,
-        "scale_err": 1.479083272626358e-05,
-        "translation_x_err_px": 0.004656314445924181,
-        "translation_y_err_px": 0.050901257029636326
+        "rotation_err_deg": 0.00022042612327233257,
+        "scale_err": 1.593912155495314e-05,
+        "translation_x_err_px": 0.006554430066103123,
+        "translation_y_err_px": 0.05203392661826456
     }
 }

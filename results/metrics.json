@@ -1,0 +1,12 @@
+{
+  "n_raw": 229,
+  "n_inliers": 229,
+  "inlier_ratio": 1.0,
+  "rmse_px": 1.0328,
+  "rmse_m": 5.1639,
+  "ce90_px": 1.4984,
+  "ce90_m": 7.4922,
+  "mean_residual_px": 0.9421,
+  "nni_index": 0.9889,
+  "grid_coverage_fraction": 0.9531
+}

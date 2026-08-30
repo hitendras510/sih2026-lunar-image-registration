@@ -30,3 +30,27 @@ def list_samples():
             description="Extreme resolution gap cross-sensor lunar registration challenge.",
         ),
     ]
+
+
+@router.get("/synthetic")
+def get_synthetic_pair():
+    """Return static/generated synthetic pair image paths and ground-truth metadata."""
+    import json
+    from pathlib import Path
+
+    gt_file = Path("data_generation/output/ground_truth.json")
+    gt_data = {}
+    if gt_file.exists():
+        with open(gt_file) as f:
+            gt_data = json.load(f)
+
+    return {
+        "status": "success",
+        "reference_image_url": "/synthetic/reference.png",
+        "source_image_url": "/synthetic/synthetic_target.png",
+        "ground_truth_url": "/synthetic/ground_truth.json",
+        "reference_name": "reference.png (LRO NAC Grid)",
+        "source_name": "synthetic_target.png (OHRC 7° Rot / 0.92 Scale / Gamma 0.7)",
+        "ground_truth": gt_data,
+    }
+

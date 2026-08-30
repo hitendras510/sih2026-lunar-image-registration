@@ -12,6 +12,7 @@ dependencies:
   - opencv
   - scikit-image
   - scikit-learn
+  - matplotlib
   - pvl
   - pydantic
   - pyyaml

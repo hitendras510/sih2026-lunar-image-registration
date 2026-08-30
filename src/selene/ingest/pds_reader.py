@@ -11,7 +11,10 @@ from pathlib import Path
 import numpy as np
 
 
-def read_pds3(path: str | Path) -> tuple[np.ndarray, dict]:
+def read_pds3(
+    path: str | Path,
+    band_idx: int | None = None,
+) -> tuple[np.ndarray, dict]:
     """Read a PDS3 ``.lbl`` + ``.img`` / ``.qub`` file pair.
 
     The label file is located by replacing the image extension with ``.lbl``
@@ -20,6 +23,7 @@ def read_pds3(path: str | Path) -> tuple[np.ndarray, dict]:
     Args:
         path: Path to either the image file (``.img``/``.qub``) or its
               label (``.lbl``).
+        band_idx: Optional 0-indexed band selection for 3D hyper-spectral IIRS cubes.
 
     Returns:
         ``(array, label_dict)`` where *array* is float32 in [0, 1] and
@@ -53,6 +57,15 @@ def read_pds3(path: str | Path) -> tuple[np.ndarray, dict]:
 
     img_obj = planetaryimage.PDS3Image.open(str(lbl_path))
     array = np.array(img_obj.image, dtype=np.float32)
+
+    # Handle 3D multi-spectral/hyper-spectral cubes (e.g. Chandrayaan-2 IIRS)
+    if array.ndim == 3:
+        if band_idx is not None and 0 <= band_idx < array.shape[0]:
+            array = array[band_idx]
+        elif band_idx is not None and 0 <= band_idx < array.shape[-1]:
+            array = array[..., band_idx]
+        else:
+            array = array.mean(axis=0) if array.shape[0] < array.shape[-1] else array.mean(axis=-1)
 
     lo, hi = float(array.min()), float(array.max())
     if hi > lo:

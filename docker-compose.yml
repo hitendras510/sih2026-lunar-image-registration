@@ -1,12 +1,28 @@
-# Optional. Entirely free (local Docker only, no paid registry/cloud).
-# Use only if the team wants a one-command reproducible environment;
-# the conda path in README §6 is the tested default for the hackathon.
-version: "3.9"
+name: selene-match
+
 services:
   api:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: selene-match-api
     ports:
       - "8000:8000"
     volumes:
       - ./data:/app/data
       - ./products:/app/products
+      - ./data_generation/output:/app/data_generation/output
+    environment:
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped
+
+  ui:
+    build:
+      context: ./ui
+      dockerfile: Dockerfile
+    container_name: selene-match-ui
+    ports:
+      - "5173:80"
+    depends_on:
+      - api
+    restart: unless-stopped

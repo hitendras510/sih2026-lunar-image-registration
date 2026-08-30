@@ -1,13 +1,36 @@
-// Owner: P4
-// Top-level layout: Pair Desk -> Run View -> Compare View -> Scoreboard.
-// Talks to the FastAPI backend at http://localhost:8000 (see api/main.py).
-import React from "react";
+import React from 'react';
+import { AppProvider, useApp } from './context/AppContext';
+import { StarfieldCanvas } from './components/common/StarfieldCanvas';
+import { BootPreloader } from './components/common/BootPreloader';
+import { ToastContainer } from './components/common/ToastContainer';
+import { AiAssistant } from './components/common/AiAssistant';
+import { LandingPage } from './components/landing/LandingPage';
+import { WorkbenchLayout } from './components/workbench/WorkbenchLayout';
+
+const AppContent: React.FC = () => {
+  const { isAppMode } = useApp();
+
+  return (
+    <>
+      <BootPreloader />
+      <StarfieldCanvas />
+      <div className="nebula" />
+      <div className="grid-overlay" />
+      <div className="noise" />
+      <div id="scroll-progress" />
+
+      {isAppMode ? <WorkbenchLayout /> : <LandingPage />}
+
+      <ToastContainer />
+      <AiAssistant />
+    </>
+  );
+};
 
 export default function App() {
   return (
-    <div>
-      <h1>SELENE-MATCH Workbench</h1>
-      {/* TODO(P4): route between PairDesk / RunView / CompareView / Scoreboard */}
-    </div>
+    <AppProvider>
+      <AppContent />
+    </AppProvider>
   );
 }

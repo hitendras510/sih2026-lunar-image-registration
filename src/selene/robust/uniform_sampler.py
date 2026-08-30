@@ -1,10 +1,53 @@
 """8x8 grid occupancy, min-dist filter, GCP ranking for spatially uniform control point selection.
 
 Owner: P3
+
+Revision: added shadow-aware grid coverage exclusion — cells that are
+entirely shadow are removed from the denominator so coverage scores reflect
+what the algorithm *could* observe, not what was unobservable.
 """
 from __future__ import annotations
 
 import numpy as np
+
+
+def _visible_cell_count(
+    shadow_mask: np.ndarray | None,
+    image_shape: tuple[int, int],
+    grid_cells: int,
+    shadow_fraction_threshold: float = 0.90,
+) -> int:
+    """Count how many grid cells contain enough visible (non-shadow) terrain.
+
+    A cell whose shadow-pixel fraction exceeds *shadow_fraction_threshold*
+    is considered entirely unobservable and excluded from the denominator
+    when computing coverage metrics.
+
+    Returns:
+        Number of "valid" cells (≤ grid_cells²).
+    """
+    total = grid_cells * grid_cells
+    if shadow_mask is None:
+        return total
+
+    h, w = image_shape
+    cell_h = h / float(grid_cells)
+    cell_w = w / float(grid_cells)
+
+    valid = 0
+    for cy in range(grid_cells):
+        for cx in range(grid_cells):
+            r1 = int(cy * cell_h)
+            r2 = min(int((cy + 1) * cell_h), h)
+            c1 = int(cx * cell_w)
+            c2 = min(int((cx + 1) * cell_w), w)
+            if r2 <= r1 or c2 <= c1:
+                continue
+            cell_mask = shadow_mask[r1:r2, c1:c2]
+            shadow_frac = float(np.count_nonzero(cell_mask > 0)) / float(cell_mask.size)
+            if shadow_frac < shadow_fraction_threshold:
+                valid += 1
+    return max(valid, 1)  # avoid divide-by-zero
 
 
 def sample_uniform_gcps(
@@ -22,6 +65,11 @@ def sample_uniform_gcps(
     Prevents feature clustering in high-texture areas (e.g. fresh crater rims)
     and guarantees well-distributed constraints for thin-plate spline warping.
 
+    Shadow-aware: any candidate whose pixel position falls inside
+    *shadow_mask* (value > 0) is dropped before selection, preventing the
+    sampler from choosing GCPs in pitch-black shadow regions where the
+    gradient signal is zero and LK refinement will fail.
+
     Args:
         pts_src: (N, 2) source coordinates.
         pts_dst: (N, 2) destination coordinates.
@@ -30,7 +78,7 @@ def sample_uniform_gcps(
         grid_cells: Number of cells along each axis (default: 8 for 64 cells).
         min_dist_px: Minimum Euclidean distance between selected GCPs.
         max_pts_per_cell: Maximum GCPs retained per grid cell.
-        shadow_mask: Optional binary mask (255 = shadow) to exclude shadow regions.
+        shadow_mask: Optional binary mask (>0 = shadow = exclusion zone).
 
     Returns:
         (sampled_src, sampled_dst, selected_indices)
@@ -42,7 +90,7 @@ def sample_uniform_gcps(
     if scores is None:
         scores = np.ones(len(pts_src), dtype=np.float32)
 
-    # Filter out shadow pixels if shadow mask is provided
+    # ── Filter out shadow pixels if shadow mask is provided ──────────────
     valid_mask = np.ones(len(pts_src), dtype=bool)
     if shadow_mask is not None:
         for i, (x, y) in enumerate(pts_src):

@@ -1,4 +1,4 @@
-.PHONY: setup test run api ui demo
+.PHONY: setup test run api ui demo docker-build docker-up docker-down
 
 setup:
 	conda env create -f environment.yml
@@ -17,3 +17,13 @@ run:
 
 demo:
 	python scripts/precompute_showcase.py
+
+docker-build:
+	docker compose build
+
+docker-up:
+	docker compose up -d
+
+docker-down:
+	docker compose down
+

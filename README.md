@@ -101,11 +101,15 @@ No paid license, subscription, or metered API is used anywhere in the pipeline.
 ### Matching & illumination
 | Package | License | Role |
 |---|---|---|
-| PyTorch (CPU build works free; CUDA build free too, GPU hardware just isn't required) | BSD | Matcher runtime |
+| PyTorch (CPU or CUDA) | BSD | Matcher runtime |
+| Kornia (`kornia.feature.LoFTR`) | Apache-2.0 | LoFTR dense deep feature matching |
+| XFeat (`verlab/accelerated_features`) | Apache-2.0 | Accelerated local feature matching |
 | LightGlue (`cvg/LightGlue`) + ALIKED/SuperPoint weights | Apache-2.0 | Sparse learned matching |
 | SimpleITK | Apache-2.0 | Mutual-information registration (IIRS branch) |
-| Custom log-Gabor / phase-congruency module | — (your code) | Illumination-invariant descriptor |
+| Custom Census Transform / Phase-congruency | — (your code) | Illumination-invariant structural representation |
 | Custom crater-detector + graph matcher | — (your code) | Sun-angle-robust structural matching |
+| Pre-warped IC-LK & ECC (`findTransformECC`) | Apache-2.0 | Sub-pixel patch alignment |
+| 80/20 Train/Validation GCP Evaluator | — (your code) | Independent non-circular RMSE validation |
 
 ### Geometry backend (all free, tiered so nobody is blocked)
 | Tool | License | Tier |

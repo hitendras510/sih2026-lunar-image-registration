@@ -62,6 +62,8 @@ def generate_pdf_report(
             ["RMSE (Metre-space)", f"{metrics.rmse_m:.3f}", "metres"],
             ["CE90 Circular Error", f"{metrics.ce90_m:.3f}", "metres (90th percentile)"],
             ["Mean Residual", f"{metrics.mean_residual_px:.3f}", "pixels"],
+            ["NNI Dispersion Index", f"{metrics.nni_index:.3f}", ">1.0 uniform spread"],
+            ["Grid Coverage", f"{metrics.grid_coverage_fraction * 100:.1f}%", "active grid cells"],
         ]
         t = Table(data, colWidths=[160, 100, 200])
         t.setStyle(TableStyle([

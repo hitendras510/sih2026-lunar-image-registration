@@ -63,3 +63,118 @@ def build_gsd_pyramid(
 
     # coarses is finest→coarsest; reverse so output is coarsest→finest
     return list(reversed(coarses)) + [(img, gsd_m)]
+
+
+def resample_to_gsd(
+    img: np.ndarray,
+    src_gsd_m: float,
+    target_gsd_m: float,
+) -> np.ndarray:
+    """Resample an image from *src_gsd_m* to *target_gsd_m*.
+
+    Only downsamples (coarsens).  If *target_gsd_m* ≤ *src_gsd_m* the
+    original array is returned unchanged — we never fabricate detail by
+    upscaling.
+
+    Args:
+        img:          2D float32 (or uint8) input image.
+        src_gsd_m:    Native GSD of the image in metres/pixel.
+        target_gsd_m: Desired output GSD in metres/pixel.
+
+    Returns:
+        Resampled float32 image at *target_gsd_m* resolution.
+    """
+    if img.dtype != np.float32:
+        img = img.astype(np.float32)
+
+    if target_gsd_m <= src_gsd_m:
+        return img.copy()
+
+    scale = target_gsd_m / src_gsd_m  # > 1 ⇒ downsample
+    new_h = max(4, int(img.shape[0] / scale))
+    new_w = max(4, int(img.shape[1] / scale))
+    return cv2.resize(img, (new_w, new_h), interpolation=cv2.INTER_AREA)
+
+
+def upscale_coordinates(
+    pts: np.ndarray,
+    from_gsd_m: float,
+    to_gsd_m: float,
+) -> np.ndarray:
+    """Map pixel coordinates from one GSD space to another.
+
+    Example: a point at (10, 10) in a 5 m/px image corresponds to
+    (100, 100) in a 0.5 m/px image.
+
+    Args:
+        pts:        (N, 2) array of (x, y) coordinates in *from_gsd_m* space.
+        from_gsd_m: GSD of the coordinate system *pts* are currently in.
+        to_gsd_m:   GSD of the target coordinate system.
+
+    Returns:
+        (N, 2) float32 array of rescaled coordinates.
+    """
+    if len(pts) == 0:
+        return pts.copy()
+    scale = from_gsd_m / to_gsd_m  # > 1 when going coarse → fine
+    return (pts * scale).astype(np.float32)
+
+
+def match_coarse_to_fine_pyramid(
+    img_src: np.ndarray,
+    img_ref: np.ndarray,
+    pair: object,
+    config: object,
+    route_and_match_fn: callable,
+) -> tuple[np.ndarray, np.ndarray, np.ndarray, str]:
+    """Execute multi-resolution coarse-to-fine GSD pyramid matching.
+
+    Builds GSD pyramids for source and reference images. Runs matching at the
+    coarsest common GSD level to establish initial matches, and refines
+    across intermediate GSD levels when scale ratios are large.
+
+    Args:
+        img_src:            Source moving image (native float32).
+        img_ref:            Reference image (native float32).
+        pair:               Pair object with metadata.
+        config:             PipelineConfig instance.
+        route_and_match_fn: Matcher routing callback function.
+
+    Returns:
+        (pts_src_w, pts_ref_w, scores, matcher_name) in working GSD space.
+    """
+    mov_gsd = pair.mov_meta.gsd_m
+    ref_gsd = pair.ref_meta.gsd_m
+    common_gsd_m = max(ref_gsd, mov_gsd)
+
+    # 1. Resample both images to coarsest common GSD level
+    img_src_coarse = resample_to_gsd(img_src, mov_gsd, common_gsd_m)
+    img_ref_coarse = resample_to_gsd(img_ref, ref_gsd, common_gsd_m)
+
+    # Coarse stage match
+    pts_s_c, pts_r_c, scores_c, matcher_name = route_and_match_fn(
+        img_src_coarse, img_ref_coarse, pair, config
+    )
+
+    if len(pts_s_c) < 4 or pair.gsd_ratio <= 1.5:
+        return pts_s_c, pts_r_c, scores_c, matcher_name
+
+    # 2. Intermediate Pyramid Level Refinement for large scale differences
+    min_gsd = min(ref_gsd, mov_gsd)
+    inter_gsd = float(np.sqrt(min_gsd * common_gsd_m))
+
+    if inter_gsd < common_gsd_m * 0.8:
+        img_src_inter = resample_to_gsd(img_src, mov_gsd, inter_gsd)
+        img_ref_inter = resample_to_gsd(img_ref, ref_gsd, inter_gsd)
+
+        pts_s_i, pts_r_i, scores_i, matcher_i = route_and_match_fn(
+            img_src_inter, img_ref_inter, pair, config
+        )
+
+        if len(pts_s_i) >= 4:
+            pts_s_w = upscale_coordinates(pts_s_i, from_gsd_m=inter_gsd, to_gsd_m=common_gsd_m)
+            pts_r_w = upscale_coordinates(pts_r_i, from_gsd_m=inter_gsd, to_gsd_m=common_gsd_m)
+            return pts_s_w, pts_r_w, scores_i, f"pyramid_{matcher_i}"
+
+    return pts_s_c, pts_r_c, scores_c, f"pyramid_{matcher_name}"
+

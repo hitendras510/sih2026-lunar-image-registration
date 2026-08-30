@@ -23,6 +23,13 @@ class JobStatus(BaseModel):
     status: str = "running"
     metrics: Optional[Dict[str, Any]] = None
     error: Optional[str] = None
+    # Product URLs populated after completion
+    registered_geotiff_url: Optional[str] = None
+    matches_csv_url: Optional[str] = None
+    report_pdf_url: Optional[str] = None
+    checkerboard_url: Optional[str] = None
+    quiver_url: Optional[str] = None
+    coverage_url: Optional[str] = None
 
 
 class RegisterResponse(BaseModel):
@@ -34,6 +41,7 @@ class RegisterResponse(BaseModel):
     report_pdf_url: str
     checkerboard_url: str
     quiver_url: str
+    coverage_url: str
 
 
 class SamplePair(BaseModel):
@@ -43,3 +51,9 @@ class SamplePair(BaseModel):
     sun_delta_deg: float
     gsd_ratio: float
     description: str
+
+
+class LogLine(BaseModel):
+    level: str          # "INFO" | "WARNING" | "ERROR" | "SUCCESS"
+    message: str
+    timestamp: str      # ISO-format from loguru

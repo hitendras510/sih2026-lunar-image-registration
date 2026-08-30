@@ -20,6 +20,10 @@ from selene.config import PipelineConfig, load_config
 from selene.utils.logging import setup_logging, get_logger
 from selene.ingest.pair import Pair
 from selene.ingest.geotiff_reader import read_geotiff
+from selene.ingest.pds_reader import read_pds3, read_pds4
+from selene.geometry.pyramid import resample_to_gsd, upscale_coordinates, match_coarse_to_fine_pyramid
+from selene.geometry.mapproject_tier2 import crop_reference_to_pair
+from selene.illum.shadow_mask import detect_shadows
 from selene.matchers.gate import route_and_match
 from selene.robust.magsac import find_homography_magsac
 from selene.robust.uniform_sampler import sample_uniform_gcps
@@ -78,26 +82,51 @@ def run_pipeline(
     img_src, crs_src, trans_src = load_image_any(src_path)
     img_ref, crs_ref, trans_ref = load_image_any(ref_path)
 
-    log.info(f"Stage 1 Ingest: src_shape={img_src.shape}, ref_shape={img_ref.shape}, Δaz={pair.delta_sun_az:.1f}°")
+    # Footprint geometry pre-cropping if footprint metadata available
+    if pair.mov_meta.footprint_wkt:
+        img_ref = crop_reference_to_pair(img_ref, trans_ref, pair.mov_meta.footprint_wkt)
 
-    # ── Stage 3/4: Matching Ensemble & Gate ───────────────────────────────────
-    log.info("Stage 3/4: Routing through matcher gate...")
-    pts_src, pts_ref, scores, matcher_name = route_and_match(img_src, img_ref, pair, config)
-    log.info(f"Matcher [{matcher_name}] found {len(pts_src)} candidate correspondences")
+    log.info(f"Stage 1 Ingest: src_shape={img_src.shape}, ref_shape={img_ref.shape}, Δaz={pair.delta_sun_az:.1f}°, gsd_ratio={pair.gsd_ratio:.2f}")
 
-    if len(pts_src) < 4:
-        raise RuntimeError(f"Insufficient match candidates found by matcher ({len(pts_src)} points)")
+    # ── Stage 2: GSD Pyramid Scale Equalization ──────────────────────────────
+    common_gsd_m = max(pair.ref_meta.gsd_m, pair.mov_meta.gsd_m)
+    img_src_work = resample_to_gsd(img_src, pair.mov_meta.gsd_m, common_gsd_m)
+    img_ref_work = resample_to_gsd(img_ref, pair.ref_meta.gsd_m, common_gsd_m)
+    log.info(f"GSD Pyramid: resampled to common GSD={common_gsd_m:.2f}m | src_work={img_src_work.shape}, ref_work={img_ref_work.shape}")
 
-    # ── Stage 5: Robust Fit & Uniform GCP Sampling ───────────────────────────
+    # ── Stage 2b: Illumination Shadow Masking ───────────────────────────────
+    shadow_mask_src = detect_shadows(img_src_work)
+    shadow_mask_ref = detect_shadows(img_ref_work)
+    log.info(f"Shadow Mask: computed exclusion zones (src_shadow_pixels={np.count_nonzero(shadow_mask_src)})")
+
+    # ── Stage 3/4: Matching Ensemble & Gate (Multi-Scale Pyramid) ───────────────
+    log.info("Stage 3/4: Routing through matcher gate via GSD pyramid...")
+    pts_src_w, pts_ref_w, scores, matcher_name = match_coarse_to_fine_pyramid(
+        img_src=img_src,
+        img_ref=img_ref,
+        pair=pair,
+        config=config,
+        route_and_match_fn=route_and_match,
+    )
+    log.info(f"Matcher [{matcher_name}] found {len(pts_src_w)} candidate correspondences")
+
+    if len(pts_src_w) < 4:
+        raise RuntimeError(f"Insufficient match candidates found by matcher ({len(pts_src_w)} points)")
+
+    # Map match coordinates from working GSD space back to native pixel space
+    pts_src_nat = upscale_coordinates(pts_src_w, from_gsd_m=common_gsd_m, to_gsd_m=pair.mov_meta.gsd_m)
+    pts_ref_nat = upscale_coordinates(pts_ref_w, from_gsd_m=common_gsd_m, to_gsd_m=pair.ref_meta.gsd_m)
+
+    # ── Stage 5: Robust Fit & Shadow-Aware Uniform GCP Sampling ─────────────
     log.info("Stage 5: Robust fitting via MAGSAC++...")
-    H_fit, inlier_mask = find_homography_magsac(pts_src, pts_ref, threshold_px=config.magsac_threshold_m)
-    log.info(f"MAGSAC++ retained {np.sum(inlier_mask)} inliers / {len(pts_src)} total")
+    H_fit, inlier_mask = find_homography_magsac(pts_src_nat, pts_ref_nat, threshold_px=config.magsac_threshold_m)
+    log.info(f"MAGSAC++ retained {np.sum(inlier_mask)} inliers / {len(pts_src_nat)} total")
 
-    pts_src_in = pts_src[inlier_mask]
-    pts_ref_in = pts_ref[inlier_mask]
+    pts_src_in = pts_src_nat[inlier_mask]
+    pts_ref_in = pts_ref_nat[inlier_mask]
     scores_in = scores[inlier_mask] if len(scores) == len(inlier_mask) else None
 
-    # Spatial uniformity sampling
+    # Spatial uniformity sampling with shadow mask exclusion
     pts_src_gcp, pts_ref_gcp, _ = sample_uniform_gcps(
         pts_src_in,
         pts_ref_in,
@@ -105,6 +134,7 @@ def run_pipeline(
         image_shape=img_src.shape[:2],
         grid_cells=config.grid_cells,
         min_dist_px=config.min_gcp_spacing_px,
+        shadow_mask=shadow_mask_src,
     )
     log.info(f"Uniform sampler selected {len(pts_src_gcp)} well-distributed GCPs")
 
@@ -164,6 +194,8 @@ def run_pipeline(
         pts_dst=pts_ref_final,
         gsd_m=pair.mov_meta.gsd_m,
         H_fit=H_fit,
+        image_shape=ref_shape,
+        shadow_mask=shadow_mask_ref,
     )
 
     metrics_json = out_path / "metrics.json"
