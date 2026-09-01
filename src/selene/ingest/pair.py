@@ -158,8 +158,14 @@ class Pair:
 
     @property
     def delta_sun_az(self) -> float:
-        """Absolute sun-azimuth difference between reference and moving image (°)."""
-        return abs(self.ref_meta.sun_azimuth - self.mov_meta.sun_azimuth)
+        """Smallest absolute sun-azimuth difference on the circle (°)."""
+        d = abs(self.ref_meta.sun_azimuth - self.mov_meta.sun_azimuth) % 360.0
+        return min(d, 360.0 - d)
+
+    @property
+    def sun_geometry_is_inferred(self) -> bool:
+        """True when either image is using a fallback sun-azimuth default."""
+        return self.ref_meta.sun_azimuth_inferred or self.mov_meta.sun_azimuth_inferred
 
     @property
     def gsd_ratio(self) -> float:

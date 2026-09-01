@@ -8,7 +8,10 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
-import torch  # Import at top-level to prevent segfaults in Uvicorn thread-pool workers
+try:
+    import torch  # Import at top-level to prevent segfaults in Uvicorn thread-pool workers
+except ImportError:
+    torch = None  # noqa: F841
 
 from api.routes import jobs, samples, register, generate
 

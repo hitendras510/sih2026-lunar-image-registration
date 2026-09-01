@@ -14,6 +14,7 @@ import json
 import shutil
 import zipfile
 from pathlib import Path
+from typing import Callable
 import numpy as np
 import cv2
 
@@ -26,13 +27,13 @@ from selene.geometry.pyramid import resample_to_gsd, upscale_coordinates, match_
 from selene.geometry.mapproject_tier2 import crop_reference_to_pair
 from selene.illum.shadow_mask import detect_shadows
 from selene.matchers.gate import route_and_match
-from selene.robust.magsac import find_homography_magsac
+from selene.robust.magsac import find_homography_magsac, threshold_m_to_px
 from selene.robust.uniform_sampler import sample_uniform_gcps
 from selene.warp.subpixel_lk import refine_subpixel_lk
 from selene.warp.tps import warp_tps
 from selene.warp.piecewise_affine import piecewise_affine_warp
 from selene.warp.export_geotiff import export_geotiff
-from selene.eval.metrics import compute_metrics, MetricsResult
+from selene.eval.metrics import compute_metrics, MetricsResult, check_quality_gates
 from selene.eval.plots import plot_checkerboard, plot_quiver, plot_coverage_heatmap, plot_residual_heatmap
 from selene.eval.report_pdf import generate_pdf_report
 from selene.utils.seeding import set_reproducible_seed
@@ -96,8 +97,8 @@ def run_pipeline(
     img_src, crs_src, trans_src = load_image_any(src_path)
     img_ref, crs_ref, trans_ref = load_image_any(ref_path)
 
-    # Footprint geometry pre-cropping if footprint metadata available
-    if pair.mov_meta.footprint_wkt:
+    # Footprint geometry pre-cropping if footprint metadata and a geotransform exist
+    if pair.mov_meta.footprint_wkt and trans_ref is not None:
         img_ref = crop_reference_to_pair(img_ref, trans_ref, pair.mov_meta.footprint_wkt)
 
     log.info(f"Stage 1 Ingest: src_shape={img_src.shape}, ref_shape={img_ref.shape}, Δaz={pair.delta_sun_az:.1f}°, gsd_ratio={pair.gsd_ratio:.2f}")
@@ -111,8 +112,8 @@ def run_pipeline(
 
     # ── Stage 2b: Illumination Shadow Masking ───────────────────────────────
     _notify(0.35, "Stage 3: Illumination shadow masking")
-    shadow_mask_src = detect_shadows(img_src_work)
-    shadow_mask_ref = detect_shadows(img_ref_work)
+    shadow_mask_src = detect_shadows(img_src)
+    shadow_mask_ref = detect_shadows(img_ref)
     log.info(f"Shadow Mask: computed exclusion zones (src_shadow_pixels={np.count_nonzero(shadow_mask_src)})")
 
     # ── Stage 3/4: Matching Ensemble & Gate (Multi-Scale Pyramid) ───────────────
@@ -135,8 +136,12 @@ def run_pipeline(
 
     # ── Stage 5: Robust Fit & Shadow-Aware Uniform GCP Sampling ─────────────
     _notify(0.65, "Stage 5: MAGSAC++ robust fit & uniform GCP sampling")
-    H_fit, inlier_mask = find_homography_magsac(pts_src_nat, pts_ref_nat, threshold_px=config.magsac_threshold_m)
-    log.info(f"MAGSAC++ retained {np.sum(inlier_mask)} inliers / {len(pts_src_nat)} total")
+    magsac_px = threshold_m_to_px(config.magsac_threshold_m, pair.mov_meta.gsd_m)
+    H_fit, inlier_mask = find_homography_magsac(pts_src_nat, pts_ref_nat, threshold_px=magsac_px)
+    log.info(
+        f"MAGSAC++ retained {np.sum(inlier_mask)} inliers / {len(pts_src_nat)} total "
+        f"(threshold={magsac_px:.2f} px from {config.magsac_threshold_m:.2f} m)"
+    )
 
     pts_src_in = pts_src_nat[inlier_mask]
     pts_ref_in = pts_ref_nat[inlier_mask]
@@ -154,6 +159,13 @@ def run_pipeline(
     )
     log.info(f"Uniform sampler selected {len(pts_src_gcp)} well-distributed GCPs")
 
+    if len(pts_src_gcp) > config.max_gcps:
+        keep = np.arange(config.max_gcps)
+        pts_src_gcp = pts_src_gcp[keep]
+        pts_ref_gcp = pts_ref_gcp[keep]
+        sel_idx = sel_idx[keep]
+        log.info(f"Capped GCPs to max_gcps={config.max_gcps}")
+
     # ── Stage 7: Sub-Pixel Refinement ─────────────────────────────────────────
     _notify(0.78, "Stage 7: Sub-pixel IC-LK refinement")
     pts_src_refined, valid_lk = refine_subpixel_lk(
@@ -164,6 +176,7 @@ def run_pipeline(
         patch_size=config.lk_patch_size,
         max_iters=config.lk_max_iter,
         eps=config.lk_eps,
+        H_coarse=H_fit,
     )
     pts_src_final = pts_src_refined[valid_lk]
     pts_ref_final = pts_ref_gcp[valid_lk]
@@ -195,6 +208,11 @@ def run_pipeline(
     
     log.info(f"Sub-pixel refinement validated {len(pts_src_final)} GCPs")
 
+    if len(pts_src_final) < 4 and H_fit is None:
+        raise RuntimeError(
+            f"Registration failed: only {len(pts_src_final)} valid control points and no homography."
+        )
+
     # ── Stage 6: Warping & Co-Registration ────────────────────────────────────
     _notify(0.88, "Stage 6: Warping image & exporting GeoTIFF")
     ref_shape = img_ref.shape[:2]
@@ -211,10 +229,9 @@ def run_pipeline(
         else:
             H_final = None
 
-        if H_final is not None:
-            warped = cv2.warpPerspective(img_src, H_final, (ref_shape[1], ref_shape[0]))
-        else:
-            warped = img_src
+        if H_final is None:
+            raise RuntimeError("Registration failed: could not estimate a warp model.")
+        warped = cv2.warpPerspective(img_src, H_final, (ref_shape[1], ref_shape[0]))
 
     # Export Warped GeoTIFF / Product
     registered_tif = out_path / "registered.tif"
@@ -262,19 +279,27 @@ def run_pipeline(
 
     deep_available = False
     torch_ver = "none"
+    try:
+        import torch
+        deep_available = True
+        torch_ver = getattr(torch, "__version__", "unknown")
+    except ImportError:
+        pass
 
     provenance = {
         "git_commit": git_commit,
         "seed": config.seed if hasattr(config, "seed") else 42,
         "matcher_used": matcher_name,
         "deep_matcher_available": deep_available,
-        "generated_at": datetime.datetime.now(datetime.timezone.utc).isoformat() + "Z",
+        "sun_geometry_inferred": pair.sun_geometry_is_inferred,
+        "generated_at": datetime.datetime.now(datetime.timezone.utc).isoformat(),
         "package_versions": {"torch": torch_ver, "opencv": cv2.__version__},
     }
 
     metrics = compute_metrics(
-        pts_src=pts_src_final,
-        pts_dst=pts_ref_final,
+        pts_src=pts_src_nat,
+        pts_dst=pts_ref_nat,
+        inlier_mask=inlier_mask,
         gsd_m=pair.mov_meta.gsd_m,
         H_fit=H_fit,
         H_gt=H_gt,
@@ -282,34 +307,54 @@ def run_pipeline(
         shadow_mask=shadow_mask_ref,
         provenance=provenance,
     )
+    if len(pts_ref_final) >= 3:
+        from selene.eval.uniformity import nni_score, grid_coverage
+        metrics.nni_index = round(nni_score(pts_ref_final, area_shape=ref_shape), 4)
+        metrics.grid_coverage_fraction = round(grid_coverage(pts_ref_final, image_shape=ref_shape), 4)
 
     metrics_dict = metrics.to_dict()
     metrics_dict["mean_confidence"] = float(np.mean(confidence)) if len(confidence) > 0 else 0.0
     metrics_dict["pct_gcp_confidence_ge_0.6"] = float(np.mean(confidence >= 0.6)) if len(confidence) > 0 else 0.0
+    metrics_dict["matcher_used"] = matcher_name
+    metrics_dict["n_gcp_final"] = int(len(pts_src_final))
+    gates = check_quality_gates(metrics)
+    metrics_dict["quality_gates"] = gates
+    metrics_dict["quality_gate_pass"] = bool(gates["overall_pass"])
 
     metrics_json = out_path / "metrics.json"
     with open(metrics_json, "w") as f:
         json.dump(metrics_dict, f, indent=2)
 
     # Verification Plots
-    print("DEBUG: starting plot_checkerboard", flush=True)
-    p_checker = plot_checkerboard(img_ref, warped, out_path / "plot_checkerboard.png")
-    print("DEBUG: starting plot_quiver", flush=True)
-    p_quiver = plot_quiver(pts_src_final, pts_ref_final, out_path / "plot_quiver.png", image_shape=ref_shape)
-    print("DEBUG: starting plot_coverage_heatmap", flush=True)
-    p_heatmap = plot_coverage_heatmap(pts_ref_final, out_path / "plot_coverage.png", image_shape=ref_shape)
-    print("DEBUG: starting plot_residual_heatmap", flush=True)
-    p_residual = plot_residual_heatmap(pts_src_final, pts_ref_final, out_path / "plot_residual_heatmap.png", image_shape=ref_shape)
+    plot_paths: list[Path] = []
+    p_checker = p_quiver = p_heatmap = p_residual = None
+    try:
+        p_checker = plot_checkerboard(img_ref, warped, out_path / "plot_checkerboard.png")
+        plot_paths.append(p_checker)
+        p_quiver = plot_quiver(
+            pts_src_final, pts_ref_final, out_path / "plot_quiver.png",
+            image_shape=ref_shape, H_fit=H_fit,
+        )
+        plot_paths.append(p_quiver)
+        p_heatmap = plot_coverage_heatmap(pts_ref_final, out_path / "plot_coverage.png", image_shape=ref_shape)
+        plot_paths.append(p_heatmap)
+        p_residual = plot_residual_heatmap(
+            pts_src_final, pts_ref_final, out_path / "plot_residual_heatmap.png",
+            image_shape=ref_shape, H_fit=H_fit,
+        )
+    except Exception as exc:
+        log.exception(f"Stage 8 diagnostic plots failed: {exc}")
 
-    # Deliverable PDF
-    print("DEBUG: starting generate_pdf_report", flush=True)
-    pdf_report = generate_pdf_report(
-        job_dir=out_path,
-        metrics=metrics,
-        job_id=job_id,
-        plots=[p_checker, p_quiver, p_heatmap],
-    )
-    print("DEBUG: finished generate_pdf_report", flush=True)
+    pdf_report = None
+    try:
+        pdf_report = generate_pdf_report(
+            job_dir=out_path,
+            metrics=metrics,
+            job_id=job_id,
+            plots=plot_paths or None,
+        )
+    except Exception as exc:
+        log.exception(f"Stage 8 PDF report failed: {exc}")
 
     log.info(f"Pipeline completed successfully. RMSE={metrics.rmse_m:.2f} m ({metrics.rmse_px:.2f} px)")
 
@@ -318,9 +363,9 @@ def run_pipeline(
         "status": "success",
         "registered_geotiff": str(registered_tif),
         "matches_csv": str(matches_csv),
-        "metrics": metrics.to_dict(),
-        "pdf_report": str(pdf_report),
-        "residual_heatmap": str(p_residual),
+        "metrics": metrics_dict,
+        "pdf_report": str(pdf_report) if pdf_report else None,
+        "residual_heatmap": str(p_residual) if p_residual else None,
     }
 
 

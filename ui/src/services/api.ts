@@ -27,6 +27,7 @@ export interface JobStatus {
   checkerboard_url?: string;
   quiver_url?: string;
   coverage_url?: string;
+  residual_heatmap_url?: string;
 }
 
 /** Shape returned by POST /api/v1/register/async */
@@ -120,7 +121,7 @@ export class SeleneApiService {
 
           if (status.done) {
             if (status.status === 'success') resolve(status);
-            else reject(new Error(status.error || 'Pipeline failed'));
+            else reject(new Error(status.error || (status.status === 'cancelled' ? 'Cancelled' : 'Pipeline failed')));
             return;
           }
 
@@ -188,15 +189,22 @@ export class SeleneApiService {
 
       const status = await this.pollJob(jobId, onStep, signal);
       const m = status.metrics ?? {};
+      const provenance = (m.provenance && typeof m.provenance === 'object')
+        ? (m.provenance as Record<string, unknown>)
+        : {};
+      const reportedMatcher = String(
+        m.matcher_used ?? provenance.matcher_used ?? resolvedMatcher,
+      );
       const rawRatio = Number(m.inlier_ratio ?? 0);
       const inlierRatioPct = rawRatio <= 1.0 && rawRatio > 0 ? rawRatio * 100 : rawRatio;
       const rawCov = Number(m.grid_coverage_fraction ?? m.coverage_fraction ?? m.coverage ?? 0);
       const covPct = rawCov <= 1.0 && rawCov > 0 ? rawCov * 100 : rawCov;
+      const gatePass = m.quality_gate_pass === true || m.quality_gate_pass === 'true';
 
       const results: RegistrationResults = {
         rmse:     Number(m.rmse_px   ?? m.rmse   ?? 0),
         rmseVal:  Number(m.rmse_val_px ?? m.rmse_val ?? m.rmse_px ?? 0),
-        qualityGatePass: m.rmse_px !== undefined ? Number(m.rmse_px) < 1.0 : true,
+        qualityGatePass: gatePass,
         raw:      Number(m.n_raw ?? m.raw_matches ?? m.raw ?? 0),
         inliers:  Number(m.n_inliers ?? m.inlier_count ?? m.inliers ?? 0),
         ratio:    Number(inlierRatioPct.toFixed(1)),
@@ -204,8 +212,8 @@ export class SeleneApiService {
         nni:      Number(m.nni_index ?? m.nni ?? 0),
         coverage: Number(covPct.toFixed(1)),
         time:     String(m.runtime_s ?? '—'),
-        method:   `${this.getMatcherLabel(resolvedMatcher)} + IC-LK ECC Sub-Pixel`,
-        matcherUsed: resolvedMatcher,
+        method:   `${this.getMatcherLabel(reportedMatcher)} + IC-LK`,
+        matcherUsed: reportedMatcher,
         jobId,
         residualHeatmapUrl: status.residual_heatmap_url,
       };
@@ -237,11 +245,11 @@ export class SeleneApiService {
 
     const duration = ((performance.now() - startTime) / 1000).toFixed(2);
     const results: RegistrationResults = {
-      rmse: 0.68, rmseVal: 0.72, qualityGatePass: true,
-      raw: 21389, inliers: 18742, ratio: 87.6,
-      ce90: 0.91, nni: 0.84, coverage: 81, time: duration,
-      method: `${this.getMatcherLabel(resolvedMatcher)} + IC-LK ECC Sub-Pixel`,
-      matcherUsed: resolvedMatcher,
+      rmse: 0, rmseVal: 0, qualityGatePass: false,
+      raw: 0, inliers: 0, ratio: 0,
+      ce90: 0, nni: 0, coverage: 0, time: duration,
+      method: 'Simulation only — upload a pair to run the real pipeline',
+      matcherUsed: 'simulated',
       jobId,
     };
     return { results, jobId };
@@ -317,7 +325,7 @@ export class SeleneApiService {
   public resolveMatcher(matcher: MatcherType, sensor: string): string {
     if (matcher !== 'auto') return matcher;
     if (sensor.includes('IIRS')) return 'mutual_info';
-    return 'loftr';
+    return 'auto';
   }
 
   public getMatcherLabel(matcherKey: string): string {

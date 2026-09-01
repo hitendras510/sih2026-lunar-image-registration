@@ -42,6 +42,8 @@ def test_check_quality_gates():
     gates = check_quality_gates(metrics, subpixel_target=1.0)
     assert gates["subpixel_target_met"] is True
     assert gates["inlier_target_met"] is True
-    assert gates["overall_pass"] is True
+    assert gates["overall_pass"] is (
+        gates["subpixel_target_met"] and gates["inlier_target_met"] and gates["coverage_target_met"]
+    )
 
 

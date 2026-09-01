@@ -126,6 +126,7 @@ async def register_async(
 
     # Register in the shared job store before launching background task
     JOBS_DB[job_id] = init_job(job_id)
+    persist_job(job_id)
     job_log_append(job_id, "INFO", f"Job {job_id} queued — ref={ref_image.filename}, mov={mov_image.filename}")
 
     background_tasks.add_task(

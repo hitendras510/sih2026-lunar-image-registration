@@ -20,6 +20,15 @@ from selene.illum.hillshade import relight
 from selene.illum.census import census_transform
 
 
+_DEEP_MATCHERS = ("loftr", "lightglue", "xfeat")
+
+
+def _maybe_disable_deep(strategy: str, config: PipelineConfig | None) -> str:
+    if strategy in _DEEP_MATCHERS and config is not None and not config.allow_deep_matchers:
+        return "sift"
+    return strategy
+
+
 def select_matcher(pair: Pair, config: PipelineConfig | None = None) -> str:
     """Determine the optimal matcher strategy from image pair characteristics.
 
@@ -31,23 +40,22 @@ def select_matcher(pair: Pair, config: PipelineConfig | None = None) -> str:
     - fallback                                          -> 'sift'
     """
     if config and config.matcher != "auto":
-        if config.matcher in ("loftr", "lightglue", "xfeat"):
-            # Deep matchers (kornia/torchvision) unconditionally segfault on this host OS.
-            # Routing to SIFT baseline to ensure pipeline stability.
-            return "sift"
-        return config.matcher
+        return _maybe_disable_deep(config.matcher, config)
 
     delta_az = pair.delta_sun_az
     gsd_r = pair.gsd_ratio
 
-    if delta_az >= (config.sun_azimuth_flip_deg if config else 60.0):
+    if (
+        not pair.sun_geometry_is_inferred
+        and delta_az >= (config.sun_azimuth_flip_deg if config else 60.0)
+    ):
         return "crater_graph"
     elif pair.is_cross_sensor and ("IIRS" in (pair.ref_meta.sensor_id, pair.mov_meta.sensor_id)):
         return "mutual_info"
     elif gsd_r > 3.0:
         return "phase_corr"
     else:
-        return "sift"
+        return _maybe_disable_deep("lightglue", config)
 
 
 def route_and_match(
@@ -96,16 +104,22 @@ def route_and_match(
         return match_sift(img_src, img_ref) + ("sift_fallback",)
 
     elif strategy == "loftr":
-        pts_s, pts_r, scores = match_loftr(img_src, img_ref, device=device)
-        if len(pts_s) >= 4:
-            return pts_s, pts_r, scores, "loftr"
+        try:
+            pts_s, pts_r, scores = match_loftr(img_src, img_ref, device=device)
+            if len(pts_s) >= 4:
+                return pts_s, pts_r, scores, "loftr"
+        except Exception:
+            pass
         pts_s, pts_r, scores = match_sift(img_src, img_ref)
         return pts_s, pts_r, scores, "sift_fallback"
 
     elif strategy == "xfeat":
-        pts_s, pts_r, scores = match_xfeat(img_src, img_ref, device=device)
-        if len(pts_s) >= 4:
-            return pts_s, pts_r, scores, "xfeat"
+        try:
+            pts_s, pts_r, scores = match_xfeat(img_src, img_ref, device=device)
+            if len(pts_s) >= 4:
+                return pts_s, pts_r, scores, "xfeat"
+        except Exception:
+            pass
         pts_s, pts_r, scores = match_sift(img_src, img_ref)
         return pts_s, pts_r, scores, "sift_fallback"
 

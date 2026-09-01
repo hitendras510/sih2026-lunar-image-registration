@@ -58,14 +58,27 @@ def plot_checkerboard(
     return out_path
 
 
+def _homography_residuals(
+    pts_src: np.ndarray,
+    pts_dst: np.ndarray,
+    H: np.ndarray,
+) -> tuple[np.ndarray, np.ndarray]:
+    ones = np.ones((len(pts_src), 1), dtype=np.float32)
+    homo_src = np.hstack([pts_src.astype(np.float32), ones])
+    proj = (H @ homo_src.T).T
+    proj_pts = proj[:, :2] / (proj[:, 2:] + 1e-8)
+    return np.linalg.norm(proj_pts - pts_dst, axis=1), proj_pts
+
+
 def plot_quiver(
     pts_src: np.ndarray,
     pts_ref: np.ndarray,
     out_path: str | Path,
     image_shape: tuple[int, int] = (1024, 1024),
     scale: float = 1.0,
+    H_fit: np.ndarray | None = None,
 ) -> Path:
-    """Plot displacement vector field (quiver plot) between correspondences."""
+    """Plot residual vectors after projecting source points with H_fit (if given)."""
     out_path = Path(out_path)
     out_path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -73,11 +86,18 @@ def plot_quiver(
     h, w = image_shape
 
     if len(pts_src) > 0:
-        dx = pts_ref[:, 0] - pts_src[:, 0]
-        dy = pts_ref[:, 1] - pts_src[:, 1]
+        if H_fit is not None:
+            _, proj = _homography_residuals(pts_src, pts_ref, H_fit)
+            origins_x, origins_y = proj[:, 0], proj[:, 1]
+            dx = pts_ref[:, 0] - proj[:, 0]
+            dy = pts_ref[:, 1] - proj[:, 1]
+        else:
+            origins_x, origins_y = pts_ref[:, 0], pts_ref[:, 1]
+            dx = np.zeros(len(pts_src))
+            dy = np.zeros(len(pts_src))
         ax.quiver(
-            pts_src[:, 0],
-            pts_src[:, 1],
+            origins_x,
+            origins_y,
             dx,
             dy,
             angles="xy",
@@ -86,7 +106,7 @@ def plot_quiver(
             color="lime",
             width=0.003,
         )
-        ax.scatter(pts_src[:, 0], pts_src[:, 1], c="red", s=10, label="GCPs")
+        ax.scatter(pts_ref[:, 0], pts_ref[:, 1], c="red", s=10, label="GCPs")
 
     ax.set_xlim(0, w)
     ax.set_ylim(h, 0)  # Invert Y for image coordinate system
@@ -137,8 +157,9 @@ def plot_residual_heatmap(
     out_path: str | Path,
     image_shape: tuple[int, int] = (1024, 1024),
     grid_cells: int = 16,
+    H_fit: np.ndarray | None = None,
 ) -> Path:
-    """Plot a spatial heatmap of match residuals."""
+    """Plot a spatial heatmap of match residuals in the reference frame."""
     out_path = Path(out_path)
     out_path.parent.mkdir(parents=True, exist_ok=True)
     
@@ -150,12 +171,13 @@ def plot_residual_heatmap(
     fig.patch.set_facecolor('#050c14')
     
     if len(pts_src) > 0:
-        dx = pts_ref[:, 0] - pts_src[:, 0]
-        dy = pts_ref[:, 1] - pts_src[:, 1]
-        residuals = np.sqrt(dx**2 + dy**2)
+        if H_fit is not None:
+            residuals, _ = _homography_residuals(pts_src, pts_ref, H_fit)
+        else:
+            residuals = np.linalg.norm(pts_ref.astype(np.float32) - pts_src.astype(np.float32), axis=1)
         
         hb = ax.hexbin(
-            pts_src[:, 0], pts_src[:, 1], 
+            pts_ref[:, 0], pts_ref[:, 1], 
             C=residuals, 
             gridsize=grid_cells, 
             cmap='turbo', 

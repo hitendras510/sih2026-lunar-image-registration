@@ -30,3 +30,14 @@ def test_pair_properties():
     assert pair.delta_sun_az == 90.0
     assert pair.gsd_ratio == 2.0
     assert pair.is_cross_sensor is True
+
+
+def test_pair_circular_azimuth():
+    pair = Pair.from_paths(
+        ref="ref.tif",
+        mov="mov.tif",
+        ref_label={"SOLAR_AZIMUTH": 10.0, "MAP_SCALE": 1.0, "INSTRUMENT_ID": "OHRC"},
+        mov_label={"SOLAR_AZIMUTH": 350.0, "MAP_SCALE": 1.0, "INSTRUMENT_ID": "OHRC"},
+    )
+    assert pair.delta_sun_az == 20.0
+    assert pair.sun_geometry_is_inferred is False

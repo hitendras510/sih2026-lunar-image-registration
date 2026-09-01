@@ -345,7 +345,20 @@ Certified by SELENE-MATCH Automated Pipeline Core.
   };
 
     const handleDownload = async (productPath: string | undefined, filename: string) => {
-    // 1. PDF / TXT: ALWAYS use the beautiful frontend HTML printable report
+    // Prefer real backend products when a live job exists.
+    if (isReal && productPath) {
+      const url = seleneApi.productUrl(productPath);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      a.target = '_blank';
+      a.click();
+      addLog(`Downloading ${filename} from backend server…`, 'success');
+      addToast(`Downloading ${filename} from server.`, 'success', 'Download Started');
+      return;
+    }
+
+    // Demo-only printable report when no backend job exists.
     if (filename.endsWith('.pdf') || filename.endsWith('.txt')) {
       // 1. OPEN WINDOW IMMEDIATELY to bypass popup blocker!
       const printWin = window.open('', '_blank');
@@ -577,20 +590,7 @@ Certified by SELENE-MATCH Automated Pipeline Core.
       return;
     }
 
-    // 2. TIF or other real backend files
-    if (isReal && productPath && !filename.endsWith('.csv') && !filename.includes('checkerboard') && !filename.includes('quiver') && !filename.includes('coverage')) {
-      const url = seleneApi.productUrl(productPath);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = filename;
-      a.target = '_blank';
-      a.click();
-      addLog(`Downloading ${filename} from backend server…`, 'success');
-      addToast(`Downloading ${filename} from server.`, 'success', 'Download Started');
-      return;
-    }
-
-    // 3. CSV logic
+    // Demo-only CSV when no backend job exists.
     if (filename.endsWith('.csv')) {
       const csvContent = generateCsvContent();
       const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });

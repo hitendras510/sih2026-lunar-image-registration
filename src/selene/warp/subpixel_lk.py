@@ -48,14 +48,33 @@ def refine_subpixel_lk(
     h_r, w_r = ref_f.shape[:2]
     h_m, w_m = mov_f.shape[:2]
 
-    # Pre-transform moving points using H_coarse if provided
+    # Align the moving image into the reference frame, refine there, then map
+    # sub-pixel positions back with H^{-1}. Directly applying H to source
+    # coordinates and sampling the unwarped moving image is incorrect.
     if H_coarse is not None:
-        ones = np.ones((len(pts_mov), 1), dtype=np.float32)
-        homo_m = np.hstack([pts_mov, ones])
-        proj = (H_coarse @ homo_m.T).T
-        pts_mov_start = proj[:, :2] / (proj[:, 2:] + 1e-8)
-    else:
-        pts_mov_start = pts_mov.copy()
+        try:
+            H64 = np.asarray(H_coarse, dtype=np.float64)
+            H_inv = np.linalg.inv(H64)
+            mov_aligned = cv2.warpPerspective(mov_f, H64, (w_r, h_r))
+            refined_ref, valid_mask = refine_subpixel_lk(
+                ref_f,
+                mov_aligned,
+                pts_ref,
+                np.asarray(pts_ref, dtype=np.float32).copy(),
+                patch_size=patch_size,
+                max_iters=max_iters,
+                eps=eps,
+                H_coarse=None,
+            )
+            ones = np.ones((len(refined_ref), 1), dtype=np.float64)
+            homo = np.hstack([refined_ref.astype(np.float64), ones])
+            src = (H_inv @ homo.T).T
+            refined_mov = (src[:, :2] / (src[:, 2:] + 1e-8)).astype(np.float32)
+            return refined_mov, valid_mask
+        except np.linalg.LinAlgError:
+            pass
+
+    pts_mov_start = pts_mov.copy()
 
     refined_mov = pts_mov_start.copy().astype(np.float32)
     valid_mask = np.ones(len(pts_ref), dtype=bool)

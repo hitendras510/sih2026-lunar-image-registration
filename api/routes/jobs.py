@@ -43,6 +43,56 @@ JOBS_DB: dict[str, dict] = {}
 _SSE_WAITERS: dict[str, list[threading.Event]] = {}
 
 
+def _job_status_path(job_id: str) -> Path:
+    return Path("products") / job_id / "job_status.json"
+
+
+def persist_job(job_id: str) -> None:
+    """Write job status to disk so polling survives API restarts."""
+    if job_id not in JOBS_DB:
+        return
+    path = _job_status_path(job_id)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    payload = dict(JOBS_DB[job_id])
+    try:
+        with open(path, "w") as f:
+            json.dump(payload, f, indent=2, default=str)
+    except Exception:
+        pass
+
+
+def load_job_from_disk(job_id: str) -> dict | None:
+    path = _job_status_path(job_id)
+    if path.exists():
+        try:
+            with open(path) as f:
+                return json.load(f)
+        except Exception:
+            return None
+    metrics_p = Path("products") / job_id / "metrics.json"
+    if metrics_p.exists():
+        with open(metrics_p) as f:
+            metrics = json.load(f)
+        return {
+            "job_id": job_id,
+            "stage": "Stage 8: Completed",
+            "progress": 1.0,
+            "done": True,
+            "status": "success",
+            "metrics": metrics,
+            "error": None,
+            "logs": [],
+            "registered_geotiff_url": _product_url(job_id, "registered.tif"),
+            "matches_csv_url": _product_url(job_id, "matches.csv"),
+            "report_pdf_url": _product_url(job_id, "registration_report.pdf"),
+            "checkerboard_url": _product_url(job_id, "plot_checkerboard.png"),
+            "quiver_url": _product_url(job_id, "plot_quiver.png"),
+            "coverage_url": _product_url(job_id, "plot_coverage.png"),
+            "residual_heatmap_url": _product_url(job_id, "plot_residual_heatmap.png"),
+        }
+    return None
+
+
 def _product_url(job_id: str, filename: str) -> str:
     return f"/products/{job_id}/{filename}"
 
@@ -56,6 +106,7 @@ def job_log_append(job_id: str, level: str, message: str) -> None:
     }
     if job_id in JOBS_DB:
         JOBS_DB[job_id].setdefault("logs", []).append(entry)
+        persist_job(job_id)
     # Wake up any open SSE connections for this job
     for ev in _SSE_WAITERS.get(job_id, []):
         ev.set()
@@ -69,8 +120,11 @@ def run_job_bg(job_id: str, src_path: str, ref_path: str, config_dict: dict | No
 
         def on_progress(prog: float, label: str):
             if job_id in JOBS_DB:
+                if JOBS_DB[job_id].get("status") == "cancelled":
+                    raise RuntimeError("Job cancelled by user")
                 JOBS_DB[job_id]["stage"] = label
                 JOBS_DB[job_id]["progress"] = prog
+                persist_job(job_id)
                 job_log_append(job_id, "INFO", label)
 
         on_progress(0.05, "Stage 0: Initializing pipeline")
@@ -90,10 +144,15 @@ def run_job_bg(job_id: str, src_path: str, ref_path: str, config_dict: dict | No
             coverage_url=_product_url(job_id, "plot_coverage.png"),
             residual_heatmap_url=_product_url(job_id, "plot_residual_heatmap.png"),
         )
+        persist_job(job_id)
         job_log_append(job_id, "SUCCESS", f"Pipeline complete. RMSE={res['metrics'].get('rmse_px','?')} px")
 
     except Exception as exc:
+        if job_id in JOBS_DB and JOBS_DB[job_id].get("status") == "cancelled":
+            persist_job(job_id)
+            return
         JOBS_DB[job_id].update(done=True, status="failed", error=str(exc))
+        persist_job(job_id)
         job_log_append(job_id, "ERROR", f"Pipeline failed: {exc}")
 
 
@@ -126,6 +185,7 @@ def create_job(req: JobRequest, background_tasks: BackgroundTasks):
     """Submit a registration job using server-side file paths."""
     job_id = f"job_{uuid.uuid4().hex[:8]}"
     JOBS_DB[job_id] = init_job(job_id)
+    persist_job(job_id)
 
     src = req.src_path or "data_generation/output/synthetic_target.png"
     ref = req.ref_path or "data_generation/output/reference.png"
@@ -147,26 +207,10 @@ def list_jobs():
 def get_job_status(job_id: str):
     """Poll a single job's status and (when done) its product URLs."""
     if job_id not in JOBS_DB:
-        # Recover from filesystem if server was restarted
-        metrics_p = Path("products") / job_id / "metrics.json"
-        if metrics_p.exists():
-            with open(metrics_p) as f:
-                metrics = json.load(f)
-            return JobStatus(
-                job_id=job_id,
-                stage="Stage 8: Completed",
-                progress=1.0,
-                done=True,
-                status="success",
-                metrics=metrics,
-                registered_geotiff_url=_product_url(job_id, "registered.tif"),
-                matches_csv_url=_product_url(job_id, "matches.csv"),
-                report_pdf_url=_product_url(job_id, "registration_report.pdf"),
-                checkerboard_url=_product_url(job_id, "plot_checkerboard.png"),
-                quiver_url=_product_url(job_id, "plot_quiver.png"),
-                coverage_url=_product_url(job_id, "plot_coverage.png"),
-                residual_heatmap_url=_product_url(job_id, "plot_residual_heatmap.png"),
-            )
+        recovered = load_job_from_disk(job_id)
+        if recovered:
+            JOBS_DB[job_id] = recovered
+            return JobStatus(**{k: v for k, v in recovered.items() if k != "logs"})
         raise HTTPException(status_code=404, detail=f"Job '{job_id}' not found")
 
     job = JOBS_DB[job_id]
@@ -185,7 +229,11 @@ def stream_job_logs(job_id: str):
     of all logs so far (handled via Accept header or ?snapshot query param).
     """
     if job_id not in JOBS_DB:
-        raise HTTPException(status_code=404, detail=f"Job '{job_id}' not found")
+        recovered = load_job_from_disk(job_id)
+        if recovered:
+            JOBS_DB[job_id] = recovered
+        else:
+            raise HTTPException(status_code=404, detail=f"Job '{job_id}' not found")
 
     def _generate() -> Generator[str, None, None]:
         ev = threading.Event()
@@ -224,15 +272,24 @@ def stream_job_logs(job_id: str):
 def get_job_logs_snapshot(job_id: str):
     """Return all captured log lines for a job as a plain JSON array."""
     if job_id not in JOBS_DB:
-        raise HTTPException(status_code=404, detail=f"Job '{job_id}' not found")
+        recovered = load_job_from_disk(job_id)
+        if recovered:
+            JOBS_DB[job_id] = recovered
+        else:
+            raise HTTPException(status_code=404, detail=f"Job '{job_id}' not found")
     return [LogLine(**l) for l in JOBS_DB[job_id].get("logs", [])]
 
 
 @router.delete("/{job_id}", status_code=204)
 def cancel_job(job_id: str):
-    """Mark a job as cancelled / remove it from the in-memory store."""
-    if job_id in JOBS_DB:
-        JOBS_DB[job_id]["done"] = True
-        JOBS_DB[job_id]["status"] = "cancelled"
-        job_log_append(job_id, "WARNING", "Job cancelled by user.")
-        del JOBS_DB[job_id]
+    """Mark a job as cancelled. The in-memory record is kept so clients can poll the status."""
+    if job_id not in JOBS_DB:
+        recovered = load_job_from_disk(job_id)
+        if recovered:
+            JOBS_DB[job_id] = recovered
+        else:
+            raise HTTPException(status_code=404, detail=f"Job '{job_id}' not found")
+    JOBS_DB[job_id]["done"] = True
+    JOBS_DB[job_id]["status"] = "cancelled"
+    job_log_append(job_id, "WARNING", "Job cancelled by user.")
+    persist_job(job_id)

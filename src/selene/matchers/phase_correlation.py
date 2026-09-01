@@ -44,29 +44,35 @@ def match_phase_correlation(
         else:
             src_eval = src_f
 
-        # Calculate global shift: shift = (dy, dx)
+        # Calculate global shift in *reference* pixel space: shift = (dy, dx)
         shift, error, _ = phase_cross_correlation(
             ref_f,
             src_eval,
             upsample_factor=upsample_factor
         )
-        dy, dx = float(shift[0]), float(shift[1])
+        dy_ref, dx_ref = float(shift[0]), float(shift[1])
 
-        # Sample regular grid points on src and project to ref
-        h, w = img_src.shape[:2]
-        ys = np.linspace(h * 0.1, h * 0.9, grid_points, dtype=np.float32)
-        xs = np.linspace(w * 0.1, w * 0.9, grid_points, dtype=np.float32)
+        h_src, w_src = src_f.shape[:2]
+        h_ref, w_ref = ref_f.shape[:2]
+
+        ys = np.linspace(h_src * 0.1, h_src * 0.9, grid_points, dtype=np.float32)
+        xs = np.linspace(w_src * 0.1, w_src * 0.9, grid_points, dtype=np.float32)
         gx, gy = np.meshgrid(xs, ys)
 
         pts_src = np.stack([gx.ravel(), gy.ravel()], axis=1)
-        pts_ref = pts_src + np.array([dx, dy], dtype=np.float32)
+        pts_ref = np.stack(
+            [
+                pts_src[:, 0] * (w_ref / float(w_src)) + dx_ref,
+                pts_src[:, 1] * (h_ref / float(h_src)) + dy_ref,
+            ],
+            axis=1,
+        ).astype(np.float32)
 
-        # Filter out points that fall outside reference boundaries
         valid = (
             (pts_ref[:, 0] >= 0)
-            & (pts_ref[:, 0] < w)
+            & (pts_ref[:, 0] < w_ref)
             & (pts_ref[:, 1] >= 0)
-            & (pts_ref[:, 1] < h)
+            & (pts_ref[:, 1] < h_ref)
         )
 
         pts_src = pts_src[valid]

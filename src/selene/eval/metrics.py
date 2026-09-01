@@ -70,7 +70,7 @@ def compute_metrics(
     """
     n_raw = len(pts_src)
     if n_raw == 0:
-        return MetricsResult(0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+        return MetricsResult(0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, gsd_m=gsd_m, provenance=provenance)
 
     if inlier_mask is None:
         inlier_mask = np.ones(n_raw, dtype=bool)
@@ -82,7 +82,7 @@ def compute_metrics(
     inliers_dst = pts_dst[inlier_mask]
 
     if len(inliers_src) == 0:
-        return MetricsResult(n_raw, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+        return MetricsResult(n_raw, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, gsd_m=gsd_m, provenance=provenance)
 
     # ── Independent Validation GCP Split ────────────────────────────────────
     if pts_src_val is None or pts_dst_val is None:
@@ -127,10 +127,11 @@ def compute_metrics(
     ce90_m = float(ce90_px * gsd_m)
 
     mean_res = float(np.mean(residuals_fit))
+    max_res = float(np.max(residuals_fit))
 
-    # Uniformity Metrics
-    nni_val = nni_score(inliers_src, area_shape=image_shape)
-    cov_val = grid_coverage(inliers_src, image_shape=image_shape)
+    # Uniformity in the *reference* frame (image_shape is the reference raster).
+    nni_val = nni_score(inliers_dst, area_shape=image_shape)
+    cov_val = grid_coverage(inliers_dst, image_shape=image_shape)
 
     # Independent Ground Truth Warp RMSE (if known GT transformation provided)
     rmse_vs_gt_px = None
@@ -153,6 +154,8 @@ def compute_metrics(
         ce90_px=round(ce90_px, 4),
         ce90_m=round(ce90_m, 4),
         mean_residual_px=round(mean_res, 4),
+        max_residual_px=round(max_res, 4),
+        gsd_m=gsd_m,
         rmse_val_px=round(rmse_val_px, 4),
         rmse_val_m=round(rmse_val_m, 4),
         nni_index=round(nni_val, 4),
@@ -181,6 +184,6 @@ def check_quality_gates(metrics: MetricsResult, subpixel_target: float = 1.0) ->
         "subpixel_target_met": rmse_pass,
         "inlier_target_met": inlier_pass,
         "coverage_target_met": coverage_pass,
-        "overall_pass": rmse_pass and inlier_pass,
+        "overall_pass": rmse_pass and inlier_pass and coverage_pass,
     }
 

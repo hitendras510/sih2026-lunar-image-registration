@@ -8,6 +8,11 @@ import numpy as np
 import cv2
 
 
+def threshold_m_to_px(threshold_m: float, gsd_m: float) -> float:
+    """Convert a MAGSAC threshold in metres to pixels at the given GSD."""
+    return float(max(1.0, float(threshold_m) / max(float(gsd_m), 1e-6)))
+
+
 def find_homography_magsac(
     pts_src: np.ndarray,
     pts_dst: np.ndarray,

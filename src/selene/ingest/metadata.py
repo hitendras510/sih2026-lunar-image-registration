@@ -28,6 +28,8 @@ class ImageMetadata:
     sensor_id: str = "UNKNOWN"      # e.g. "OHRC", "TMC2", "LRO_NAC", "IIRS"
     footprint_wkt: str = ""         # WKT POLYGON of image footprint (lon/lat)
     incidence_angle: float = 45.0   # solar incidence angle (degrees from nadir)
+    sun_azimuth_inferred: bool = False
+    gsd_inferred: bool = False
 
 
 def extract_metadata(label: dict[str, Any], strict: bool = False) -> ImageMetadata:
@@ -63,6 +65,7 @@ def extract_metadata(label: dict[str, Any], strict: bool = False) -> ImageMetada
     # JSON sidecar: sun_azimuth_deg | PDS3: SOLAR_AZIMUTH | PDS4: solar_azimuth
     sun_az_raw = _get("sun_azimuth_deg", "sun_az", "SOLAR_AZIMUTH", "SUB_SOLAR_AZIMUTH",
                       "solar_azimuth", "sub_solar_azimuth")
+    sun_azimuth_inferred = False
     if sun_az_raw is _MISSING:
         if strict:
             raise KeyError(
@@ -70,6 +73,7 @@ def extract_metadata(label: dict[str, Any], strict: bool = False) -> ImageMetada
                 "Searched: sun_azimuth_deg, sun_az, SOLAR_AZIMUTH, SUB_SOLAR_AZIMUTH"
             )
         sun_az_raw = 90.0
+        sun_azimuth_inferred = True
     sun_az = float(sun_az_raw)
 
     # ── Sun elevation ─────────────────────────────────────────────────────────
@@ -91,6 +95,7 @@ def extract_metadata(label: dict[str, Any], strict: bool = False) -> ImageMetada
     # ── Ground sampling distance ───────────────────────────────────────────────
     # JSON sidecar: gsd_m | PDS3: MAP_SCALE / PIXEL_SCALE | PDS4: map_scale
     gsd_raw = _get("gsd_m", "MAP_SCALE", "PIXEL_SCALE", "IMAGE_SCALE", "map_scale", "pixel_scale")
+    gsd_inferred = False
     if gsd_raw is _MISSING:
         if strict:
             raise KeyError(
@@ -98,6 +103,7 @@ def extract_metadata(label: dict[str, Any], strict: bool = False) -> ImageMetada
                 "Searched: gsd_m, MAP_SCALE, PIXEL_SCALE, IMAGE_SCALE"
             )
         gsd_raw = 5.0
+        gsd_inferred = True
     gsd = float(gsd_raw)
     if gsd > 1000:          # value was in km/px — convert to m/px
         gsd *= 1_000.0
@@ -121,4 +127,6 @@ def extract_metadata(label: dict[str, Any], strict: bool = False) -> ImageMetada
         sensor_id=sensor,
         footprint_wkt=footprint,
         incidence_angle=incidence,
+        sun_azimuth_inferred=sun_azimuth_inferred,
+        gsd_inferred=gsd_inferred,
     )

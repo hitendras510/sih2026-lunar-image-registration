@@ -36,6 +36,8 @@ class PipelineConfig(BaseModel):
     matcher: Literal[
         "auto", "sift", "loftr", "xfeat", "lightglue", "phase_corr", "mutual_info", "crater_graph"
     ] = "auto"
+    # When False, LoFTR / LightGlue / XFeat are not invoked (hosts that segfault on kornia).
+    allow_deep_matchers: bool = True
     # Runtime device for learned matcher backends. Classical matchers ignore it.
     # Kept here so callers such as benchmark.py can use the same pipeline
     # configuration rather than patching matcher internals.

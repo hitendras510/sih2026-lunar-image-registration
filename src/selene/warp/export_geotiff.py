@@ -37,6 +37,10 @@ def export_geotiff(
         count = 1
         h, w = img_array.shape
         data = img_array[np.newaxis, ...]
+    elif img_array.ndim == 3 and img_array.shape[-1] in (1, 3, 4) and img_array.shape[0] not in (1, 3, 4):
+        # HWC → CHW
+        data = np.moveaxis(img_array, -1, 0)
+        count, h, w = data.shape
     else:
         count, h, w = img_array.shape[0], img_array.shape[1], img_array.shape[2]
         data = img_array

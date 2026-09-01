@@ -29,3 +29,10 @@ def test_known_affine_recovered():
     assert H_recovered is not None
     assert np.all(inliers)
     assert np.allclose(H_recovered / H_recovered[2, 2], M, atol=0.1)
+
+
+def test_threshold_m_to_px():
+    from selene.robust.magsac import threshold_m_to_px
+    assert threshold_m_to_px(5.0, 5.0) == 1.0
+    assert threshold_m_to_px(5.0, 0.25) == 20.0
+    assert threshold_m_to_px(5.0, 80.0) == 1.0
