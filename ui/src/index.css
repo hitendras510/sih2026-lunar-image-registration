@@ -2,16 +2,16 @@
 
 /* ============ SELENE LUNAR REGISTRATION WORKBENCH — MODERN DESIGN TOKENS ============ */
 :root {
-  --bg0: #0b0f19;
-  --bg1: #111827;
-  --glass: #111827;
-  --glass-hi: #1f2937;
-  --glass2: #111827;
-  --line: #1f2937;
-  --line-strong: #374151;
-  --text: #f9fafb;
-  --muted: #9ca3af;
-  --dim: #6b7280;
+  --bg0: #0f172a;
+  --bg1: #1e293b;
+  --glass: #1e293b;
+  --glass-hi: #334155;
+  --glass2: #1e293b;
+  --line: #334155;
+  --line-strong: #475569;
+  --text: #f8fafc;
+  --muted: #94a3b8;
+  --dim: #64748b;
   --cyan: #38bdf8;
   --blue: #2563eb;
   --blue2: #1d4ed8;
@@ -22,9 +22,9 @@
   --font-d: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
   --font-m: "JetBrains Mono", monospace;
   --font-tech: "Inter", sans-serif;
-  --r: 6px;
+  --r: 8px;
   --sidebar-w: 240px;
-  --header-h: 52px;
+  --header-h: 56px;
   --footer-h: 36px;
   --shadow-card: none;
 }
