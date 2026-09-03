@@ -18,58 +18,52 @@ export const AboutView: React.FC = () => {
   return (
     <section id="view-about" className="view-section active space-y-6">
       {/* PAGE HEADER */}
-      <div>
-        <h1 className="text-2xl font-bold text-white tracking-tight">
-          About SELENE-MATCH
+      <div className="pb-3 border-b border-[#D0D0D0]">
+        <h1 className="text-xl font-bold text-[#222222]">
+          About Project
         </h1>
-        <div className="text-xs text-slate-400 font-mono tracking-wide mt-1">
-          Multi-modal lunar image correspondence, automatic matcher gate routing, and pipeline architecture.
-        </div>
+        <p className="text-xs text-[#555555] mt-0.5">
+          Smart India Hackathon 2026 · Problem Statement 26166 · ISRO
+        </p>
       </div>
 
       {/* ABOUT CARD */}
-      <div className="p-6 sm:p-8 rounded-2xl border border-slate-800 bg-slate-900/60 backdrop-blur-md max-w-5xl space-y-7">
-        <div className="flex items-start gap-5">
-          <div className="w-12 h-12 rounded-xl border border-sky-500/30 bg-sky-500/10 text-sky-400 flex items-center justify-center shrink-0">
-            <Moon className="w-6 h-6" />
-          </div>
-          <div>
-            <h2 className="text-lg text-white font-bold tracking-tight">
-              Multi-modal Lunar Image Correspondence &amp; Sub-pixel Registration
-            </h2>
-            <p className="text-xs text-slate-300 font-mono mt-2 leading-relaxed max-w-3xl">
-              SELENE-MATCH is designed to register Chandrayaan-2 OHRC, TMC-2 and IIRS imagery
-              against LRO NAC/WAC references despite severe illumination angle differences, viewpoint distortion, and large spatial resolution disparity.
-            </p>
-          </div>
+      <div className="p-6 rounded bg-white border border-[#D0D0D0] max-w-5xl space-y-6">
+        <div>
+          <h2 className="text-base font-bold text-[#222222]">
+            Chandrayaan-2 Multi-Modal Lunar Image Registration System
+          </h2>
+          <p className="text-xs text-[#555555] mt-2 leading-relaxed max-w-3xl">
+            SELENE-MATCH performs automated keypoint correspondence matching and sub-pixel georeferencing between Chandrayaan-2 (OHRC, TMC-2, IIRS) optical imagery and LRO reference datasets across varying solar illumination angles, GSD scale disparities, and orbital sensor geometries.
+          </p>
         </div>
 
         {/* METADATA HIGHLIGHTS */}
         <div className="grid md:grid-cols-3 gap-4">
-          <div className="p-4 rounded-xl bg-slate-950 border border-slate-800">
-            <div className="text-[10px] font-mono text-slate-400 uppercase">Scale Disparity</div>
-            <div className="text-sm font-bold text-sky-400 font-mono mt-1">Up to 320× GSD</div>
+          <div className="p-4 rounded bg-[#F8F9FA] border border-[#D0D0D0]">
+            <div className="text-xs font-semibold text-[#555555] uppercase">Scale Disparity</div>
+            <div className="text-sm font-bold text-[#1F4E79] font-mono mt-1">Up to 320× GSD</div>
           </div>
-          <div className="p-4 rounded-xl bg-slate-950 border border-slate-800">
-            <div className="text-[10px] font-mono text-slate-400 uppercase">Accuracy Target</div>
-            <div className="text-sm font-bold text-emerald-400 font-mono mt-1">Sub-pixel (&lt; 0.5 px)</div>
+          <div className="p-4 rounded bg-[#F8F9FA] border border-[#D0D0D0]">
+            <div className="text-xs font-semibold text-[#555555] uppercase">Accuracy Target</div>
+            <div className="text-sm font-bold text-[#2E7D32] font-mono mt-1">&lt; 0.5 px RMSE</div>
           </div>
-          <div className="p-4 rounded-xl bg-slate-950 border border-slate-800">
-            <div className="text-[10px] font-mono text-slate-400 uppercase">Pipeline Architecture</div>
-            <div className="text-sm font-bold text-white font-mono mt-1">9 Processing Stages</div>
+          <div className="p-4 rounded bg-[#F8F9FA] border border-[#D0D0D0]">
+            <div className="text-xs font-semibold text-[#555555] uppercase">Pipeline Stages</div>
+            <div className="text-sm font-bold text-[#222222] font-mono mt-1">9 Stages Automated</div>
           </div>
         </div>
 
         {/* TECH STACK BADGES */}
         <div className="pt-2">
-          <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-3">
-            Core Technology Stack
+          <label className="text-xs font-semibold text-[#555555] uppercase tracking-wider block mb-2">
+            Technology Stack
           </label>
           <div className="flex flex-wrap gap-2">
             {techBadges.map((badge) => (
               <span
                 key={badge}
-                className="font-mono text-xs text-slate-300 bg-slate-950 border border-slate-800 px-3 py-1 rounded-md"
+                className="font-mono text-xs text-[#222222] bg-[#F8F9FA] border border-[#D0D0D0] px-2.5 py-1 rounded"
               >
                 {badge}
               </span>
