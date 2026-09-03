@@ -164,37 +164,40 @@ export const ResultsView: React.FC = () => {
         )}
       </div>
 
-      <div className="card overflow-hidden">
+      <div className="p-6 rounded-2xl border border-slate-800 bg-slate-900/60 backdrop-blur-md overflow-hidden">
         {/* TABS */}
-        <div className="flex flex-wrap border-b border-[rgba(146,196,255,0.13)] bg-[rgba(4,9,16,0.5)]">
+        <div className="flex flex-wrap border-b border-slate-800 gap-2 pb-4 mb-6">
           {(['wipe', 'checker', 'gcp', 'residual'] as const).map(tab => (
             <button
               key={tab}
-              className={`result-tab ${activeTab === tab ? 'active' : ''}`}
+              className={`px-4 py-2 rounded-lg text-xs font-semibold transition-all ${
+                activeTab === tab
+                  ? 'bg-sky-500/10 text-sky-400 border border-sky-500/30'
+                  : 'bg-slate-950 text-slate-400 hover:text-white border border-slate-800'
+              }`}
               onClick={() => setActiveTab(tab)}
             >
-              {tab === 'wipe' ? 'WIPE / CURTAIN'
-                : tab === 'checker' ? '8×8 CHECKERBOARD'
-                : tab === 'gcp' ? 'GCP + QUIVER'
-                : 'RESIDUAL HEATMAP'}
+              {tab === 'wipe' ? 'Split Curtain View'
+                : tab === 'checker' ? '8×8 Checkerboard'
+                : tab === 'gcp' ? 'GCP Vectors'
+                : 'Deformation Heatmap'}
             </button>
           ))}
         </div>
 
-        <div className="p-5">
-
+        <div>
           {/* ── WIPE / CURTAIN TAB ── */}
           {activeTab === 'wipe' && (
-            <div className="result-pane font-mono">
-              <div className="relative h-[420px] rounded-xl border border-[rgba(146,196,255,0.22)] overflow-hidden bg-slate-950 select-none shadow-2xl">
+            <div className="space-y-4 font-mono">
+              <div className="relative h-[420px] rounded-xl border border-slate-800 overflow-hidden bg-slate-950 select-none shadow-xl">
                 {/* Base Layer: Reference (Fixed) */}
                 <img
                   src={refUrl}
                   alt="Reference Layer"
                   className="absolute inset-0 w-full h-full object-cover"
                 />
-                <span className="absolute top-3 left-3 z-20 px-3 py-1 rounded bg-[#040910]/85 border border-cyan-500/40 text-[10.5px] font-bold text-cyan-300 backdrop-blur-md shadow-lg">
-                  REFERENCE (FIXED LRO NAC)
+                <span className="absolute top-3 left-3 z-20 px-3 py-1 rounded bg-slate-900/90 border border-slate-700 text-xs font-semibold text-sky-400 backdrop-blur-md">
+                  Reference: LRO NAC (Fixed)
                 </span>
 
                 {/* Overlay Layer: Registered / Source (Moving) */}
@@ -204,25 +207,25 @@ export const ResultsView: React.FC = () => {
                   className="absolute inset-0 w-full h-full object-cover z-10 transition-none"
                   style={{ clipPath: `inset(0 0 0 ${wipeVal}%)` }}
                 />
-                <span className="absolute top-3 right-3 z-20 px-3 py-1 rounded bg-[#040910]/85 border border-emerald-500/40 text-[10.5px] font-bold text-emerald-300 backdrop-blur-md shadow-lg">
-                  {registeredUrl ? 'REGISTERED OUTPUT (TPS WARPED)' : 'SOURCE (OHRC TARGET)'}
+                <span className="absolute top-3 right-3 z-20 px-3 py-1 rounded bg-slate-900/90 border border-slate-700 text-xs font-semibold text-emerald-400 backdrop-blur-md">
+                  {registeredUrl ? 'Registered: TPS Warped Output' : 'Target: OHRC Moving'}
                 </span>
 
                 {/* Vertical Curtain Divider Laser Line & Handle */}
                 <div
-                  className="absolute top-0 bottom-0 z-30 w-0.5 bg-[#6ff6ff] shadow-[0_0_12px_#6ff6ff] pointer-events-none"
+                  className="absolute top-0 bottom-0 z-30 w-0.5 bg-sky-400 pointer-events-none"
                   style={{ left: `${wipeVal}%` }}
                 >
-                  <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-cyan-950 border-2 border-cyan-400 text-cyan-200 flex items-center justify-center text-[12px] font-bold shadow-[0_0_15px_rgba(111,246,255,0.8)]">
-                    ⇹
+                  <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-7 h-7 rounded-full bg-sky-500 text-white flex items-center justify-center text-xs font-bold shadow-lg border border-white/20">
+                    ↔
                   </div>
                 </div>
               </div>
 
               {/* Curtain Control Bar */}
-              <div className="mt-4 p-3 rounded-lg bg-[#040910] border border-slate-800 flex items-center gap-4 text-[11px]">
+              <div className="p-4 rounded-xl bg-slate-950 border border-slate-800 flex items-center gap-4 text-xs">
                 <span className="text-slate-400 font-semibold shrink-0">
-                  CURTAIN POSITION: <span className="text-cyan-300 font-bold">{wipeVal}%</span>
+                  Curtain Position: <span className="text-sky-400 font-bold">{wipeVal}%</span>
                 </span>
                 <input
                   type="range"
