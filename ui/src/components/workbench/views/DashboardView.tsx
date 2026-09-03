@@ -157,68 +157,65 @@ export const DashboardView: React.FC = () => {
       </div>
 
       {/* ── MAIN PANELS ── */}
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
-
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
         {/* HOW IT WORKS — 3/5 */}
-        <div className="lg:col-span-3 rounded-2xl border border-[rgba(146,196,255,0.1)] bg-gradient-to-b from-[rgba(12,24,40,0.65)] to-[rgba(6,13,22,0.75)] backdrop-blur-md overflow-hidden">
-          <div className="px-6 pt-5 pb-4 border-b border-[rgba(146,196,255,0.08)]">
-            <div className="flex items-center justify-between">
+        <div className="lg:col-span-3 rounded-2xl border border-slate-800 bg-slate-900/60 backdrop-blur-md p-6 flex flex-col justify-between">
+          <div>
+            <div className="flex items-center justify-between pb-4 border-b border-slate-800">
               <div>
-                <h3 className="text-[12px] font-bold font-display text-white tracking-[0.1em] uppercase">
-                  How SELENE-MATCH Works
+                <h3 className="text-sm font-bold text-white uppercase tracking-wider">
+                  Registration Workflow
                 </h3>
-                <p className="font-mono text-[9.5px] text-slate-500 mt-0.5">
-                  4-stage registration pipeline with gate-routed expert matchers
+                <p className="text-xs text-slate-400 font-mono mt-0.5">
+                  4-step automated processing pipeline
                 </p>
               </div>
-              <Shield className="w-5 h-5 text-cyan-500/40" />
+              <Shield className="w-5 h-5 text-sky-400" />
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-6">
+              <StepCard n="01" title="Ingest"    desc="Read image & metadata"          icon={UploadCloud}       />
+              <StepCard n="02" title="Equalize"  desc="Multi-scale GSD pyramid"        icon={SlidersHorizontal} />
+              <StepCard n="03" title="Match"     desc="Adaptive feature matcher"       icon={Share2}            />
+              <StepCard n="04" title="Register"  desc="Sub-pixel alignment"            icon={CheckCircle2} last />
             </div>
           </div>
 
-          <div className="p-6">
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 relative">
-              <StepCard n="01" title="Ingest"    desc="Read image + metadata sidecar"  icon={UploadCloud}       />
-              <StepCard n="02" title="Equalize"  desc="Common GSD pyramid resampling"  icon={SlidersHorizontal} />
-              <StepCard n="03" title="Match"     desc="Gate selects expert matcher"     icon={Share2}            />
-              <StepCard n="04" title="Register"  desc="MAGSAC++ + IC-LK sub-pixel"     icon={CheckCircle2} last />
-            </div>
-          </div>
-
-          <div className="px-6 pb-5 flex flex-wrap gap-3 border-t border-[rgba(146,196,255,0.07)] pt-4">
+          <div className="flex flex-wrap gap-3 border-t border-slate-800 pt-5 mt-6">
             <button
-              className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-[11.5px] font-bold font-display tracking-[0.12em] bg-gradient-to-r from-[#1d64ec] to-[#00b4d8] text-white hover:opacity-90 hover:scale-[1.02] transition-all cursor-pointer shadow-[0_0_20px_rgba(29,100,236,0.30)] uppercase border border-cyan-400/30"
+              className="flex items-center gap-2 px-5 py-2.5 rounded-lg text-xs font-semibold bg-sky-500 hover:bg-sky-400 text-white transition-all shadow-md shadow-sky-500/20"
               onClick={() => navigateTo('upload')}
             >
-              <Upload className="w-3.5 h-3.5" />
-              Start with Upload
+              <Upload className="w-4 h-4" />
+              Upload Image Pair
             </button>
             <button
-              className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-[11.5px] font-bold font-display tracking-[0.12em] border border-[rgba(146,196,255,0.18)] text-slate-300 hover:text-white hover:border-cyan-400/40 hover:bg-cyan-500/8 transition-all cursor-pointer uppercase"
+              className="flex items-center gap-2 px-5 py-2.5 rounded-lg text-xs font-semibold border border-slate-800 bg-slate-950 text-slate-300 hover:text-white hover:border-slate-700 transition-all"
               onClick={() => navigateTo('register')}
             >
-              Open Registration
+              Configure Pipeline
               <ExternalLink className="w-3.5 h-3.5" />
             </button>
           </div>
         </div>
 
         {/* CHALLENGE → SOLUTION — 2/5 */}
-        <div className="lg:col-span-2 rounded-2xl border border-[rgba(146,196,255,0.1)] bg-gradient-to-b from-[rgba(12,24,40,0.65)] to-[rgba(6,13,22,0.75)] backdrop-blur-md overflow-hidden">
-          <div className="px-5 pt-5 pb-4 border-b border-[rgba(146,196,255,0.08)] flex items-center justify-between">
+        <div className="lg:col-span-2 rounded-2xl border border-slate-800 bg-slate-900/60 backdrop-blur-md p-6">
+          <div className="pb-4 border-b border-slate-800 flex items-center justify-between">
             <div>
-              <h3 className="text-[12px] font-bold font-display text-white tracking-[0.1em] uppercase">
-                Challenge → Solution
+              <h3 className="text-sm font-bold text-white uppercase tracking-wider">
+                Core Capabilities
               </h3>
-              <p className="font-mono text-[9.5px] text-slate-500 mt-0.5">Per SIH 2026 PS-26166</p>
+              <p className="text-xs text-slate-400 font-mono mt-0.5">SIH Problem #26166</p>
             </div>
-            <ArrowRight className="w-4 h-4 text-slate-600" />
+            <ArrowRight className="w-4 h-4 text-slate-500" />
           </div>
 
-          <div className="p-4 space-y-2.5">
-            <ChallengeRow icon={Sun}      label="ILLUMINATION" desc="Phase congruency, shadow masks, relighting, crater graph." />
-            <ChallengeRow icon={Scale}    label="SCALE"        desc="Common m/px GSD pyramid; 320× disparity handled." />
-            <ChallengeRow icon={Compass}  label="VIEWPOINT"    desc="Robust affine/homography + TPS piecewise geometry." />
-            <ChallengeRow icon={KeyRound} label="SUB-PIXEL"    desc="Native-resolution IC-LK sub-pixel refinement." />
+          <div className="space-y-3 mt-4">
+            <ChallengeRow icon={Sun}      label="Illumination" desc="Phase congruency & shadow invariant feature extraction." />
+            <ChallengeRow icon={Scale}    label="Scale Disparity" desc="GSD pyramid handles up to 320× resolution mismatch." />
+            <ChallengeRow icon={Compass}  label="Geometry Model"  desc="Homography & Thin Plate Spline piecewise warping." />
+            <ChallengeRow icon={KeyRound} label="Sub-Pixel RMSE" desc="Lucas-Kanade optical flow refines matched control points." />
           </div>
         </div>
       </div>
