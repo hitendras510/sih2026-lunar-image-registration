@@ -55,8 +55,6 @@ export const MetricsView: React.FC = () => {
         </div>
       </div>
 
-      {/* KPI METRIC CARDS GRID */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-5">
       {/* SCOREBOARD GRID */}
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
         {/* RMSE */}

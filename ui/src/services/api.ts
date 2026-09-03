@@ -27,6 +27,7 @@ export interface JobStatus {
   checkerboard_url?: string;
   quiver_url?: string;
   coverage_url?: string;
+  residual_heatmap_url?: string;
 }
 
 /** Shape returned by POST /api/v1/register/async */
