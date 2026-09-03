@@ -2,12 +2,10 @@ import React from 'react';
 import { TopNav } from './TopNav';
 import { HeroSection } from './HeroSection';
 import { ScrollSequenceHero } from './ScrollSequenceHero';
-import { Marquee } from './Marquee';
 import { MissionSection } from './MissionSection';
 import { WorkflowSection } from './WorkflowSection';
 import { TechnologySection } from './TechnologySection';
 import { ResultsSection } from './ResultsSection';
-import { WorkbenchCta } from './WorkbenchCta';
 import { LandingFooter } from './LandingFooter';
 
 export const LandingPage: React.FC = () => {
@@ -17,12 +15,10 @@ export const LandingPage: React.FC = () => {
       <main className="relative z-10 space-y-4">
         <HeroSection />
         <ScrollSequenceHero />
-        <Marquee />
         <MissionSection />
         <WorkflowSection />
         <TechnologySection />
         <ResultsSection />
-        <WorkbenchCta />
       </main>
       <LandingFooter />
     </div>
