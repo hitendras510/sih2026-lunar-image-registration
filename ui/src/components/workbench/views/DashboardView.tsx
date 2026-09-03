@@ -26,33 +26,29 @@ const StatCard: React.FC<{
   value: React.ReactNode;
   sub: string;
   icon: React.ElementType;
-  color: 'cyan' | 'emerald' | 'blue' | 'slate';
+  color: 'sky' | 'emerald' | 'amber' | 'slate';
 }> = ({ label, value, sub, icon: Icon, color }) => {
   const colorMap = {
-    cyan:    { bg: 'bg-cyan-500/8',    border: 'border-cyan-400/20',    text: 'text-cyan-400',    glow: 'shadow-[0_0_14px_rgba(111,246,255,0.12)]' },
-    emerald: { bg: 'bg-emerald-500/8', border: 'border-emerald-400/20', text: 'text-emerald-400', glow: 'shadow-[0_0_14px_rgba(62,230,160,0.12)]' },
-    blue:    { bg: 'bg-blue-500/8',    border: 'border-blue-400/20',    text: 'text-blue-400',    glow: 'shadow-[0_0_14px_rgba(57,168,255,0.12)]' },
-    slate:   { bg: 'bg-slate-500/8',   border: 'border-slate-400/20',   text: 'text-slate-400',   glow: '' },
+    sky:     { bg: 'bg-sky-500/10',     border: 'border-sky-500/20',     text: 'text-sky-400' },
+    emerald: { bg: 'bg-emerald-500/10', border: 'border-emerald-500/20', text: 'text-emerald-400' },
+    amber:   { bg: 'bg-amber-500/10',   border: 'border-amber-500/20',   text: 'text-amber-400' },
+    slate:   { bg: 'bg-slate-500/10',   border: 'border-slate-500/20',   text: 'text-slate-400' },
   };
   const c = colorMap[color];
 
   return (
-    <div className={`relative overflow-hidden rounded-2xl border border-[rgba(146,196,255,0.1)] bg-gradient-to-b from-[rgba(12,24,40,0.7)] to-[rgba(6,13,22,0.8)] backdrop-blur-md p-5 flex items-start justify-between gap-3 group hover:border-[rgba(146,196,255,0.22)] transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,0,0,0.3)]`}>
-      {/* Top-left accent line */}
-      <div className={`absolute top-0 left-4 right-4 h-[1px] bg-gradient-to-r from-transparent via-[rgba(146,196,255,0.2)] to-transparent`} />
-
-      <div className="flex flex-col min-w-0">
-        <span className={`font-mono text-[9px] font-bold tracking-[0.2em] ${c.text} uppercase flex items-center gap-1.5 mb-3`}>
-          <span className={`w-1 h-1 rounded-full ${c.text.replace('text-', 'bg-')}`} />
+    <div className="p-5 rounded-xl border border-slate-800 bg-slate-900/60 backdrop-blur-sm flex items-start justify-between gap-4">
+      <div>
+        <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 block">
           {label}
         </span>
-        <div className="text-white font-bold font-display text-[15px] leading-snug truncate">
+        <div className="text-xl font-bold text-white mt-1">
           {value}
         </div>
-        <p className="text-[10.5px] text-slate-500 font-mono mt-1.5 tracking-wide">{sub}</p>
+        <p className="text-xs text-slate-500 mt-1 font-mono">{sub}</p>
       </div>
 
-      <div className={`p-3 rounded-xl ${c.bg} border ${c.border} ${c.text} shrink-0 ${c.glow} transition-all duration-300 group-hover:scale-105`}>
+      <div className={`p-2.5 rounded-lg ${c.bg} border ${c.border} ${c.text} shrink-0`}>
         <Icon className="w-5 h-5" />
       </div>
     </div>
@@ -129,34 +125,34 @@ export const DashboardView: React.FC = () => {
       </div>
 
       {/* ── STAT CARDS ── */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
-          label="INPUT SENSORS"
+          label="Input Sensors"
           value="OHRC / TMC-2 / IIRS"
-          sub="vs LRO NAC / WAC"
+          sub="vs LRO NAC Reference"
           icon={Layers}
-          color="blue"
+          color="sky"
         />
         <StatCard
-          label="SCALE RANGE"
-          value={<span className="text-cyan-300">320<span className="text-[18px]">×</span></span>}
+          label="Scale Range"
+          value="320× Mismatch"
           sub="GSD disparity handled"
           icon={Maximize2}
-          color="cyan"
+          color="sky"
         />
         <StatCard
-          label="ACCURACY TARGET"
-          value={<span className="text-emerald-300">{'< 1 px'}</span>}
+          label="Target Accuracy"
+          value="< 0.5 px RMSE"
           sub="Sub-pixel refinement"
           icon={Target}
           color="emerald"
         />
         <StatCard
-          label="PIPELINE"
-          value={isProcessing ? 'Running…' : isComplete ? 'Complete' : 'Idle'}
-          sub={isProcessing ? 'Processing S0–S8' : isComplete ? results.method : 'Awaiting image pair'}
+          label="Pipeline Status"
+          value={isProcessing ? 'Processing...' : isComplete ? 'Registered' : 'Ready'}
+          sub={isProcessing ? 'Executing alignment' : isComplete ? results.method : 'Awaiting image pair'}
           icon={Clock}
-          color="slate"
+          color={isProcessing ? 'amber' : isComplete ? 'emerald' : 'slate'}
         />
       </div>
 
