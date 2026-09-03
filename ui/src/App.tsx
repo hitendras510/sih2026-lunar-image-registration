@@ -14,11 +14,6 @@ const AppContent: React.FC = () => {
     <>
       <BootPreloader />
       <StarfieldCanvas />
-      <div className="nebula" />
-      <div className="grid-overlay" />
-      <div className="noise" />
-      <div id="scroll-progress" />
-
       {isAppMode ? <WorkbenchLayout /> : <LandingPage />}
 
       <ToastContainer />
