@@ -8,21 +8,21 @@ export const ScrollSequenceHero: React.FC = () => {
   const [sliderPos, setSliderPos] = useState<number>(50);
 
   return (
-    <div className="py-16 px-6 max-w-7xl mx-auto">
-      <div className="rounded-2xl border border-slate-800 bg-slate-900/90 p-6 md:p-8 backdrop-blur-md">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-6 pb-6 border-b border-slate-800">
+    <div className="py-6 px-6 max-w-7xl mx-auto">
+      <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/90 p-6 md:p-8 backdrop-blur-md shadow-xl transition-colors">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-6 pb-6 border-b border-slate-200 dark:border-slate-800">
           <div>
-            <h3 className="text-xl font-bold text-white flex items-center gap-2">
-              <Sliders className="w-5 h-5 text-sky-400" />
+            <h3 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <Sliders className="w-5 h-5 text-sky-600 dark:text-sky-400" />
               Interactive Registration Preview
             </h3>
-            <p className="text-xs text-slate-400 mt-1">
+            <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">
               Drag the curtain slider below to compare Reference (LRO NAC) vs Target (Chandrayaan-2 OHRC) lunar surface alignment.
             </p>
           </div>
           <button
             onClick={() => openWorkbench('upload')}
-            className="px-4 py-2 rounded-lg bg-sky-500 hover:bg-sky-400 text-white font-semibold text-xs transition-all flex items-center gap-2 shrink-0"
+            className="px-4 py-2 rounded-lg bg-sky-600 hover:bg-sky-500 text-white font-semibold text-xs transition-all flex items-center gap-2 shrink-0 shadow-md"
           >
             Load Custom Image Pair
             <ArrowRight className="w-3.5 h-3.5" />
