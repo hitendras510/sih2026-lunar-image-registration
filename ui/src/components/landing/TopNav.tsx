@@ -17,57 +17,43 @@ export const TopNav: React.FC = () => {
 
   return (
     <>
-      {/* Official Government Agency Top Strip */}
-      <div className="bg-slate-900 border-b border-slate-800 text-[11px] text-slate-300 py-1.5 px-6 hidden sm:block">
-        <div className="max-w-7xl mx-auto flex justify-between items-center font-mono">
-          <span>INDIAN SPACE RESEARCH ORGANISATION · DEPARTMENT OF SPACE</span>
-          <span className="text-sky-400 font-semibold">SIH 2026 · PROBLEM STATEMENT 26166</span>
-        </div>
-      </div>
-
-      <header
-        className={`sticky top-0 z-40 transition-all duration-200 ${
-          isScrolled
-            ? 'bg-slate-950/95 border-b border-slate-800 py-3 shadow-md'
-            : 'bg-slate-950/80 border-b border-slate-800/60 py-4'
-        }`}
-      >
-        <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
+      <header className="sticky top-0 z-40 bg-slate-900 border-b border-slate-800 py-3.5 px-6">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
           <a href="#home" className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded bg-sky-500/10 border border-sky-500/30 flex items-center justify-center text-sky-400">
+            <div className="w-7 h-7 rounded bg-blue-600/20 border border-blue-500/40 flex items-center justify-center text-blue-400">
               <Compass className="w-4 h-4" />
             </div>
             <div>
-              <span className="font-bold text-base tracking-tight text-white block leading-none">
+              <span className="font-bold text-sm tracking-tight text-white block">
                 SELENE-MATCH
               </span>
-              <span className="text-[10px] font-mono text-slate-400 uppercase">Lunar Image Registration Portal</span>
+              <span className="text-[10px] text-slate-400">ISRO Chandrayaan-2 Workbench</span>
             </div>
           </a>
 
-          <nav className="hidden md:flex items-center gap-6 text-xs font-semibold text-slate-300">
-            <a href="#home" className="hover:text-sky-400 transition-colors">Overview</a>
-            <a href="#mission" className="hover:text-sky-400 transition-colors">Problem Statement</a>
-            <a href="#workflow" className="hover:text-sky-400 transition-colors">Pipeline Workflow</a>
-            <a href="#technology" className="hover:text-sky-400 transition-colors">Algorithms</a>
-            <a href="#results" className="hover:text-sky-400 transition-colors">Benchmarks</a>
+          <nav className="hidden md:flex items-center gap-6 text-xs font-medium text-slate-300">
+            <a href="#home" className="hover:text-white transition-colors">Overview</a>
+            <a href="#mission" className="hover:text-white transition-colors">Problem Statement</a>
+            <a href="#workflow" className="hover:text-white transition-colors">Workflow</a>
+            <a href="#technology" className="hover:text-white transition-colors">Algorithms</a>
+            <a href="#results" className="hover:text-white transition-colors">Benchmarks</a>
           </nav>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
             <button
               onClick={() => openWorkbench('dashboard')}
-              className="px-4 py-2 text-xs font-semibold rounded-md bg-sky-600 hover:bg-sky-500 text-white transition-all flex items-center gap-2"
+              className="px-3.5 py-1.5 text-xs font-semibold rounded bg-blue-600 hover:bg-blue-500 text-white transition-colors flex items-center gap-1.5"
             >
               Open Workbench
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
 
             <button
-              className="md:hidden p-2 text-slate-300 hover:text-white"
+              className="md:hidden p-1.5 text-slate-300 hover:text-white"
               onClick={() => setMobileOpen((prev) => !prev)}
               aria-label="Menu"
             >
-              {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
           </div>
         </div>
