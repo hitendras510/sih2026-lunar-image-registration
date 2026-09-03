@@ -110,37 +110,38 @@ button {
   pointer-events: none;
 }
 
-.nebula, .bg-nebula {
-  position: fixed;
-  inset: 0;
-  z-index: -5;
-  pointer-events: none;
-  background:
-    radial-gradient(52% 44% at 82% 12%, rgba(40, 120, 200, 0.14), transparent 70%),
-    radial-gradient(40% 36% at 8% 78%, rgba(70, 60, 180, 0.10), transparent 70%),
-    radial-gradient(34% 30% at 50% 110%, rgba(111, 246, 255, 0.05), transparent 70%);
+/* ============ CLEAN CONTAINER UTILITIES ============ */
+.wb-card {
+  background: var(--glass);
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  box-shadow: var(--shadow-card);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.grid-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: -4;
-  pointer-events: none;
-  background:
-    linear-gradient(rgba(96, 160, 220, 0.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(96, 160, 220, 0.035) 1px, transparent 1px);
-  background-size: 72px 72px;
-  mask-image: radial-gradient(75% 65% at 50% 28%, black, transparent 92%);
-  -webkit-mask-image: radial-gradient(75% 65% at 50% 28%, black, transparent 92%);
+.wb-card:hover {
+  border-color: var(--line-strong);
 }
 
-.noise {
-  position: fixed;
-  inset: 0;
-  z-index: -3;
-  pointer-events: none;
-  opacity: 0.05;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.7'/%3E%3C/svg%3E");
+.wb-panel {
+  background: var(--bg1);
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  padding: 1.5rem;
+}
+
+.wb-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.25rem 0.625rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.025em;
+  background: rgba(56, 189, 248, 0.1);
+  color: var(--cyan);
+  border: 1px solid rgba(56, 189, 248, 0.2);
 }
 
 /* ============ PRELOADER ============ */
