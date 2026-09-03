@@ -299,13 +299,11 @@ export const RegisterView: React.FC = () => {
         </div>
 
         {/* ACTIVE MATCHER BITS & RUN REGISTRATION BUTTON */}
-        <div className="flex items-center justify-between mt-6 pt-5 border-t border-[rgba(146,196,255,0.12)] flex-wrap gap-4 relative z-10">
-          <div className="flex items-center gap-3">
-            <span className="flex items-center gap-2 font-mono text-[11px] font-semibold tracking-[0.14em] text-slate-400 uppercase">
-              <span className="text-cyan-400 text-xs">•</span> MATCHER STATUS:
-            </span>
-            <span className="font-mono text-[10.5px] tracking-[0.14em] text-cyan-300 bg-cyan-950/60 border border-cyan-500/40 px-3.5 py-1 rounded-md uppercase font-bold">
-              {selectedMatcher === 'auto' ? 'GATE ROUTER AUTOMATIC' : `${selectedMatcher.toUpperCase()} DIRECT`}
+        <div className="flex items-center justify-between mt-6 pt-5 border-t border-slate-800 flex-wrap gap-4 relative z-10">
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-semibold text-slate-400">Selected Matcher:</span>
+            <span className="text-xs font-mono font-bold text-sky-400 bg-sky-500/10 px-3 py-1 rounded border border-sky-500/20 uppercase">
+              {selectedMatcher === 'auto' ? 'Auto Routing' : selectedMatcher}
             </span>
           </div>
 
@@ -315,41 +313,41 @@ export const RegisterView: React.FC = () => {
               runRegistration();
             }}
             disabled={isProcessing}
-            className="px-8 py-3.5 rounded-xl text-[12px] font-bold font-display flex items-center gap-3 tracking-[0.14em] bg-gradient-to-r from-[#1d64ec] via-[#00b4d8] to-[#06b6d4] text-white border border-cyan-400/50 hover:scale-[1.02] transition-all disabled:opacity-50 cursor-pointer shadow-[0_0_25px_rgba(29,100,236,0.45)] uppercase"
+            className="px-6 py-3 rounded-xl text-xs font-semibold flex items-center gap-2 bg-sky-500 hover:bg-sky-400 text-white transition-all disabled:opacity-50 shadow-lg shadow-sky-500/20"
           >
             <Play className={`w-4 h-4 text-white fill-white ${isProcessing ? 'animate-spin' : ''}`} />
-            {isProcessing ? 'EXECUTING REGISTRATION PIPELINE...' : 'RUN REGISTRATION PIPELINE'}
+            {isProcessing ? 'Executing Pipeline...' : 'Run Registration Pipeline'}
           </button>
         </div>
       </div>
 
       {/* ── INTERACTIVE DYNAMIC PIPELINE STAGE CARDS GRID ───────────────────── */}
-      <div className="card p-6 sm:p-7 rounded-xl bg-slate-950/70 border border-[rgba(146,196,255,0.18)] backdrop-blur-md shadow-2xl">
-        <div className="flex items-center justify-between mb-5 flex-wrap gap-3">
+      <div className="p-6 sm:p-8 rounded-2xl border border-slate-800 bg-slate-900/60 backdrop-blur-md">
+        <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
           <div>
-            <h3 className="text-[15px] font-bold font-display text-white tracking-wide flex items-center gap-2">
-              <Activity className="w-4 h-4 text-cyan-400" />
-              PIPELINE EXECUTION STAGES (9-STAGE WORKFLOW)
+            <h3 className="text-base font-bold text-white flex items-center gap-2">
+              <Activity className="w-4 h-4 text-sky-400" />
+              Pipeline Execution Stages (9 Stages)
             </h3>
-            <div className="text-[11px] font-mono text-slate-400 mt-0.5">
-              Click any stage card to inspect live telemetry, mathematical parameters, and algorithmic outputs.
+            <div className="text-xs text-slate-400 font-mono mt-0.5">
+              Click any stage card to inspect live telemetry and algorithmic parameters.
             </div>
           </div>
 
           <div className="flex items-center gap-3">
-            <span className="font-mono text-[12px] text-slate-400">
-              STAGE <span className="text-white font-bold">{currentStageIndex + 1}</span> / 9
+            <span className="font-mono text-xs text-slate-400">
+              Stage <span className="text-white font-bold">{currentStageIndex + 1}</span> / 9
             </span>
-            <div className="font-mono text-[13px] font-bold text-cyan-400 tracking-wider bg-cyan-950/50 px-3 py-1 rounded border border-cyan-500/30">
+            <div className="font-mono text-xs font-bold text-sky-400 bg-sky-500/10 px-2.5 py-1 rounded border border-sky-500/20">
               {pipelineProgress}%
             </div>
           </div>
         </div>
 
         {/* Global Progress Bar */}
-        <div className="w-full bg-slate-900 rounded-full h-2 overflow-hidden border border-slate-800 relative mb-6">
+        <div className="w-full bg-slate-950 rounded-full h-2 overflow-hidden border border-slate-800 mb-6">
           <div
-            className="h-full bg-gradient-to-r from-cyan-500 via-emerald-400 to-cyan-300 transition-all duration-300 shadow-[0_0_12px_#6ff6ff]"
+            className="h-full bg-sky-500 transition-all duration-300"
             style={{ width: `${pipelineProgress}%` }}
           />
         </div>
