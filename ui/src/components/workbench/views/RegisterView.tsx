@@ -208,44 +208,35 @@ export const RegisterView: React.FC = () => {
       {/* PAGE HEADER */}
       <div className="flex items-center justify-between flex-wrap gap-4 pb-1">
         <div>
-          <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-bold font-display text-white tracking-wide flex items-center gap-2">
-              <Sparkles className="w-6 h-6 text-cyan-400 animate-pulse" />
-              Register Images
-            </h1>
-            <span className="badge font-mono text-[10.5px] tracking-[0.14em] font-semibold text-cyan-300 bg-cyan-950/50 border border-cyan-500/40 px-3 py-1 rounded-md shadow-[0_0_10px_rgba(111,246,255,0.2)]">
-              T2 REVIEW · MULTI-STAGE PIPELINE
-            </span>
-          </div>
-          <div className="screen-subtitle text-[12.5px] text-slate-400 font-mono tracking-wide mt-1">
-            Configure registration hyperparameters, run the multi-stage pipeline, and monitor real-time execution telemetry.
+          <h1 className="text-2xl font-bold text-white tracking-tight">
+            Pipeline Registration Setup
+          </h1>
+          <div className="text-xs text-slate-400 font-mono tracking-wide mt-1">
+            Configure matching algorithm hyperparameters, geometric transformation models, and outlier filtering thresholds.
           </div>
         </div>
 
         {/* TOP COMPACT STATUS */}
-        <div className="flex items-center gap-3 bg-[#06101c] px-4 py-2 rounded-xl border border-slate-800 font-mono text-[11px]">
-          <span className="text-slate-400">PIPELINE STATUS:</span>
-          <span className={`font-bold flex items-center gap-1.5 ${isProcessing ? 'text-cyan-300 animate-pulse' : pipelineProgress === 100 ? 'text-emerald-400' : 'text-slate-400'}`}>
-            <span className={`w-2 h-2 rounded-full ${isProcessing ? 'bg-cyan-400 animate-ping' : pipelineProgress === 100 ? 'bg-emerald-400' : 'bg-slate-600'}`} />
-            {isProcessing ? 'EXECUTING PIPELINE' : pipelineProgress === 100 ? 'PIPELINE COMPLETE' : 'STANDBY'}
+        <div className="flex items-center gap-2 bg-slate-900 px-4 py-2 rounded-xl border border-slate-800 font-mono text-xs">
+          <span className="text-slate-400">Status:</span>
+          <span className={`font-semibold ${isProcessing ? 'text-amber-400' : pipelineProgress === 100 ? 'text-emerald-400' : 'text-slate-400'}`}>
+            {isProcessing ? 'Executing Pipeline...' : pipelineProgress === 100 ? 'Pipeline Complete' : 'Ready'}
           </span>
         </div>
       </div>
 
       {/* PARAMETER CONFIGURATION CARD */}
-      <div className="card bracket p-6 sm:p-7 rounded-xl bg-slate-950/70 border border-[rgba(146,196,255,0.18)] backdrop-blur-md shadow-2xl relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-cyan-500/5 rounded-full blur-3xl pointer-events-none" />
-
+      <div className="p-6 sm:p-8 rounded-2xl border border-slate-800 bg-slate-900/60 backdrop-blur-md relative overflow-hidden">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 relative z-10">
           {/* STEP / STAGE */}
           <div>
-            <label className="flex items-center gap-2 font-mono text-[11px] font-semibold tracking-[0.14em] text-slate-400 uppercase mb-2.5">
-              <span className="text-cyan-400 text-xs">•</span> STEP / STAGE RANGE
+            <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-2">
+              Pipeline Stage
             </label>
             <select
               value={stepStage}
               onChange={(e) => setStepStage(e.target.value)}
-              className="w-full p-3 bg-[#040a12] border border-[rgba(146,196,255,0.22)] rounded-lg text-white font-mono text-[13px] focus:border-cyan-400 focus:outline-none transition-colors"
+              className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-lg text-white font-mono text-xs focus:border-sky-400 focus:outline-none"
             >
               <option value="0 - 0">0 - 0 (Full Automatic 9-Stage)</option>
               <option value="0 - 4">0 - 4 (Initial Match Only)</option>
