@@ -257,29 +257,17 @@ export const UploadView: React.FC = () => {
             </div>
 
             <div className="grid grid-cols-3 gap-3 mt-5">
-              <div className="panel p-3 rounded-lg bg-[#07111b]/80 border border-[rgba(146,196,255,0.12)]">
-                <div className="flex items-center gap-1 font-mono text-[9.5px] text-slate-400 tracking-[0.12em] uppercase">
-                  <span className="text-cyan-400">•</span> SENSOR
-                </div>
-                <div className="text-white mt-1.5 text-[12px] font-mono font-semibold">
-                  LRO NAC
-                </div>
+              <div className="p-3 rounded-lg bg-slate-950 border border-slate-800">
+                <div className="text-[10px] font-mono text-slate-400 uppercase">Sensor</div>
+                <div className="text-sm font-semibold text-white font-mono mt-1">LRO NAC</div>
               </div>
-              <div className="panel p-3 rounded-lg bg-[#07111b]/80 border border-[rgba(146,196,255,0.12)]">
-                <div className="flex items-center gap-1 font-mono text-[9.5px] text-slate-400 tracking-[0.12em] uppercase">
-                  <span className="text-cyan-400">•</span> GSD
-                </div>
-                <div className="text-white mt-1.5 text-[12px] font-mono font-semibold">
-                  0.50 m/px
-                </div>
+              <div className="p-3 rounded-lg bg-slate-950 border border-slate-800">
+                <div className="text-[10px] font-mono text-slate-400 uppercase">GSD</div>
+                <div className="text-sm font-semibold text-white font-mono mt-1">0.50 m/px</div>
               </div>
-              <div className="panel p-3 rounded-lg bg-[#07111b]/80 border border-[rgba(146,196,255,0.12)]">
-                <div className="flex items-center gap-1 font-mono text-[9.5px] text-slate-400 tracking-[0.12em] uppercase">
-                  <span className="text-cyan-400">•</span> SUN ANGLE
-                </div>
-                <div className="text-white mt-1.5 text-[12px] font-mono font-semibold">
-                  142.1° / 34.5°
-                </div>
+              <div className="p-3 rounded-lg bg-slate-950 border border-slate-800">
+                <div className="text-[10px] font-mono text-slate-400 uppercase">Sun Angle</div>
+                <div className="text-sm font-semibold text-white font-mono mt-1">142.1° / 34.5°</div>
               </div>
             </div>
           </div>
