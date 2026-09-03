@@ -57,74 +57,73 @@ export const MetricsView: React.FC = () => {
 
       {/* KPI METRIC CARDS GRID */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-5">
+      {/* SCOREBOARD GRID */}
+      <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
         {/* RMSE */}
-        <div className="card bracket p-5 sm:p-6 rounded-xl bg-slate-950/60 border border-[rgba(146,196,255,0.14)] backdrop-blur-md">
-          <label className="flex items-center gap-2 font-mono text-[11px] font-semibold tracking-[0.14em] text-slate-400 uppercase mb-2">
-            <span className="text-cyan-400 text-xs">•</span> RMSE (FIT)
+        <div className="p-5 rounded-xl border border-slate-800 bg-slate-900/60 backdrop-blur-sm">
+          <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider block">
+            RMSE (Fit)
           </label>
-          <div id="metric-rmse" className="text-[28px] text-white font-bold font-display my-1 tracking-tight">
+          <div id="metric-rmse" className="text-2xl font-bold font-mono text-white mt-1">
             {isComplete ? `${results.rmse} px` : '—'}
           </div>
-          <div className="text-[11px] font-mono text-slate-400">Target &lt; 1.0 px</div>
+          <div className="text-xs text-slate-500 font-mono mt-1">Target &lt; 1.0 px</div>
         </div>
 
         {/* VALIDATION RMSE */}
-        <div className="card bracket p-5 sm:p-6 rounded-xl bg-slate-950/60 border border-[rgba(146,196,255,0.14)] backdrop-blur-md">
-          <label className="flex items-center gap-2 font-mono text-[11px] font-semibold tracking-[0.14em] text-slate-400 uppercase mb-2">
-            <span className="text-cyan-400 text-xs">•</span> VALIDATION RMSE
+        <div className="p-5 rounded-xl border border-slate-800 bg-slate-900/60 backdrop-blur-sm">
+          <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider block">
+            Validation RMSE
           </label>
-          <div id="metric-rmse-val" className="text-[28px] text-cyan-300 font-bold font-display my-1 tracking-tight drop-shadow-[0_0_15px_rgba(111,246,255,0.25)]">
+          <div id="metric-rmse-val" className="text-2xl font-bold font-mono text-sky-400 mt-1">
             {isComplete ? `${results.rmseVal ?? results.rmse} px` : '—'}
           </div>
-          <div className="text-[11px] font-mono text-slate-400">80/20 Holdout</div>
+          <div className="text-xs text-slate-500 font-mono mt-1">80/20 Holdout</div>
         </div>
 
         {/* INLIER RATIO */}
-        <div className="card bracket p-5 sm:p-6 rounded-xl bg-slate-950/60 border border-[rgba(146,196,255,0.14)] backdrop-blur-md">
-          <label className="flex items-center gap-2 font-mono text-[11px] font-semibold tracking-[0.14em] text-slate-400 uppercase mb-2">
-            <span className="text-cyan-400 text-xs">•</span> INLIER RATIO
+        <div className="p-5 rounded-xl border border-slate-800 bg-slate-900/60 backdrop-blur-sm">
+          <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider block">
+            Inlier Ratio
           </label>
-          <div
-            id="metric-ratio"
-            className="text-[28px] text-emerald-400 font-bold font-display my-1 tracking-tight drop-shadow-[0_0_15px_rgba(62,230,160,0.3)]"
-          >
+          <div id="metric-ratio" className="text-2xl font-bold font-mono text-emerald-400 mt-1">
             {isComplete ? `${results.ratio}%` : '—'}
           </div>
-          <div className="text-[11px] font-mono text-slate-400">Inliers / raw matches</div>
+          <div className="text-xs text-slate-500 font-mono mt-1">Filtered / Total</div>
         </div>
 
         {/* CE90 */}
-        <div className="card bracket p-5 sm:p-6 rounded-xl bg-slate-950/60 border border-[rgba(146,196,255,0.14)] backdrop-blur-md">
-          <label className="flex items-center gap-2 font-mono text-[11px] font-semibold tracking-[0.14em] text-slate-400 uppercase mb-2">
-            <span className="text-cyan-400 text-xs">•</span> CE90
+        <div className="p-5 rounded-xl border border-slate-800 bg-slate-900/60 backdrop-blur-sm">
+          <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider block">
+            CE90 Radius
           </label>
-          <div id="metric-ce90" className="text-[28px] text-white font-bold font-display my-1 tracking-tight">
+          <div id="metric-ce90" className="text-2xl font-bold font-mono text-white mt-1">
             {isComplete ? `${results.ce90} px` : '—'}
           </div>
-          <div className="text-[11px] font-mono text-slate-400">90th percentile radius</div>
+          <div className="text-xs text-slate-500 font-mono mt-1">90th Percentile Error</div>
         </div>
 
         {/* QUALITY GATE */}
-        <div className="card bracket p-5 sm:p-6 rounded-xl bg-slate-950/60 border border-[rgba(146,196,255,0.14)] backdrop-blur-md">
-          <label className="flex items-center gap-2 font-mono text-[11px] font-semibold tracking-[0.14em] text-slate-400 uppercase mb-2">
-            <span className="text-cyan-400 text-xs">•</span> QUALITY GATE
+        <div className="p-5 rounded-xl border border-slate-800 bg-slate-900/60 backdrop-blur-sm col-span-2 sm:col-span-1">
+          <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider block">
+            Quality Gate
           </label>
-          <div className="my-2">
+          <div className="mt-1.5">
             <span
-              className={`badge font-mono text-[11px] font-semibold px-3 py-1 rounded-md tracking-[0.12em] ${
+              className={`inline-flex items-center px-2.5 py-1 rounded text-xs font-semibold ${
                 isComplete && (results.qualityGatePass ?? true)
-                  ? 'text-emerald-400 bg-emerald-950/40 border border-emerald-500/30'
-                  : 'text-amber-400 bg-amber-950/40 border border-amber-500/30'
+                  ? 'text-emerald-400 bg-emerald-500/10 border border-emerald-500/20'
+                  : 'text-amber-400 bg-amber-500/10 border border-amber-500/20'
               }`}
             >
               {isComplete
                 ? (results.qualityGatePass ?? true)
-                  ? 'PASSED 1.0px TARGET'
+                  ? 'PASSED TARGET'
                   : 'QUALITY WARNING'
                 : '—'}
             </span>
           </div>
-          <div className="text-[11px] font-mono text-slate-400">Sub-pixel target status</div>
+          <div className="text-xs text-slate-500 font-mono mt-1">Sub-pixel status</div>
         </div>
       </div>
 
