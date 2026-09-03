@@ -32,43 +32,29 @@ export const ScrollSequenceHero: React.FC = () => {
         {/* Interactive Split Comparison Card */}
         <div className="relative mt-6 rounded-xl border border-slate-800 bg-slate-950 overflow-hidden aspect-[16/9] max-h-[460px] select-none">
           {/* Reference Image (Underneath) */}
-          <div className="absolute inset-0 bg-slate-900 flex items-center justify-center">
-            <div className="relative w-full h-full bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-slate-800 via-slate-900 to-slate-950 p-8 flex flex-col justify-between">
-              <div className="px-3 py-1 rounded bg-slate-900/80 border border-slate-700 text-[10px] font-mono text-sky-400 w-max">
-                REF: LRO NAC (0.5m GSD)
-              </div>
-              <div className="grid grid-cols-6 gap-4 opacity-40">
-                {Array.from({ length: 24 }).map((_, i) => (
-                  <div key={i} className="h-12 border border-slate-700/50 rounded flex items-center justify-center text-[10px] font-mono text-slate-500">
-                    Crater #{i + 101}
-                  </div>
-                ))}
-              </div>
-              <div className="text-[10px] font-mono text-slate-500 text-right">
-                Solar Elevation: 42.1°
-              </div>
+          <div className="absolute inset-0 bg-slate-950 flex items-center justify-center">
+            <img
+              src="/synthetic/reference.png"
+              alt="Reference Lunar Image"
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute top-4 left-4 px-3 py-1 rounded bg-slate-900/90 border border-slate-700 text-xs font-mono text-sky-400">
+              Reference Image (LRO NAC)
             </div>
           </div>
 
           {/* Registered Target Image (Overlaid with clip-path) */}
           <div
-            className="absolute inset-0 bg-slate-950 flex items-center justify-center transition-all duration-75"
+            className="absolute inset-0 bg-slate-950 transition-all duration-75"
             style={{ clipPath: `polygon(0 0, ${sliderPos}% 0, ${sliderPos}% 100%, 0 100%)` }}
           >
-            <div className="relative w-full h-full bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-slate-900 via-slate-950 to-black p-8 flex flex-col justify-between border-r-2 border-sky-400">
-              <div className="px-3 py-1 rounded bg-sky-950/80 border border-sky-600/40 text-[10px] font-mono text-emerald-400 w-max">
-                REGISTERED: Chandrayaan-2 OHRC (0.25m GSD)
-              </div>
-              <div className="grid grid-cols-6 gap-4 opacity-70">
-                {Array.from({ length: 24 }).map((_, i) => (
-                  <div key={i} className="h-12 border border-sky-500/30 bg-sky-500/5 rounded flex items-center justify-center text-[10px] font-mono text-sky-300">
-                    Aligned #{i + 101}
-                  </div>
-                ))}
-              </div>
-              <div className="text-[10px] font-mono text-emerald-400 text-left flex items-center gap-1">
-                <CheckCircle className="w-3 h-3" /> RMSE: 0.42 px (Sub-pixel Accurate)
-              </div>
+            <img
+              src="/synthetic/synthetic_target.png"
+              alt="Target Registered Lunar Image"
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute top-4 left-4 px-3 py-1 rounded bg-slate-900/90 border border-slate-700 text-xs font-mono text-emerald-400">
+              Target Image (Chandrayaan-2 OHRC)
             </div>
           </div>
 
