@@ -178,28 +178,28 @@ export const UploadView: React.FC = () => {
       </div>
 
       {/* Mode toggle */}
-      <div className="flex gap-3 mb-2 flex-wrap">
+      <div className="flex gap-3 mb-4 flex-wrap">
         <button
-          className={`px-4 py-2.5 rounded-lg text-[11px] font-mono font-semibold tracking-wider border transition-all duration-200 cursor-pointer ${
+          className={`px-4 py-2.5 rounded-lg text-xs font-semibold border transition-all flex items-center gap-2 ${
             genMode === 'none'
-              ? 'bg-cyan-950/50 border-cyan-400/50 text-cyan-300 shadow-[0_0_12px_rgba(111,246,255,0.15)]'
-              : 'bg-slate-900/50 border-slate-700/50 text-slate-400 hover:border-slate-600'
+              ? 'bg-sky-500/10 border-sky-500/40 text-sky-400'
+              : 'bg-slate-900 border-slate-800 text-slate-400 hover:border-slate-700'
           }`}
           onClick={() => setGenMode('none')}
         >
-          <UploadCloud className="inline w-3.5 h-3.5 mr-1.5 -mt-0.5" />
-          UPLOAD EXISTING PAIR
+          <UploadCloud className="w-4 h-4" />
+          Upload Existing Pair
         </button>
         <button
-          className={`px-4 py-2.5 rounded-lg text-[11px] font-mono font-semibold tracking-wider border transition-all duration-200 cursor-pointer ${
+          className={`px-4 py-2.5 rounded-lg text-xs font-semibold border transition-all flex items-center gap-2 ${
             genMode === 'config'
-              ? 'bg-cyan-950/50 border-cyan-400/50 text-cyan-300 shadow-[0_0_12px_rgba(111,246,255,0.15)]'
-              : 'bg-slate-900/50 border-slate-700/50 text-slate-400 hover:border-slate-600'
+              ? 'bg-sky-500/10 border-sky-500/40 text-sky-400'
+              : 'bg-slate-900 border-slate-800 text-slate-400 hover:border-slate-700'
           }`}
           onClick={() => setGenMode('config')}
         >
-          <Zap className="inline w-3.5 h-3.5 mr-1.5 -mt-0.5" />
-          GENERATE SYNTHETIC PAIR
+          <Zap className="w-4 h-4" />
+          Generate Synthetic Pair
         </button>
       </div>
 
@@ -207,15 +207,15 @@ export const UploadView: React.FC = () => {
       {genMode === 'none' && (
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
           {/* REFERENCE / FIXED CARD */}
-          <div className="card p-6 sm:p-7 rounded-xl bg-slate-950/60 border border-[rgba(146,196,255,0.14)] backdrop-blur-md flex flex-col justify-between">
+          <div className="p-6 rounded-2xl border border-slate-800 bg-slate-900/60 backdrop-blur-md flex flex-col justify-between">
             <div>
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-[13.5px] font-semibold font-display text-emerald-400 tracking-wide flex items-center gap-2.5 uppercase">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(62,230,160,0.8)] inline-block" />
-                  • REFERENCE / FIXED
+                <h3 className="text-sm font-bold text-emerald-400 flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400" />
+                  Reference Image (Fixed)
                 </h3>
-                <span className="badge font-mono text-[10px] tracking-[0.12em] text-slate-300 bg-slate-900/80 border border-slate-700/60 px-3 py-1 rounded-md">
-                  LRO NAC / WAC
+                <span className="text-[11px] font-mono text-slate-400 bg-slate-950 px-2.5 py-1 rounded border border-slate-800">
+                  LRO NAC / DEM
                 </span>
               </div>
 
@@ -232,25 +232,25 @@ export const UploadView: React.FC = () => {
               />
 
               <div
-                className="dropzone min-h-60 rounded-xl border-2 border-dashed border-cyan-500/30 bg-cyan-950/20 hover:border-cyan-400/70 hover:bg-cyan-950/30 transition-all flex flex-col items-center justify-center cursor-pointer text-center p-6 group"
+                className="min-h-56 rounded-xl border-2 border-dashed border-slate-700 hover:border-sky-400/80 bg-slate-950/60 transition-all flex flex-col items-center justify-center cursor-pointer text-center p-6 group"
                 onClick={() => refInputRef.current?.click()}
                 onDragOver={(e) => e.preventDefault()}
                 onDrop={handleRefDrop}
               >
-                <div className="dz-icon mb-4 p-3.5 rounded-xl bg-blue-500/10 border border-blue-400/30 text-cyan-400 group-hover:scale-110 transition-transform">
-                  <UploadCloud className="w-7 h-7" />
+                <div className="p-3 rounded-xl bg-sky-500/10 border border-sky-500/20 text-sky-400 mb-3 group-hover:scale-105 transition-transform">
+                  <UploadCloud className="w-6 h-6" />
                 </div>
-                <div className="text-[14px] font-bold font-display text-white">
-                  {referenceImage ? referenceImage.name : 'Drop reference image here'}
+                <div className="text-sm font-semibold text-white">
+                  {referenceImage ? referenceImage.name : 'Click or drop reference image'}
                 </div>
-                <div className="font-mono text-[10px] text-slate-400 mt-2 tracking-[0.14em]">
-                  GEOTIFF / PDS • CLICK TO BROWSE
+                <div className="text-xs text-slate-500 font-mono mt-1">
+                  GeoTIFF / PDS3 / PDS4 / PNG
                 </div>
                 {referenceImage?.previewUrl && (
                   <img
                     src={referenceImage.previewUrl}
                     alt="Reference preview"
-                    className="mt-4 max-h-36 rounded-lg border border-[rgba(146,196,255,0.25)] object-contain shadow-lg"
+                    className="mt-4 max-h-36 rounded-lg border border-slate-700 object-contain"
                   />
                 )}
               </div>
