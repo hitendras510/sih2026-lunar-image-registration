@@ -244,15 +244,15 @@ export const RegisterView: React.FC = () => {
             </select>
           </div>
 
-          {/* PAIR / MATCHER INSTANCE */}
+          {/* PAIR INSTANCE */}
           <div>
-            <label className="flex items-center gap-2 font-mono text-[11px] font-semibold tracking-[0.14em] text-slate-400 uppercase mb-2.5">
-              <span className="text-cyan-400 text-xs">•</span> PAIR INSTANCE
+            <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-2">
+              Pair Instance
             </label>
             <select
               value={pairInstance}
               onChange={(e) => setPairInstance(e.target.value)}
-              className="w-full p-3 bg-[#040a12] border border-[rgba(146,196,255,0.22)] rounded-lg text-white font-mono text-[13px] focus:border-cyan-400 focus:outline-none transition-colors"
+              className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-lg text-white font-mono text-xs focus:border-sky-400 focus:outline-none"
             >
               <option value="2">Pair #2 (OHRC 0.25 m / LRO NAC 0.50 m)</option>
               <option value="1">Pair #1 (TMC-2 5.0 m / WAC 100 m)</option>
@@ -260,15 +260,15 @@ export const RegisterView: React.FC = () => {
             </select>
           </div>
 
-          {/* PIPELINE MODE */}
+          {/* PIPELINE MATCHER */}
           <div>
-            <label className="flex items-center gap-2 font-mono text-[11px] font-semibold tracking-[0.14em] text-slate-400 uppercase mb-2.5">
-              <span className="text-cyan-400 text-xs">•</span> MATCHER EXPERT ROUTE
+            <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-2">
+              Matcher Model
             </label>
             <select
               value={selectedMatcher}
               onChange={(e) => setSelectedMatcher(e.target.value as MatcherType)}
-              className="w-full p-3 bg-[#040a12] border border-[rgba(146,196,255,0.22)] rounded-lg text-white font-mono text-[13px] focus:border-cyan-400 focus:outline-none transition-colors"
+              className="w-full p-2.5 bg-slate-950 border border-slate-800 text-sky-400 font-mono text-xs focus:border-sky-400 focus:outline-none font-semibold"
             >
               <option value="auto">Auto – Intelligent Gate Routing</option>
               <option value="loftr">LoFTR Dense Deep Matcher</option>
@@ -281,23 +281,19 @@ export const RegisterView: React.FC = () => {
             </select>
           </div>
 
-          {/* OUTPUT */}
+          {/* OUTPUT GEOMETRY */}
           <div>
-            <label className="flex items-center gap-2 font-mono text-[11px] font-semibold tracking-[0.14em] text-slate-400 uppercase mb-2.5">
-              <span className="text-cyan-400 text-xs">•</span> GEODETIC MODEL OUTPUT
+            <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-2">
+              Geodetic Model
             </label>
             <select
               value={geometryModel}
               onChange={(e) => setGeometryModel(e.target.value)}
-              className="w-full p-3 bg-[#040a12] border border-[rgba(146,196,255,0.22)] rounded-lg text-white font-mono text-[13px] focus:border-cyan-400 focus:outline-none transition-colors"
+              className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-lg text-white font-mono text-xs focus:border-sky-400 focus:outline-none"
             >
-              <option value="DEM + Map Projection (Tier 2)">
-                DEM – Map Projection (Tier 2)
-              </option>
-              <option value="ISIS/SPICE (Tier 1)">ISIS/SPICE Camera (Tier 1)</option>
-              <option value="Selenographic Sphere (Tier 3)">
-                Selenographic Ellipsoid (Tier 3)
-              </option>
+              <option value="DEM + Map Projection (Tier 2)">DEM – Map Projection</option>
+              <option value="ISIS/SPICE (Tier 1)">ISIS/SPICE Camera Model</option>
+              <option value="Selenographic Sphere (Tier 3)">Selenographic Ellipsoid</option>
             </select>
           </div>
         </div>
