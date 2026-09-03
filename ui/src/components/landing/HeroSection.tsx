@@ -7,59 +7,39 @@ export const HeroSection: React.FC = () => {
   const { openWorkbench } = useApp();
 
   return (
-    <section className="relative z-10 pt-12 pb-12 px-6 max-w-7xl mx-auto flex flex-col items-center text-center" id="home">
-      {/* Official Kicker Banner */}
-      <motion.div
-        initial={{ opacity: 0, y: 15 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4 }}
-        className="inline-flex items-center gap-2 px-3.5 py-1 rounded bg-slate-900 text-sky-400 border border-slate-800 text-xs font-mono font-semibold uppercase tracking-wider mb-6"
-      >
-        <span>ISRO Smart India Hackathon 2026 · Problem Statement #26166</span>
-      </motion.div>
+    <section className="relative z-10 pt-10 pb-8 px-6 max-w-6xl mx-auto flex flex-col items-center text-center" id="home">
+      {/* Project Category Tag */}
+      <div className="inline-flex items-center gap-2 px-3 py-1 rounded bg-slate-800 text-slate-300 border border-slate-700 text-xs font-mono mb-4">
+        <span>ISRO SIH 2026 · Problem Statement 26166</span>
+      </div>
 
-      {/* Heading */}
-      <motion.h1
-        initial={{ opacity: 0, y: 15 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, delay: 0.1 }}
-        className="text-3xl sm:text-5xl lg:text-6xl font-bold text-white tracking-tight leading-tight max-w-4xl"
-      >
-        Chandrayaan-2 Lunar Image Registration &amp; Georeferencing Suite
-      </motion.h1>
+      {/* Page Title (28-32px semibold) */}
+      <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight leading-snug max-w-3xl">
+        Chandrayaan-2 Lunar Image Registration &amp; Correspondence Engine
+      </h1>
 
-      {/* Subtitle */}
-      <motion.p
-        initial={{ opacity: 0, y: 15 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, delay: 0.2 }}
-        className="mt-4 text-base sm:text-lg text-slate-400 max-w-3xl leading-relaxed font-normal"
-      >
-        Automated alignment of Chandrayaan-2 (OHRC, TMC-2, IIRS) imagery with LRO reference datasets. Resolves extreme solar elevation disparity, crater distortion, and scale mismatch with sub-pixel precision.
-      </motion.p>
+      {/* Factual Technical Subtitle */}
+      <p className="mt-3 text-sm sm:text-base text-slate-400 max-w-2xl leading-relaxed">
+        Automatic correspondence matching and sub-pixel georeferencing between Chandrayaan-2 optical imagery (OHRC, TMC-2, IIRS) and LRO reference datasets.
+      </p>
 
-      {/* Action Buttons */}
-      <motion.div
-        initial={{ opacity: 0, y: 15 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, delay: 0.3 }}
-        className="mt-8 flex flex-wrap items-center justify-center gap-4"
-      >
+      {/* Standard Action Buttons */}
+      <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
         <button
           onClick={() => openWorkbench('upload')}
-          className="px-6 py-3 rounded-md bg-sky-600 hover:bg-sky-500 text-white font-semibold text-xs transition-all flex items-center gap-2 shadow-md"
+          className="px-5 py-2.5 rounded-md bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs transition-colors flex items-center gap-2"
         >
-          Select &amp; Upload Image Pair
-          <ArrowRight className="w-4 h-4" />
+          Start Image Registration
+          <ArrowRight className="w-3.5 h-3.5" />
         </button>
 
         <button
           onClick={() => openWorkbench('dashboard')}
-          className="px-6 py-3 rounded-md bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 font-semibold text-xs transition-all"
+          className="px-5 py-2.5 rounded-md bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-semibold text-xs transition-colors"
         >
-          Open Portal Dashboard
+          Open Technical Workspace
         </button>
-      </motion.div>
+      </div>
 
       {/* Feature Highlights Grid */}
       <div className="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-5 w-full max-w-4xl text-left">
