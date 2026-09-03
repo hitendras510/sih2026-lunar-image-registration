@@ -46,15 +46,12 @@ export const MetricsView: React.FC = () => {
   return (
     <section id="view-metrics" className="view-section active space-y-6">
       {/* PAGE HEADER */}
-      <div className="flex items-center gap-3 flex-wrap pb-1">
-        <h1 className="text-2xl font-bold font-display text-white tracking-wide">
-          Metrics
+      <div>
+        <h1 className="text-2xl font-bold text-white tracking-tight">
+          Registration Evaluation Metrics
         </h1>
-        <span className="badge font-mono text-[10.5px] tracking-[0.14em] font-semibold text-cyan-300 bg-cyan-950/40 border border-cyan-500/30 px-3 py-1 rounded-md">
-          T4 SCOREBOARD
-        </span>
-        <div className="screen-subtitle w-full text-[12.5px] text-slate-400 font-mono tracking-wide mt-1">
-          Numerical proof of registration quality and sub-pixel alignment accuracy.
+        <div className="text-xs text-slate-400 font-mono tracking-wide mt-1">
+          Numerical evaluation of registration quality, residual RMSE, and ground control point coverage.
         </div>
       </div>
 
