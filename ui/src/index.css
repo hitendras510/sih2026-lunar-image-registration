@@ -1,37 +1,37 @@
-@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Rajdhani:wght@500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap');
 
-/* ============ SELENE MISSION CONTROL — DESIGN TOKENS ============ */
+/* ============ SELENE LUNAR REGISTRATION WORKBENCH — MODERN DESIGN TOKENS ============ */
 :root {
-  --bg0: #020409;
-  --bg1: #050c16;
-  --glass: rgba(8, 17, 27, 0.62);
-  --glass-hi: rgba(16, 32, 48, 0.75);
-  --glass2: rgba(6, 13, 21, 0.85);
-  --line: rgba(146, 196, 255, 0.10);
-  --line-strong: rgba(146, 196, 255, 0.28);
-  --text: #eaf6ff;
-  --muted: #8ca3b5;
-  --dim: #556f84;
-  --cyan: #6ff6ff;
-  --blue: #45a6ff;
-  --blue2: #2563eb;
-  --ice: #a9dcff;
-  --green: #3ee6a0;
-  --amber: #ffb65c;
-  --red: #ff6b7a;
-  --font-d: "Chakra Petch", "Space Grotesk", sans-serif;
-  --font-m: "JetBrains Mono", "DM Mono", monospace;
-  --font-tech: "Rajdhani", "Chakra Petch", sans-serif;
-  --r: 14px;
-  --sidebar-w: 248px;
+  --bg0: #0a0d14;
+  --bg1: #0f1420;
+  --glass: rgba(15, 20, 32, 0.75);
+  --glass-hi: rgba(22, 30, 46, 0.85);
+  --glass2: rgba(12, 16, 26, 0.92);
+  --line: rgba(255, 255, 255, 0.08);
+  --line-strong: rgba(255, 255, 255, 0.16);
+  --text: #f0f4f8;
+  --muted: #94a3b8;
+  --dim: #64748b;
+  --cyan: #38bdf8;
+  --blue: #2563eb;
+  --blue2: #1d4ed8;
+  --ice: #e0f2fe;
+  --green: #10b981;
+  --amber: #f59e0b;
+  --red: #ef4444;
+  --font-d: "Plus Jakarta Sans", "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-m: "JetBrains Mono", "SF Mono", monospace;
+  --font-tech: "Space Grotesk", "Inter", sans-serif;
+  --r: 10px;
+  --sidebar-w: 250px;
   --header-h: 56px;
   --footer-h: 36px;
 
-  /* Shadows */
-  --shadow-card: 0 4px 24px rgba(0,0,0,0.35), 0 1px 0 rgba(190,230,255,0.04) inset;
-  --shadow-glow-cyan: 0 0 24px rgba(111,246,255,0.15);
-  --shadow-glow-blue: 0 0 20px rgba(57,168,255,0.18);
-  --shadow-glow-green: 0 0 18px rgba(62,230,160,0.15);
+  /* Subtle Clean Shadows */
+  --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.25), 0 1px 0 rgba(255, 255, 255, 0.05) inset;
+  --shadow-glow-cyan: 0 0 16px rgba(56, 189, 248, 0.12);
+  --shadow-glow-blue: 0 0 16px rgba(37, 99, 235, 0.15);
+  --shadow-glow-green: 0 0 16px rgba(16, 185, 129, 0.12);
 }
 
 * {
