@@ -44,12 +44,12 @@ export const WorkbenchLayout: React.FC = () => {
   return (
     <div
       id="view-app"
-      className="h-screen w-full flex overflow-hidden text-sm bg-[#F5F5F5] text-[#222222]"
+      className="h-screen w-full flex overflow-hidden text-sm bg-slate-50 dark:bg-[#030712] text-slate-900 dark:text-slate-100 transition-colors"
     >
       <Sidebar />
       <main
         id="app-main"
-        className="flex-1 min-w-0 flex flex-col h-full overflow-hidden relative z-10 bg-[#F5F5F5]"
+        className="flex-1 min-w-0 flex flex-col h-full overflow-hidden relative z-10 bg-slate-50 dark:bg-[#030712] transition-colors"
       >
         <Header />
         <div

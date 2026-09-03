@@ -188,39 +188,39 @@ export const RegisterView: React.FC = () => {
   return (
     <section id="view-register" className="view-section active space-y-6">
       {/* PAGE HEADER */}
-      <div className="pb-3 border-b border-[#D0D0D0] flex items-center justify-between flex-wrap gap-4">
+      <div className="pb-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between flex-wrap gap-4">
         <div>
-          <h1 className="text-xl font-bold text-[#222222]">
+          <h1 className="text-xl font-extrabold text-slate-900 dark:text-white">
             Registration Configuration
           </h1>
-          <p className="text-xs text-[#555555] mt-0.5">
+          <p className="text-xs text-slate-600 dark:text-slate-300 mt-1">
             Configure registration hyperparameters, matcher model, and geodetic transformation parameters.
           </p>
         </div>
 
         <div className="flex items-center gap-2 font-mono text-xs">
-          <span className="text-[#555555]">Status:</span>
-          <span className={`font-semibold px-2.5 py-1 rounded text-xs ${isProcessing ? 'bg-[#FFF3E0] text-[#B26A00]' : pipelineProgress === 100 ? 'bg-[#E8F5E9] text-[#2E7D32]' : 'bg-[#F8F9FA] text-[#555555] border border-[#D0D0D0]'}`}>
+          <span className="text-slate-500 dark:text-slate-400 font-semibold">Status:</span>
+          <span className={`font-semibold px-3 py-1 rounded-lg text-xs ${isProcessing ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30' : pipelineProgress === 100 ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30' : 'bg-slate-100 dark:bg-slate-950 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-800'}`}>
             {isProcessing ? 'Executing Pipeline...' : pipelineProgress === 100 ? 'Pipeline Complete' : 'Ready'}
           </span>
         </div>
       </div>
 
       {/* CONFIGURATION FORM CARD */}
-      <div className="p-6 rounded bg-white border border-[#D0D0D0] space-y-5">
-        <h2 className="text-sm font-bold text-[#222222] uppercase tracking-wider pb-2 border-b border-[#D0D0D0]">
+      <div className="p-6 rounded-2xl bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 space-y-5 shadow-xl transition-colors">
+        <h2 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider pb-3 border-b border-slate-200 dark:border-slate-800">
           Pipeline Parameters
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <div>
-            <label className="text-xs font-semibold text-[#222222] block mb-1.5">
+            <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block mb-1.5">
               Pipeline Stage
             </label>
             <select
               value={stepStage}
               onChange={(e) => setStepStage(e.target.value)}
-              className="w-full p-2 bg-white border border-[#D0D0D0] rounded text-xs text-[#222222] focus:border-[#1F4E79] focus:outline-none"
+              className="w-full p-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg text-xs text-slate-900 dark:text-slate-100 focus:border-sky-500 focus:outline-none font-medium"
             >
               <option value="0 - 0">0 - 0 (Full Automatic 9-Stage)</option>
               <option value="0 - 4">0 - 4 (Initial Match Only)</option>
@@ -229,13 +229,13 @@ export const RegisterView: React.FC = () => {
           </div>
 
           <div>
-            <label className="text-xs font-semibold text-[#222222] block mb-1.5">
+            <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block mb-1.5">
               Image Pair
             </label>
             <select
               value={pairInstance}
               onChange={(e) => setPairInstance(e.target.value)}
-              className="w-full p-2 bg-white border border-[#D0D0D0] rounded text-xs text-[#222222] focus:border-[#1F4E79] focus:outline-none"
+              className="w-full p-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg text-xs text-slate-900 dark:text-slate-100 focus:border-sky-500 focus:outline-none font-medium"
             >
               <option value="2">Pair #2 (OHRC 0.25 m / LRO NAC 0.50 m)</option>
               <option value="1">Pair #1 (TMC-2 5.0 m / WAC 100 m)</option>
@@ -244,13 +244,13 @@ export const RegisterView: React.FC = () => {
           </div>
 
           <div>
-            <label className="text-xs font-semibold text-[#222222] block mb-1.5">
+            <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block mb-1.5">
               Feature Matcher Model
             </label>
             <select
               value={selectedMatcher}
               onChange={(e) => setSelectedMatcher(e.target.value as MatcherType)}
-              className="w-full p-2 bg-white border border-[#D0D0D0] rounded text-xs text-[#1F4E79] font-semibold focus:border-[#1F4E79] focus:outline-none"
+              className="w-full p-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg text-xs text-sky-600 dark:text-sky-300 font-semibold focus:border-sky-500 focus:outline-none"
             >
               <option value="auto">Auto – Intelligent Gate Routing</option>
               <option value="loftr">LoFTR Dense Deep Matcher</option>
@@ -264,13 +264,13 @@ export const RegisterView: React.FC = () => {
           </div>
 
           <div>
-            <label className="text-xs font-semibold text-[#222222] block mb-1.5">
+            <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block mb-1.5">
               Geodetic Model
             </label>
             <select
               value={geometryModel}
               onChange={(e) => setGeometryModel(e.target.value)}
-              className="w-full p-2 bg-white border border-[#D0D0D0] rounded text-xs text-[#222222] focus:border-[#1F4E79] focus:outline-none"
+              className="w-full p-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg text-xs text-slate-900 dark:text-slate-100 focus:border-sky-500 focus:outline-none font-medium"
             >
               <option value="DEM + Map Projection (Tier 2)">DEM – Map Projection</option>
               <option value="ISIS/SPICE (Tier 1)">ISIS/SPICE Camera Model</option>
@@ -279,15 +279,15 @@ export const RegisterView: React.FC = () => {
           </div>
         </div>
 
-        <div className="flex items-center justify-between pt-4 border-t border-[#D0D0D0] flex-wrap gap-4">
-          <span className="text-xs text-[#555555]">
-            Selected Engine: <strong className="text-[#1F4E79]">{selectedMatcher === 'auto' ? 'Auto Routing' : selectedMatcher.toUpperCase()}</strong>
+        <div className="flex items-center justify-between pt-4 border-t border-slate-200 dark:border-slate-800 flex-wrap gap-4">
+          <span className="text-xs text-slate-600 dark:text-slate-300 font-medium">
+            Selected Engine: <strong className="text-sky-600 dark:text-sky-400">{selectedMatcher === 'auto' ? 'Auto Routing' : selectedMatcher.toUpperCase()}</strong>
           </span>
 
           <button
             onClick={() => runRegistration()}
             disabled={isProcessing}
-            className="px-5 py-2.5 rounded bg-[#1F4E79] hover:bg-[#163A5C] text-white font-semibold text-xs transition-colors disabled:opacity-50"
+            className="px-6 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-semibold text-xs transition-all shadow-lg shadow-sky-600/25 border border-sky-400/30 disabled:opacity-50"
           >
             {isProcessing ? 'Processing Pipeline...' : 'Run Registration'}
           </button>
@@ -295,20 +295,20 @@ export const RegisterView: React.FC = () => {
       </div>
 
       {/* PIPELINE PROGRESS TABLE */}
-      <div className="p-6 rounded bg-white border border-[#D0D0D0] space-y-4">
+      <div className="p-6 rounded-2xl bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 space-y-4 shadow-xl transition-colors">
         <div className="flex items-center justify-between">
-          <h2 className="text-sm font-bold text-[#222222] uppercase tracking-wider">
+          <h2 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">
             Pipeline Progress
           </h2>
-          <span className="text-xs font-mono text-[#1F4E79] font-bold">
+          <span className="text-xs font-mono text-sky-600 dark:text-sky-400 font-bold bg-sky-500/10 px-3 py-1 rounded border border-sky-500/20">
             {pipelineProgress}% Completed
           </span>
         </div>
 
-        {/* Simple Progress Bar */}
-        <div className="w-full bg-[#F2F4F6] rounded h-2 overflow-hidden border border-[#D0D0D0]">
+        {/* Progress Bar */}
+        <div className="w-full bg-slate-100 dark:bg-slate-950 rounded-full h-2.5 overflow-hidden border border-slate-200 dark:border-slate-800">
           <div
-            className="h-full bg-[#1F4E79] transition-all duration-300"
+            className="h-full bg-gradient-to-r from-sky-500 to-cyan-400 transition-all duration-300 shadow-[0_0_12px_rgba(56,189,248,0.6)]"
             style={{ width: `${pipelineProgress}%` }}
           />
         </div>
@@ -317,34 +317,34 @@ export const RegisterView: React.FC = () => {
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse text-xs">
             <thead>
-              <tr className="bg-[#F8F9FA] border-b border-[#D0D0D0] text-[#555555] font-semibold">
-                <th className="py-2.5 px-4 w-16">Stage</th>
-                <th className="py-2.5 px-4">Stage Name</th>
-                <th className="py-2.5 px-4">Description</th>
-                <th className="py-2.5 px-4 w-28">Status</th>
+              <tr className="bg-slate-50 dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 font-bold uppercase font-mono">
+                <th className="py-3 px-4 w-16">Stage</th>
+                <th className="py-3 px-4">Stage Name</th>
+                <th className="py-3 px-4">Description</th>
+                <th className="py-3 px-4 w-28">Status</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#D0D0D0] text-[#222222]">
+            <tbody className="divide-y divide-slate-100 dark:divide-slate-800/80 text-slate-800 dark:text-slate-200">
               {STAGE_DETAILS.map((stg, idx) => {
                 const isRunning = isProcessing && activeStepIndex === idx;
                 const isDone = activeStepIndex > idx || (pipelineProgress === 100 && activeStepIndex >= idx);
 
                 return (
-                  <tr key={stg.id} className={isRunning ? 'bg-[#E8F1F8]' : ''}>
-                    <td className="py-2.5 px-4 font-mono font-bold text-[#1F4E79]">{stg.id}</td>
-                    <td className="py-2.5 px-4 font-semibold">{stg.name}</td>
-                    <td className="py-2.5 px-4 text-[#555555]">{stg.description}</td>
-                    <td className="py-2.5 px-4">
+                  <tr key={stg.id} className={isRunning ? 'bg-sky-500/10' : ''}>
+                    <td className="py-3 px-4 font-mono font-bold text-sky-600 dark:text-sky-400">{stg.id}</td>
+                    <td className="py-3 px-4 font-semibold text-slate-900 dark:text-white">{stg.name}</td>
+                    <td className="py-3 px-4 text-slate-600 dark:text-slate-300">{stg.description}</td>
+                    <td className="py-3 px-4">
                       {isRunning ? (
-                        <span className="px-2 py-0.5 rounded text-[11px] font-medium bg-[#FFF3E0] text-[#B26A00] border border-[#B26A00]/30">
+                        <span className="px-2.5 py-1 rounded text-[11px] font-semibold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30">
                           Processing
                         </span>
                       ) : isDone ? (
-                        <span className="px-2 py-0.5 rounded text-[11px] font-medium bg-[#E8F5E9] text-[#2E7D32] border border-[#2E7D32]/30">
+                        <span className="px-2.5 py-1 rounded text-[11px] font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30">
                           Passed
                         </span>
                       ) : (
-                        <span className="px-2 py-0.5 rounded text-[11px] font-medium bg-[#F2F4F6] text-[#555555] border border-[#D0D0D0]">
+                        <span className="px-2.5 py-1 rounded text-[11px] font-semibold bg-slate-100 dark:bg-slate-950 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-800">
                           Pending
                         </span>
                       )}
@@ -358,18 +358,18 @@ export const RegisterView: React.FC = () => {
       </div>
 
       {/* EXECUTION LOG TERMINAL */}
-      <div className="p-5 rounded bg-white border border-[#D0D0D0] space-y-3">
-        <h2 className="text-xs font-bold text-[#222222] uppercase tracking-wider pb-2 border-b border-[#D0D0D0]">
+      <div className="p-6 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-3 shadow-xl">
+        <h2 className="text-xs font-bold text-white uppercase tracking-wider pb-3 border-b border-slate-800">
           Execution Logs
         </h2>
-        <div className="bg-[#1E293B] text-slate-100 p-4 rounded text-xs font-mono h-48 overflow-y-auto space-y-1">
+        <div className="bg-slate-950 text-slate-100 p-4 rounded-xl text-xs font-mono h-48 overflow-y-auto space-y-1.5 border border-slate-800">
           {logs.length === 0 ? (
             <div className="text-slate-400">System initialized. Awaiting registration command...</div>
           ) : (
             logs.map((log) => (
               <div key={log.id} className="flex items-start gap-2">
                 <span className="text-slate-400">[{log.timestamp}]</span>
-                <span className={log.type === 'error' ? 'text-red-400' : log.type === 'success' ? 'text-emerald-400' : 'text-slate-200'}>
+                <span className={log.type === 'error' ? 'text-red-400 font-semibold' : log.type === 'success' ? 'text-emerald-400 font-semibold' : 'text-slate-200'}>
                   {log.message}
                 </span>
               </div>

@@ -60,65 +60,49 @@ export const UploadView: React.FC = () => {
   return (
     <section id="view-upload" className="view-section active space-y-6">
       {/* PAGE HEADER */}
-      <div className="pb-3 border-b border-[#D0D0D0] flex items-center justify-between flex-wrap gap-4">
+      <div className="pb-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between flex-wrap gap-4">
         <div>
-          <h1 className="text-xl font-bold text-[#222222]">
-            Image Pair Input
+          <h1 className="text-xl font-extrabold text-slate-900 dark:text-white">
+            Image Pair Ingestion &amp; Inspection
           </h1>
-          <p className="text-xs text-[#555555] mt-0.5">
-            Select or upload Reference &amp; Target lunar optical rasters for correspondence matching.
+          <p className="text-xs text-slate-600 dark:text-slate-300 mt-1">
+            Upload lunar image pairs (Reference and Target rasters) to inspect metadata, resolution GSD, and sensor properties.
           </p>
         </div>
 
-        <div className="flex gap-2">
-          <button
-            className={`px-3.5 py-1.5 rounded text-xs font-semibold border transition-colors ${
-              genMode === 'none'
-                ? 'bg-[#1F4E79] text-white border-[#1F4E79]'
-                : 'bg-white text-[#222222] border-[#D0D0D0] hover:bg-[#F2F4F6]'
-            }`}
-            onClick={() => setGenMode('none')}
-          >
-            Upload Image Files
-          </button>
-          <button
-            className={`px-3.5 py-1.5 rounded text-xs font-semibold border transition-colors ${
-              genMode === 'config'
-                ? 'bg-[#1F4E79] text-white border-[#1F4E79]'
-                : 'bg-white text-[#222222] border-[#D0D0D0] hover:bg-[#F2F4F6]'
-            }`}
-            onClick={loadSyntheticPair}
-          >
-            Generate Synthetic Pair
-          </button>
-        </div>
+        <button
+          onClick={loadSyntheticPair}
+          className="px-4 py-2 rounded-lg bg-sky-600 hover:bg-sky-500 text-white font-semibold text-xs transition-all shadow-md shadow-sky-600/20 border border-sky-400/30"
+        >
+          Load Demo Synthetic Pair
+        </button>
       </div>
 
-      {/* IMAGE PAIR INPUT SECTIONS */}
+      {/* TWO CARDS GRID */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* REFERENCE IMAGE */}
-        <div className="p-5 rounded bg-white border border-[#D0D0D0] space-y-4">
-          <div className="flex items-center justify-between border-b border-[#D0D0D0] pb-2">
-            <h2 className="text-sm font-bold text-[#222222] uppercase tracking-wider">
+        <div className="p-6 rounded-2xl bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 space-y-4 shadow-xl transition-colors">
+          <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+            <h2 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">
               Reference Image
             </h2>
-            <span className="text-xs font-mono text-[#555555]">Dataset: LRO NAC</span>
+            <span className="text-xs font-mono text-sky-600 dark:text-sky-400 bg-sky-500/10 px-2.5 py-1 rounded border border-sky-500/20">Fixed Base Layer</span>
           </div>
 
           <div>
-            <label className="text-xs font-semibold text-[#555555] block mb-1">
+            <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block mb-1">
               Sensor
             </label>
-            <input
-              type="text"
-              readOnly
-              value="LRO NAC (0.50 m/px)"
-              className="w-full p-2 bg-[#F8F9FA] border border-[#D0D0D0] rounded text-xs text-[#222222] font-mono"
-            />
+            <select
+              disabled
+              className="w-full p-2.5 bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg text-xs text-slate-700 dark:text-slate-300 font-medium"
+            >
+              <option value="LRO NAC">LRO NAC (0.50 m/px)</option>
+            </select>
           </div>
 
           <div>
-            <label className="text-xs font-semibold text-[#555555] block mb-1">
+            <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block mb-1">
               File Input
             </label>
             <input
@@ -136,11 +120,11 @@ export const UploadView: React.FC = () => {
               <button
                 type="button"
                 onClick={() => refInputRef.current?.click()}
-                className="px-3.5 py-1.5 bg-[#F2F4F6] border border-[#D0D0D0] rounded text-xs font-semibold text-[#222222] hover:bg-[#E9ECEF]"
+                className="px-3.5 py-2 bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-semibold text-slate-900 dark:text-white hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
               >
                 Choose File
               </button>
-              <span className="text-xs font-mono text-[#555555] truncate">
+              <span className="text-xs font-mono text-slate-600 dark:text-slate-300 truncate">
                 {referenceImage ? referenceImage.name : 'reference.png'}
               </span>
             </div>
@@ -148,10 +132,10 @@ export const UploadView: React.FC = () => {
 
           {/* Preview Box */}
           <div>
-            <label className="text-xs font-semibold text-[#555555] block mb-1">
+            <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block mb-1">
               Image Preview
             </label>
-            <div className="h-44 bg-[#F8F9FA] border border-[#D0D0D0] rounded flex items-center justify-center p-2 overflow-hidden">
+            <div className="h-44 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl flex items-center justify-center p-2 overflow-hidden">
               {referenceImage?.previewUrl ? (
                 <img
                   src={referenceImage.previewUrl}
@@ -159,27 +143,27 @@ export const UploadView: React.FC = () => {
                   className="max-h-full max-w-full object-contain"
                 />
               ) : (
-                <span className="text-xs text-[#555555]">No preview available</span>
+                <span className="text-xs text-slate-400">No preview available</span>
               )}
             </div>
           </div>
 
           {/* Info Table */}
           <div className="pt-2">
-            <h3 className="text-xs font-bold text-[#555555] uppercase tracking-wider mb-2">Image Information</h3>
+            <h3 className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Image Information</h3>
             <table className="w-full text-xs border-collapse">
-              <tbody className="divide-y divide-[#F2F4F6] text-[#222222]">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800/80 text-slate-800 dark:text-slate-200">
                 <tr>
-                  <td className="py-1 text-[#555555] font-semibold">Dimensions:</td>
-                  <td className="py-1 font-mono text-right">1024 × 1024 px</td>
+                  <td className="py-1.5 text-slate-500 dark:text-slate-400 font-semibold">Dimensions:</td>
+                  <td className="py-1.5 font-mono text-right text-slate-900 dark:text-slate-100">1024 × 1024 px</td>
                 </tr>
                 <tr>
-                  <td className="py-1 text-[#555555] font-semibold">GSD:</td>
-                  <td className="py-1 font-mono text-right">0.50 m/px</td>
+                  <td className="py-1.5 text-slate-500 dark:text-slate-400 font-semibold">GSD:</td>
+                  <td className="py-1.5 font-mono text-right text-slate-900 dark:text-slate-100">0.50 m/px</td>
                 </tr>
                 <tr>
-                  <td className="py-1 text-[#555555] font-semibold">Sun Elevation:</td>
-                  <td className="py-1 font-mono text-right">34.5°</td>
+                  <td className="py-1.5 text-slate-500 dark:text-slate-400 font-semibold">Sun Elevation:</td>
+                  <td className="py-1.5 font-mono text-right text-slate-900 dark:text-slate-100">34.5°</td>
                 </tr>
               </tbody>
             </table>
@@ -187,22 +171,22 @@ export const UploadView: React.FC = () => {
         </div>
 
         {/* TARGET IMAGE */}
-        <div className="p-5 rounded bg-white border border-[#D0D0D0] space-y-4">
-          <div className="flex items-center justify-between border-b border-[#D0D0D0] pb-2">
-            <h2 className="text-sm font-bold text-[#222222] uppercase tracking-wider">
+        <div className="p-6 rounded-2xl bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 space-y-4 shadow-xl transition-colors">
+          <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+            <h2 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">
               Target Image
             </h2>
-            <span className="text-xs font-mono text-[#555555]">Dataset: Chandrayaan-2</span>
+            <span className="text-xs font-mono text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded border border-emerald-500/20">Dataset: Chandrayaan-2</span>
           </div>
 
           <div>
-            <label className="text-xs font-semibold text-[#555555] block mb-1">
+            <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block mb-1">
               Sensor
             </label>
             <select
               value={sourceSensor}
               onChange={(e) => setSourceSensor(e.target.value)}
-              className="w-full p-2 bg-white border border-[#D0D0D0] rounded text-xs text-[#1F4E79] font-semibold focus:border-[#1F4E79] focus:outline-none"
+              className="w-full p-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg text-xs text-sky-600 dark:text-sky-300 font-semibold focus:border-sky-500 focus:outline-none"
             >
               <option value="Chandrayaan-2 OHRC">Chandrayaan-2 OHRC (0.25 m/px)</option>
               <option value="Chandrayaan-2 TMC-2">Chandrayaan-2 TMC-2 (5.00 m/px)</option>
@@ -211,7 +195,7 @@ export const UploadView: React.FC = () => {
           </div>
 
           <div>
-            <label className="text-xs font-semibold text-[#555555] block mb-1">
+            <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block mb-1">
               File Input
             </label>
             <input
@@ -229,11 +213,11 @@ export const UploadView: React.FC = () => {
               <button
                 type="button"
                 onClick={() => srcInputRef.current?.click()}
-                className="px-3.5 py-1.5 bg-[#F2F4F6] border border-[#D0D0D0] rounded text-xs font-semibold text-[#222222] hover:bg-[#E9ECEF]"
+                className="px-3.5 py-2 bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-semibold text-slate-900 dark:text-white hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
               >
                 Choose File
               </button>
-              <span className="text-xs font-mono text-[#555555] truncate">
+              <span className="text-xs font-mono text-slate-600 dark:text-slate-300 truncate">
                 {sourceImage ? sourceImage.name : 'target.png'}
               </span>
             </div>
@@ -241,10 +225,10 @@ export const UploadView: React.FC = () => {
 
           {/* Preview Box */}
           <div>
-            <label className="text-xs font-semibold text-[#555555] block mb-1">
+            <label className="text-xs font-semibold text-slate-300 block mb-1">
               Image Preview
             </label>
-            <div className="h-44 bg-[#F8F9FA] border border-[#D0D0D0] rounded flex items-center justify-center p-2 overflow-hidden">
+            <div className="h-44 bg-slate-950 border border-slate-800 rounded-xl flex items-center justify-center p-2 overflow-hidden">
               {sourceImage?.previewUrl ? (
                 <img
                   src={sourceImage.previewUrl}
@@ -252,27 +236,27 @@ export const UploadView: React.FC = () => {
                   className="max-h-full max-w-full object-contain"
                 />
               ) : (
-                <span className="text-xs text-[#555555]">No preview available</span>
+                <span className="text-xs text-slate-400">No preview available</span>
               )}
             </div>
           </div>
 
           {/* Info Table */}
           <div className="pt-2">
-            <h3 className="text-xs font-bold text-[#555555] uppercase tracking-wider mb-2">Image Information</h3>
+            <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Image Information</h3>
             <table className="w-full text-xs border-collapse">
-              <tbody className="divide-y divide-[#F2F4F6] text-[#222222]">
+              <tbody className="divide-y divide-slate-800/80 text-slate-200">
                 <tr>
-                  <td className="py-1 text-[#555555] font-semibold">Dimensions:</td>
-                  <td className="py-1 font-mono text-right">1024 × 1024 px</td>
+                  <td className="py-1.5 text-slate-400 font-semibold">Dimensions:</td>
+                  <td className="py-1.5 font-mono text-right text-slate-100">1024 × 1024 px</td>
                 </tr>
                 <tr>
-                  <td className="py-1 text-[#555555] font-semibold">GSD:</td>
-                  <td className="py-1 font-mono text-right">{sourceImage?.gsd || '0.25 m/px'}</td>
+                  <td className="py-1.5 text-slate-400 font-semibold">GSD:</td>
+                  <td className="py-1.5 font-mono text-right text-slate-100">{sourceImage?.gsd || '0.25 m/px'}</td>
                 </tr>
                 <tr>
-                  <td className="py-1 text-[#555555] font-semibold">Sun Elevation:</td>
-                  <td className="py-1 font-mono text-right">32.1°</td>
+                  <td className="py-1.5 text-slate-400 font-semibold">Sun Elevation:</td>
+                  <td className="py-1.5 font-mono text-right text-slate-100">32.1°</td>
                 </tr>
               </tbody>
             </table>
@@ -281,17 +265,17 @@ export const UploadView: React.FC = () => {
       </div>
 
       {/* ACTION CONTROLS */}
-      <div className="p-5 rounded bg-white border border-[#D0D0D0] flex items-center justify-between flex-wrap gap-4">
+      <div className="p-6 rounded-2xl bg-slate-900/80 border border-slate-800 flex items-center justify-between flex-wrap gap-4 shadow-xl">
         <div className="flex items-center gap-3">
           <button
             onClick={loadSyntheticPair}
-            className="px-4 py-2 rounded bg-white border border-[#D0D0D0] text-[#222222] hover:bg-[#F2F4F6] text-xs font-semibold transition-colors"
+            className="px-4 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-slate-100 hover:bg-slate-700 text-xs font-semibold transition-colors"
           >
             Generate Synthetic Pair
           </button>
           <button
             onClick={clearUploads}
-            className="px-4 py-2 rounded bg-white border border-[#D0D0D0] text-[#555555] hover:bg-[#F2F4F6] text-xs font-semibold transition-colors"
+            className="px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:bg-slate-800 hover:text-slate-200 text-xs font-semibold transition-colors"
           >
             Clear Inputs
           </button>
@@ -299,7 +283,7 @@ export const UploadView: React.FC = () => {
 
         <button
           onClick={() => navigateTo('register')}
-          className="px-5 py-2.5 rounded bg-[#1F4E79] hover:bg-[#163A5C] text-white font-semibold text-xs transition-colors"
+          className="px-6 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-semibold text-xs transition-all shadow-lg shadow-sky-600/25 border border-sky-400/30"
         >
           Continue to Registration
         </button>
