@@ -101,7 +101,6 @@ export const ResultsView: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'wipe' | 'checker' | 'gcp' | 'residual'>('wipe');
   const [wipeVal, setWipeVal] = useState<number>(50);
 
-  // ── Registered image: if pipeline ran with real files, try the backend URL
   const jobId = results.jobId;
   const isReal = isComplete && jobId && !jobId.startsWith('demo_');
   const registeredUrl = isReal
@@ -110,70 +109,57 @@ export const ResultsView: React.FC = () => {
 
   const refUrl = referenceImage?.previewUrl || '/synthetic/reference.png';
   const srcUrl = sourceImage?.previewUrl     || '/synthetic/synthetic_target.png';
-  // Wipe shows registered output if available, else the raw source with a notice
   const wipeRightUrl = registeredUrl || srcUrl;
 
   const residualHeatmapUrl = isReal && results.residualHeatmapUrl
     ? seleneApi.productUrl(results.residualHeatmapUrl)
     : null;
 
-  // Checkerboard: 8×8 tiles alternating ref/registered
   const checkerCells = Array.from({ length: 64 }, (_, i) => {
     const row = Math.floor(i / 8); const col = i % 8;
     return (row + col) % 2 === 0;
   });
 
-  // GCP count from actual pipeline results
   const gcpCount = isComplete ? Math.max(4, results.inliers || 0) : 0;
-  // Cap display to a reasonable visual count (too many make a mess)
   const displayGcps = Math.min(gcpCount, 60);
 
   return (
-    <section id="view-results" className="view-section active">
-      <div className="mb-5 flex items-center gap-3 flex-wrap">
-        <div className="screen-title">Results</div>
-        <span className="badge text-brand-400">T3 COMPAREVIEW · INTERACTIVE INSPECTION</span>
-        <div className="screen-subtitle w-full">
-          Inspect the registered raster against the reference with wipe, checkerboard, GCP and residual layers.
+    <section id="view-results" className="view-section active space-y-6">
+      {/* HEADER */}
+      <div className="pb-3 border-b border-[#D0D0D0] flex items-center justify-between flex-wrap gap-4">
+        <div>
+          <h1 className="text-xl font-bold text-[#222222]">
+            Visual Comparison &amp; Results
+          </h1>
+          <p className="text-xs text-[#555555] mt-0.5">
+            Inspect the registered raster against the reference image with split curtain, checkerboard, and vector overlays.
+          </p>
+        </div>
+
+        <div className="flex items-center gap-2">
+          {isComplete ? (
+            <span className="px-2.5 py-1 rounded text-xs font-semibold bg-[#E8F5E9] text-[#2E7D32] border border-[#2E7D32]/30">
+              Registration Complete (RMSE {results.rmse} px)
+            </span>
+          ) : (
+            <span className="px-2.5 py-1 rounded text-xs font-semibold bg-[#F8F9FA] text-[#555555] border border-[#D0D0D0]">
+              Awaiting Pipeline Execution
+            </span>
+          )}
         </div>
       </div>
 
-      <div
-        className={`card p-4 mb-4 text-[11px] flex items-center gap-3 ${
-          isComplete
-            ? 'text-success border-[rgba(62,230,160,0.35)]'
-            : 'text-warning'
-        }`}
-      >
-        <span className={`led ${isComplete ? '' : 'amber'}`} />
-        {isComplete ? (
-          <span>
-            Registration complete using <b>{results.method}</b>. RMSE&nbsp;
-            <b className="text-brand-300">{results.rmse}&nbsp;px</b> · Inliers&nbsp;
-            <b className="text-success">{(results.inliers || 0).toLocaleString()}</b>.
-            {!isReal && (
-              <span className="ml-2 text-warning font-mono text-[10px]">
-                (DEMO MODE — upload real images for live registered output)
-              </span>
-            )}
-          </span>
-        ) : (
-          <span>
-            No registration run yet. Upload images and run the pipeline to see live results.
-          </span>
-        )}
-      </div>
-
-      <div className="p-6 rounded-2xl border border-slate-800 bg-slate-900/60 backdrop-blur-md overflow-hidden">
+      {/* COMPARISON TABS CONTAINER */}
+      <div className="p-6 rounded bg-white border border-[#D0D0D0] space-y-5">
         {/* TABS */}
-        <div className="flex flex-wrap border-b border-slate-800 gap-2 pb-4 mb-6">
+        <div className="flex flex-wrap border-b border-[#D0D0D0] gap-2 pb-3">
           {(['wipe', 'checker', 'gcp', 'residual'] as const).map(tab => (
             <button
               key={tab}
-              className={`px-4 py-2 rounded-lg text-xs font-semibold transition-all ${
+              className={`px-4 py-2 rounded text-xs font-semibold border transition-colors ${
                 activeTab === tab
-                  ? 'bg-sky-500/10 text-sky-400 border border-sky-500/30'
-                  : 'bg-slate-950 text-slate-400 hover:text-white border border-slate-800'
+                  ? 'bg-[#1F4E79] text-white border-[#1F4E79]'
+                  : 'bg-white text-[#222222] border-[#D0D0D0] hover:bg-[#F2F4F6]'
               }`}
               onClick={() => setActiveTab(tab)}
             >
@@ -186,17 +172,17 @@ export const ResultsView: React.FC = () => {
         </div>
 
         <div>
-          {/* ── WIPE / CURTAIN TAB ── */}
+          {/* WIPE / CURTAIN TAB */}
           {activeTab === 'wipe' && (
-            <div className="space-y-4 font-mono">
-              <div className="relative h-[420px] rounded-xl border border-slate-800 overflow-hidden bg-slate-950 select-none shadow-xl">
+            <div className="space-y-4 font-sans">
+              <div className="relative h-[420px] rounded border border-[#D0D0D0] overflow-hidden bg-[#F8F9FA] select-none">
                 {/* Base Layer: Reference (Fixed) */}
                 <img
                   src={refUrl}
                   alt="Reference Layer"
                   className="absolute inset-0 w-full h-full object-cover"
                 />
-                <span className="absolute top-3 left-3 z-20 px-3 py-1 rounded bg-slate-900/90 border border-slate-700 text-xs font-semibold text-sky-400 backdrop-blur-md">
+                <span className="absolute top-3 left-3 z-20 px-3 py-1 rounded bg-white/90 border border-[#D0D0D0] text-xs font-semibold text-[#1F4E79] shadow-xs">
                   Reference: LRO NAC (Fixed)
                 </span>
 
@@ -207,25 +193,25 @@ export const ResultsView: React.FC = () => {
                   className="absolute inset-0 w-full h-full object-cover z-10 transition-none"
                   style={{ clipPath: `inset(0 0 0 ${wipeVal}%)` }}
                 />
-                <span className="absolute top-3 right-3 z-20 px-3 py-1 rounded bg-slate-900/90 border border-slate-700 text-xs font-semibold text-emerald-400 backdrop-blur-md">
+                <span className="absolute top-3 right-3 z-20 px-3 py-1 rounded bg-white/90 border border-[#D0D0D0] text-xs font-semibold text-[#2E7D32] shadow-xs">
                   {registeredUrl ? 'Registered: TPS Warped Output' : 'Target: OHRC Moving'}
                 </span>
 
                 {/* Vertical Curtain Divider Laser Line & Handle */}
                 <div
-                  className="absolute top-0 bottom-0 z-30 w-0.5 bg-sky-400 pointer-events-none"
+                  className="absolute top-0 bottom-0 z-30 w-0.5 bg-[#1F4E79] pointer-events-none"
                   style={{ left: `${wipeVal}%` }}
                 >
-                  <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-7 h-7 rounded-full bg-sky-500 text-white flex items-center justify-center text-xs font-bold shadow-lg border border-white/20">
+                  <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-6 h-6 rounded-full bg-[#1F4E79] text-white flex items-center justify-center text-xs font-bold border border-white">
                     ↔
                   </div>
                 </div>
               </div>
 
               {/* Curtain Control Bar */}
-              <div className="p-4 rounded-xl bg-slate-950 border border-slate-800 flex items-center gap-4 text-xs">
-                <span className="text-slate-400 font-semibold shrink-0">
-                  Curtain Position: <span className="text-sky-400 font-bold">{wipeVal}%</span>
+              <div className="p-4 rounded bg-[#F8F9FA] border border-[#D0D0D0] flex items-center gap-4 text-xs">
+                <span className="text-[#555555] font-semibold shrink-0">
+                  Curtain Position: <span className="text-[#1F4E79] font-bold">{wipeVal}%</span>
                 </span>
                 <input
                   type="range"
@@ -233,24 +219,21 @@ export const ResultsView: React.FC = () => {
                   max="100"
                   value={wipeVal}
                   onChange={(e) => setWipeVal(parseInt(e.target.value, 10))}
-                  className="flex-1 accent-cyan-400 cursor-pointer h-1.5 bg-slate-800 rounded-lg"
+                  className="flex-1 accent-[#1F4E79] cursor-pointer h-1.5 bg-[#D0D0D0] rounded"
                 />
-                <span className="text-slate-500 text-[10px] shrink-0">
-                  Slide to inspect sub-pixel alignment along crater rims
-                </span>
               </div>
             </div>
           )}
 
-          {/* ── CHECKERBOARD TAB ── */}
+          {/* CHECKERBOARD TAB */}
           {activeTab === 'checker' && (
             <div className="result-pane">
-              <div className="h-80 rounded-xl border border-[rgba(146,196,255,0.16)] grid grid-cols-8 grid-rows-8 overflow-hidden relative">
+              <div className="h-80 rounded border border-[#D0D0D0] grid grid-cols-8 grid-rows-8 overflow-hidden relative">
                 {checkerCells.map((isRef, idx) => {
                   const row = Math.floor(idx / 8);
                   const col = idx % 8;
                   return (
-                    <div key={idx} className="relative overflow-hidden border-[0.5px] border-slate-900/40">
+                    <div key={idx} className="relative overflow-hidden border-[0.5px] border-[#D0D0D0]">
                       <img
                         src={isRef ? refUrl : (registeredUrl || srcUrl)}
                         alt=""
@@ -262,25 +245,20 @@ export const ResultsView: React.FC = () => {
                           top: `${-(row * 100)}%`
                         }}
                       />
-                      <span className="absolute bottom-0.5 right-0.5 font-mono text-[7px] bg-slate-950/70 text-slate-300 px-1 rounded">
+                      <span className="absolute bottom-0.5 right-0.5 font-mono text-[9px] bg-white/90 text-[#222222] px-1 rounded border border-[#D0D0D0]">
                         {isRef ? 'REF' : registeredUrl ? 'REG' : 'SRC'}
                       </span>
                     </div>
                   );
                 })}
               </div>
-              {!registeredUrl && (
-                <p className="text-[10px] text-warning font-mono mt-2">
-                  ⚠ Showing raw source — run with real images for registered output tiles.
-                </p>
-              )}
             </div>
           )}
 
-          {/* ── GCP + QUIVER TAB ── */}
+          {/* GCP + QUIVER TAB */}
           {activeTab === 'gcp' && (
             <div className="result-pane">
-              <div className="h-80 rounded-xl overflow-hidden relative">
+              <div className="h-80 rounded overflow-hidden relative border border-[#D0D0D0]">
                 {isComplete ? (
                   <GcpCanvas
                     refUrl={refUrl}
@@ -289,30 +267,18 @@ export const ResultsView: React.FC = () => {
                     rmse={results.rmse}
                   />
                 ) : (
-                  <div className="h-full flex flex-col items-center justify-center bg-[rgba(2,6,10,0.85)] border border-[rgba(146,196,255,0.16)] rounded-xl">
-                    <div className="text-slate-500 text-[12px] font-mono">NO DATA</div>
-                    <p className="text-[11px] text-slate-600 mt-2">Run the registration pipeline to generate GCP data.</p>
-                  </div>
-                )}
-                {isComplete && (
-                  <div className="absolute top-3 left-3 badge bg-slate-950/80 text-[10px]">
-                    GCP SAMPLING — {displayGcps} CONTROL POINTS{displayGcps < gcpCount ? ` (${gcpCount} total, capped for display)` : ''} · RESIDUAL VECTORS (RMSE {results.rmse} px)
+                  <div className="h-full flex flex-col items-center justify-center bg-[#F8F9FA] border border-[#D0D0D0] rounded">
+                    <div className="text-[#555555] text-xs font-mono">No GCP Data</div>
+                    <p className="text-xs text-[#555555] mt-1">Run registration pipeline to generate control points.</p>
                   </div>
                 )}
               </div>
-              {isComplete && (
-                <div className="flex gap-4 mt-3 text-[10px] font-mono text-slate-500">
-                  <span>● Dot colour: RMSE-scaled (green=low · yellow=high)</span>
-                  <span>→ Arrow: per-GCP displacement vector</span>
-                  <span>Grid: 8×8 coverage zones</span>
-                </div>
-              )}
             </div>
           )}
 
-          {/* ── RESIDUAL HEATMAP TAB ── */}
+          {/* RESIDUAL HEATMAP TAB */}
           {activeTab === 'residual' && (
-            <div className="result-pane h-80 relative overflow-hidden bg-slate-950 rounded-xl border border-[rgba(146,196,255,0.16)] flex items-center justify-center">
+            <div className="result-pane h-80 relative overflow-hidden bg-[#F8F9FA] rounded border border-[#D0D0D0] flex items-center justify-center">
               {residualHeatmapUrl ? (
                 <img
                   src={residualHeatmapUrl}
@@ -327,13 +293,10 @@ export const ResultsView: React.FC = () => {
                     refUrl={refUrl}
                     srcUrl={wipeRightUrl}
                   />
-                  <div className="absolute top-3 left-3 bg-warning/20 text-warning px-2 py-1 rounded text-[9px] font-mono border border-warning/40 backdrop-blur-md">
-                    DEMO MODE (SYNTHETIC HEATMAP)
-                  </div>
                 </div>
               ) : (
-                <p className="text-[10px] text-warning font-mono mt-2">
-                  No pipeline run yet — heatmap will populate after registration completes.
+                <p className="text-xs text-[#555555] font-mono">
+                  Heatmap will populate after registration completes.
                 </p>
               )}
             </div>
