@@ -17,21 +17,21 @@ export const TopNav: React.FC = () => {
 
   return (
     <>
-      <header className="sticky top-0 z-40 bg-slate-900 border-b border-slate-800 py-3.5 px-6">
+      <header className="sticky top-0 z-40 bg-[#1F4E79] text-white border-b border-[#163A5C] py-3 px-6 shadow-sm">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <a href="#home" className="flex items-center gap-3">
-            <div className="w-7 h-7 rounded bg-blue-600/20 border border-blue-500/40 flex items-center justify-center text-blue-400">
-              <Compass className="w-4 h-4" />
+            <div className="w-7 h-7 rounded bg-white/10 border border-white/20 flex items-center justify-center text-white font-bold text-xs">
+              S
             </div>
             <div>
               <span className="font-bold text-sm tracking-tight text-white block">
                 SELENE-MATCH
               </span>
-              <span className="text-[10px] text-slate-400">ISRO Chandrayaan-2 Workbench</span>
+              <span className="text-[10px] text-blue-100">Chandrayaan-2 Multi-Modal Lunar Image Registration</span>
             </div>
           </a>
 
-          <nav className="hidden md:flex items-center gap-6 text-xs font-medium text-slate-300">
+          <nav className="hidden md:flex items-center gap-6 text-xs font-semibold text-blue-100">
             <a href="#home" className="hover:text-white transition-colors">Overview</a>
             <a href="#mission" className="hover:text-white transition-colors">Problem Statement</a>
             <a href="#workflow" className="hover:text-white transition-colors">Workflow</a>
@@ -42,14 +42,13 @@ export const TopNav: React.FC = () => {
           <div className="flex items-center gap-3">
             <button
               onClick={() => openWorkbench('dashboard')}
-              className="px-3.5 py-1.5 text-xs font-semibold rounded bg-blue-600 hover:bg-blue-500 text-white transition-colors flex items-center gap-1.5"
+              className="px-4 py-2 text-xs font-semibold rounded bg-[#163A5C] hover:bg-[#122e49] text-white transition-colors border border-white/20"
             >
               Open Workbench
-              <ArrowRight className="w-3.5 h-3.5" />
             </button>
 
             <button
-              className="md:hidden p-1.5 text-slate-300 hover:text-white"
+              className="md:hidden p-1.5 text-white"
               onClick={() => setMobileOpen((prev) => !prev)}
               aria-label="Menu"
             >
