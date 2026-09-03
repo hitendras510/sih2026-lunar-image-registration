@@ -2,7 +2,6 @@ import React from 'react';
 import { AppProvider, useApp } from './context/AppContext';
 import { StarfieldCanvas } from './components/common/StarfieldCanvas';
 import { ToastContainer } from './components/common/ToastContainer';
-import { AiAssistant } from './components/common/AiAssistant';
 import { LandingPage } from './components/landing/LandingPage';
 import { WorkbenchLayout } from './components/workbench/WorkbenchLayout';
 
@@ -15,7 +14,6 @@ const AppContent: React.FC = () => {
       {isAppMode ? <WorkbenchLayout /> : <LandingPage />}
 
       <ToastContainer />
-      <AiAssistant />
     </>
   );
 };
