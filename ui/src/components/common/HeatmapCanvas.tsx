@@ -37,7 +37,7 @@ export const HeatmapCanvas: React.FC<HeatmapCanvasProps> = ({
         ctx.fillStyle = 'rgba(5, 12, 20, 0.55)';
         ctx.fillRect(0, 0, width, height);
       } else {
-        ctx.fillStyle = '#07111b';
+        ctx.fillStyle = '#090d16';
         ctx.fillRect(0, 0, width, height);
       }
 
