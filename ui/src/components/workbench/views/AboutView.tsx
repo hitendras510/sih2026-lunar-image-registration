@@ -51,33 +51,25 @@ export const AboutView: React.FC = () => {
             <div className="text-sm font-bold text-sky-400 font-mono mt-1">Up to 320× GSD</div>
           </div>
           <div className="p-4 rounded-xl bg-slate-950 border border-slate-800">
-            <div className="flex items-center gap-1.5 font-mono text-[10px] text-slate-400 tracking-[0.12em] uppercase">
-              <span className="text-cyan-400">•</span> ACCURACY TARGET
-            </div>
-            <div className="text-emerald-400 mt-2 font-mono text-[13px] font-bold">
-              Sub-pixel (&lt; 1.0 px)
-            </div>
+            <div className="text-[10px] font-mono text-slate-400 uppercase">Accuracy Target</div>
+            <div className="text-sm font-bold text-emerald-400 font-mono mt-1">Sub-pixel (&lt; 0.5 px)</div>
           </div>
-          <div className="panel p-4 rounded-xl bg-[#07111b]/80 border border-[rgba(146,196,255,0.12)]">
-            <div className="flex items-center gap-1.5 font-mono text-[10px] text-slate-400 tracking-[0.12em] uppercase">
-              <span className="text-cyan-400">•</span> PIPELINE STAGES
-            </div>
-            <div className="text-white mt-2 font-mono text-[13px] font-bold">
-              Stages 0 to 8
-            </div>
+          <div className="p-4 rounded-xl bg-slate-950 border border-slate-800">
+            <div className="text-[10px] font-mono text-slate-400 uppercase">Pipeline Architecture</div>
+            <div className="text-sm font-bold text-white font-mono mt-1">9 Processing Stages</div>
           </div>
         </div>
 
         {/* TECH STACK BADGES */}
         <div className="pt-2">
-          <label className="font-mono text-[10.5px] font-semibold text-slate-400 tracking-[0.14em] uppercase block mb-3">
-            • CORE TECHNOLOGY STACK
+          <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-3">
+            Core Technology Stack
           </label>
           <div className="flex flex-wrap gap-2">
             {techBadges.map((badge) => (
               <span
                 key={badge}
-                className="badge font-mono text-[10px] tracking-[0.12em] text-slate-300 bg-slate-900/80 border border-slate-700/60 px-3.5 py-1.5 rounded-lg"
+                className="font-mono text-xs text-slate-300 bg-slate-950 border border-slate-800 px-3 py-1 rounded-md"
               >
                 {badge}
               </span>
