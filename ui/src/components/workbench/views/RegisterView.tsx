@@ -184,59 +184,43 @@ export const RegisterView: React.FC = () => {
 
   const [stepStage, setStepStage] = useState('0 - 0');
   const [pairInstance, setPairInstance] = useState('2');
-  const [logMode, setLogMode] = useState<'stream' | 'store'>('stream');
-  const [selectedStageOverride, setSelectedStageOverride] = useState<number | null>(null);
-
-  // Compute active stage index (defaults to activeStepIndex if processing, or last step if completed)
-  const currentStageIndex = selectedStageOverride !== null
-    ? selectedStageOverride
-    : activeStepIndex >= 0
-    ? activeStepIndex
-    : 0;
-
-  const currentStage = STAGE_DETAILS[currentStageIndex] || STAGE_DETAILS[0];
-  const StageIcon = currentStage.icon;
-  const terminalRef = React.useRef<HTMLDivElement>(null);
-  React.useEffect(() => {
-    if (terminalRef.current) {
-      terminalRef.current.scrollTop = terminalRef.current.scrollHeight;
-    }
-  }, [logs]);
 
   return (
-    <section id="view-register" className="view-section active space-y-6 font-sans pb-10">
+    <section id="view-register" className="view-section active space-y-6">
       {/* PAGE HEADER */}
-      <div className="flex items-center justify-between flex-wrap gap-4 pb-1">
+      <div className="pb-3 border-b border-[#D0D0D0] flex items-center justify-between flex-wrap gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white tracking-tight">
-            Pipeline Registration Setup
+          <h1 className="text-xl font-bold text-[#222222]">
+            Registration Configuration
           </h1>
-          <div className="text-xs text-slate-400 font-mono tracking-wide mt-1">
-            Configure matching algorithm hyperparameters, geometric transformation models, and outlier filtering thresholds.
-          </div>
+          <p className="text-xs text-[#555555] mt-0.5">
+            Configure registration hyperparameters, matcher model, and geodetic transformation parameters.
+          </p>
         </div>
 
-        {/* TOP COMPACT STATUS */}
-        <div className="flex items-center gap-2 bg-slate-900 px-4 py-2 rounded-xl border border-slate-800 font-mono text-xs">
-          <span className="text-slate-400">Status:</span>
-          <span className={`font-semibold ${isProcessing ? 'text-amber-400' : pipelineProgress === 100 ? 'text-emerald-400' : 'text-slate-400'}`}>
+        <div className="flex items-center gap-2 font-mono text-xs">
+          <span className="text-[#555555]">Status:</span>
+          <span className={`font-semibold px-2.5 py-1 rounded text-xs ${isProcessing ? 'bg-[#FFF3E0] text-[#B26A00]' : pipelineProgress === 100 ? 'bg-[#E8F5E9] text-[#2E7D32]' : 'bg-[#F8F9FA] text-[#555555] border border-[#D0D0D0]'}`}>
             {isProcessing ? 'Executing Pipeline...' : pipelineProgress === 100 ? 'Pipeline Complete' : 'Ready'}
           </span>
         </div>
       </div>
 
-      {/* PARAMETER CONFIGURATION CARD */}
-      <div className="p-6 sm:p-8 rounded-2xl border border-slate-800 bg-slate-900/60 backdrop-blur-md relative overflow-hidden">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 relative z-10">
-          {/* STEP / STAGE */}
+      {/* CONFIGURATION FORM CARD */}
+      <div className="p-6 rounded bg-white border border-[#D0D0D0] space-y-5">
+        <h2 className="text-sm font-bold text-[#222222] uppercase tracking-wider pb-2 border-b border-[#D0D0D0]">
+          Pipeline Parameters
+        </h2>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <div>
-            <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-2">
+            <label className="text-xs font-semibold text-[#222222] block mb-1.5">
               Pipeline Stage
             </label>
             <select
               value={stepStage}
               onChange={(e) => setStepStage(e.target.value)}
-              className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-lg text-white font-mono text-xs focus:border-sky-400 focus:outline-none"
+              className="w-full p-2 bg-white border border-[#D0D0D0] rounded text-xs text-[#222222] focus:border-[#1F4E79] focus:outline-none"
             >
               <option value="0 - 0">0 - 0 (Full Automatic 9-Stage)</option>
               <option value="0 - 4">0 - 4 (Initial Match Only)</option>
@@ -244,15 +228,14 @@ export const RegisterView: React.FC = () => {
             </select>
           </div>
 
-          {/* PAIR INSTANCE */}
           <div>
-            <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-2">
-              Pair Instance
+            <label className="text-xs font-semibold text-[#222222] block mb-1.5">
+              Image Pair
             </label>
             <select
               value={pairInstance}
               onChange={(e) => setPairInstance(e.target.value)}
-              className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-lg text-white font-mono text-xs focus:border-sky-400 focus:outline-none"
+              className="w-full p-2 bg-white border border-[#D0D0D0] rounded text-xs text-[#222222] focus:border-[#1F4E79] focus:outline-none"
             >
               <option value="2">Pair #2 (OHRC 0.25 m / LRO NAC 0.50 m)</option>
               <option value="1">Pair #1 (TMC-2 5.0 m / WAC 100 m)</option>
@@ -260,15 +243,14 @@ export const RegisterView: React.FC = () => {
             </select>
           </div>
 
-          {/* PIPELINE MATCHER */}
           <div>
-            <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-2">
-              Matcher Model
+            <label className="text-xs font-semibold text-[#222222] block mb-1.5">
+              Feature Matcher Model
             </label>
             <select
               value={selectedMatcher}
               onChange={(e) => setSelectedMatcher(e.target.value as MatcherType)}
-              className="w-full p-2.5 bg-slate-950 border border-slate-800 text-sky-400 font-mono text-xs focus:border-sky-400 focus:outline-none font-semibold"
+              className="w-full p-2 bg-white border border-[#D0D0D0] rounded text-xs text-[#1F4E79] font-semibold focus:border-[#1F4E79] focus:outline-none"
             >
               <option value="auto">Auto – Intelligent Gate Routing</option>
               <option value="loftr">LoFTR Dense Deep Matcher</option>
@@ -281,15 +263,14 @@ export const RegisterView: React.FC = () => {
             </select>
           </div>
 
-          {/* OUTPUT GEOMETRY */}
           <div>
-            <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-2">
+            <label className="text-xs font-semibold text-[#222222] block mb-1.5">
               Geodetic Model
             </label>
             <select
               value={geometryModel}
               onChange={(e) => setGeometryModel(e.target.value)}
-              className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-lg text-white font-mono text-xs focus:border-sky-400 focus:outline-none"
+              className="w-full p-2 bg-white border border-[#D0D0D0] rounded text-xs text-[#222222] focus:border-[#1F4E79] focus:outline-none"
             >
               <option value="DEM + Map Projection (Tier 2)">DEM – Map Projection</option>
               <option value="ISIS/SPICE (Tier 1)">ISIS/SPICE Camera Model</option>
@@ -298,241 +279,102 @@ export const RegisterView: React.FC = () => {
           </div>
         </div>
 
-        {/* ACTIVE MATCHER BITS & RUN REGISTRATION BUTTON */}
-        <div className="flex items-center justify-between mt-6 pt-5 border-t border-slate-800 flex-wrap gap-4 relative z-10">
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-semibold text-slate-400">Selected Matcher:</span>
-            <span className="text-xs font-mono font-bold text-sky-400 bg-sky-500/10 px-3 py-1 rounded border border-sky-500/20 uppercase">
-              {selectedMatcher === 'auto' ? 'Auto Routing' : selectedMatcher}
-            </span>
-          </div>
+        <div className="flex items-center justify-between pt-4 border-t border-[#D0D0D0] flex-wrap gap-4">
+          <span className="text-xs text-[#555555]">
+            Selected Engine: <strong className="text-[#1F4E79]">{selectedMatcher === 'auto' ? 'Auto Routing' : selectedMatcher.toUpperCase()}</strong>
+          </span>
 
           <button
-            onClick={() => {
-              setSelectedStageOverride(null);
-              runRegistration();
-            }}
+            onClick={() => runRegistration()}
             disabled={isProcessing}
-            className="px-6 py-3 rounded-xl text-xs font-semibold flex items-center gap-2 bg-sky-500 hover:bg-sky-400 text-white transition-all disabled:opacity-50 shadow-lg shadow-sky-500/20"
+            className="px-5 py-2.5 rounded bg-[#1F4E79] hover:bg-[#163A5C] text-white font-semibold text-xs transition-colors disabled:opacity-50"
           >
-            <Play className={`w-4 h-4 text-white fill-white ${isProcessing ? 'animate-spin' : ''}`} />
-            {isProcessing ? 'Executing Pipeline...' : 'Run Registration Pipeline'}
+            {isProcessing ? 'Processing Pipeline...' : 'Run Registration'}
           </button>
         </div>
       </div>
 
-      {/* ── INTERACTIVE DYNAMIC PIPELINE STAGE CARDS GRID ───────────────────── */}
-      <div className="p-6 sm:p-8 rounded-2xl border border-slate-800 bg-slate-900/60 backdrop-blur-md">
-        <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
-          <div>
-            <h3 className="text-base font-bold text-white flex items-center gap-2">
-              <Activity className="w-4 h-4 text-sky-400" />
-              Pipeline Execution Stages (9 Stages)
-            </h3>
-            <div className="text-xs text-slate-400 font-mono mt-0.5">
-              Click any stage card to inspect live telemetry and algorithmic parameters.
-            </div>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <span className="font-mono text-xs text-slate-400">
-              Stage <span className="text-white font-bold">{currentStageIndex + 1}</span> / 9
-            </span>
-            <div className="font-mono text-xs font-bold text-sky-400 bg-sky-500/10 px-2.5 py-1 rounded border border-sky-500/20">
-              {pipelineProgress}%
-            </div>
-          </div>
+      {/* PIPELINE PROGRESS TABLE */}
+      <div className="p-6 rounded bg-white border border-[#D0D0D0] space-y-4">
+        <div className="flex items-center justify-between">
+          <h2 className="text-sm font-bold text-[#222222] uppercase tracking-wider">
+            Pipeline Progress
+          </h2>
+          <span className="text-xs font-mono text-[#1F4E79] font-bold">
+            {pipelineProgress}% Completed
+          </span>
         </div>
 
-        {/* Global Progress Bar */}
-        <div className="w-full bg-slate-950 rounded-full h-2 overflow-hidden border border-slate-800 mb-6">
+        {/* Simple Progress Bar */}
+        <div className="w-full bg-[#F2F4F6] rounded h-2 overflow-hidden border border-[#D0D0D0]">
           <div
-            className="h-full bg-sky-500 transition-all duration-300"
+            className="h-full bg-[#1F4E79] transition-all duration-300"
             style={{ width: `${pipelineProgress}%` }}
           />
         </div>
 
-        {/* 9 Stage Cards Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 xl:grid-cols-9 gap-3">
-          {STAGE_DETAILS.map((stg, idx) => {
-            const IconComp = stg.icon;
-            const isRunning = isProcessing && activeStepIndex === idx;
-            const isDone = activeStepIndex > idx || (pipelineProgress === 100 && activeStepIndex >= idx);
-            const isSelected = currentStageIndex === idx;
+        {/* Pipeline Stages Table */}
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse text-xs">
+            <thead>
+              <tr className="bg-[#F8F9FA] border-b border-[#D0D0D0] text-[#555555] font-semibold">
+                <th className="py-2.5 px-4 w-16">Stage</th>
+                <th className="py-2.5 px-4">Stage Name</th>
+                <th className="py-2.5 px-4">Description</th>
+                <th className="py-2.5 px-4 w-28">Status</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-[#D0D0D0] text-[#222222]">
+              {STAGE_DETAILS.map((stg, idx) => {
+                const isRunning = isProcessing && activeStepIndex === idx;
+                const isDone = activeStepIndex > idx || (pipelineProgress === 100 && activeStepIndex >= idx);
 
-            let borderStyle = 'border-slate-800/80 bg-[#050b14]';
-            if (isRunning) {
-              borderStyle = 'border-cyan-400 bg-cyan-950/40 shadow-[0_0_20px_rgba(56,189,248,0.35)] animate-pulse';
-            } else if (isDone) {
-              borderStyle = 'border-emerald-500/40 bg-[#06151f]';
-            } else if (isSelected) {
-              borderStyle = 'border-cyan-500/60 bg-[#081729]';
-            }
-
-            return (
-              <button
-                key={stg.id}
-                onClick={() => setSelectedStageOverride(idx)}
-                className={`p-3 rounded-xl border text-left transition-all duration-200 cursor-pointer flex flex-col justify-between h-28 relative group overflow-hidden ${borderStyle}`}
-              >
-                {/* Glow bar indicator */}
-                <div
-                  className="absolute top-0 left-0 right-0 h-1 transition-all"
-                  style={{
-                    background: isRunning ? '#38bdf8' : isDone ? '#34d399' : isSelected ? '#a855f7' : 'transparent',
-                  }}
-                />
-
-                <div className="flex items-center justify-between">
-                  <span className="font-mono text-[11px] font-bold text-cyan-400">
-                    {stg.id}
-                  </span>
-                  <div className="p-1 rounded-md bg-slate-900/90 border border-slate-800 text-slate-300 group-hover:scale-110 transition-transform">
-                    <IconComp className="w-3.5 h-3.5" style={{ color: isRunning ? '#38bdf8' : isDone ? '#34d399' : stg.accentColor }} />
-                  </div>
-                </div>
-
-                <div>
-                  <div className="font-display text-[12px] font-bold text-white tracking-wide truncate">
-                    {stg.name}
-                  </div>
-                  <div className="font-mono text-[8.5px] mt-1 font-semibold tracking-wider flex items-center gap-1" style={{ color: isDone ? '#34d399' : isRunning ? '#38bdf8' : '#94a3b8' }}>
-                    {isRunning ? (
-                      <>
-                        <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping" />
-                        RUNNING
-                      </>
-                    ) : isDone ? (
-                      <>
-                        <CheckCircle2 className="w-2.5 h-2.5 text-emerald-400" />
-                        PASSED
-                      </>
-                    ) : (
-                      'STANDBY'
-                    )}
-                  </div>
-                </div>
-              </button>
-            );
-          })}
+                return (
+                  <tr key={stg.id} className={isRunning ? 'bg-[#E8F1F8]' : ''}>
+                    <td className="py-2.5 px-4 font-mono font-bold text-[#1F4E79]">{stg.id}</td>
+                    <td className="py-2.5 px-4 font-semibold">{stg.name}</td>
+                    <td className="py-2.5 px-4 text-[#555555]">{stg.description}</td>
+                    <td className="py-2.5 px-4">
+                      {isRunning ? (
+                        <span className="px-2 py-0.5 rounded text-[11px] font-medium bg-[#FFF3E0] text-[#B26A00] border border-[#B26A00]/30">
+                          Processing
+                        </span>
+                      ) : isDone ? (
+                        <span className="px-2 py-0.5 rounded text-[11px] font-medium bg-[#E8F5E9] text-[#2E7D32] border border-[#2E7D32]/30">
+                          Passed
+                        </span>
+                      ) : (
+                        <span className="px-2 py-0.5 rounded text-[11px] font-medium bg-[#F2F4F6] text-[#555555] border border-[#D0D0D0]">
+                          Pending
+                        </span>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
         </div>
       </div>
 
-      {/* ── ACTIVE PIPELINE STAGE TELEMETRY & ALGORITHMIC HUD ──────────────── */}
-      <div className="card p-6 sm:p-7 rounded-xl bg-[#040912] border border-cyan-500/30 backdrop-blur-md shadow-2xl relative overflow-hidden font-mono">
-        <div className="flex items-center justify-between pb-4 border-b border-slate-800 flex-wrap gap-3">
-          <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-xl border border-cyan-500/40 bg-cyan-950/40 text-cyan-300 shadow-[0_0_15px_rgba(56,189,248,0.2)]">
-              <StageIcon className="w-5 h-5" style={{ color: currentStage.accentColor }} />
-            </div>
-            <div>
-              <div className="flex items-center gap-2 text-[14px] text-white font-bold font-display">
-                STAGE {currentStage.id}: {currentStage.name.toUpperCase()}
-                <span className="px-2.5 py-0.5 rounded text-[10px] font-mono border" style={{ background: currentStage.badgeBg, borderColor: currentStage.accentColor, color: currentStage.accentColor }}>
-                  {currentStage.subtitle}
+      {/* EXECUTION LOG TERMINAL */}
+      <div className="p-5 rounded bg-white border border-[#D0D0D0] space-y-3">
+        <h2 className="text-xs font-bold text-[#222222] uppercase tracking-wider pb-2 border-b border-[#D0D0D0]">
+          Execution Logs
+        </h2>
+        <div className="bg-[#1E293B] text-slate-100 p-4 rounded text-xs font-mono h-48 overflow-y-auto space-y-1">
+          {logs.length === 0 ? (
+            <div className="text-slate-400">System initialized. Awaiting registration command...</div>
+          ) : (
+            logs.map((log) => (
+              <div key={log.id} className="flex items-start gap-2">
+                <span className="text-slate-400">[{log.timestamp}]</span>
+                <span className={log.type === 'error' ? 'text-red-400' : log.type === 'success' ? 'text-emerald-400' : 'text-slate-200'}>
+                  {log.message}
                 </span>
               </div>
-              <div className="text-[11px] text-slate-400 font-sans mt-0.5">
-                {currentStage.description}
-              </div>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2 text-[10px]">
-            <span className="text-slate-400">TELEMETRY MODE:</span>
-            <span className="px-2.5 py-1 rounded bg-slate-900 border border-slate-800 text-cyan-300 font-bold">
-              REAL-TIME GPU MONITOR
-            </span>
-          </div>
-        </div>
-
-        {/* KPI Telemetry Grid for Active Stage */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-5">
-          {currentStage.kpis.map((k, i) => (
-            <div key={i} className="bg-[#02060e] p-3.5 rounded-lg border border-slate-800/90 flex flex-col justify-between">
-              <span className="text-slate-400 text-[10px] uppercase tracking-wider">{k.label}</span>
-              <span className="text-[14px] font-bold mt-1 text-white truncate" style={{ color: k.color || '#e2e8f0' }}>
-                {k.value}
-              </span>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* LIVE EXECUTION LOG CARD */}
-      <div className="card p-6 sm:p-7 rounded-xl bg-slate-950/70 border border-[rgba(146,196,255,0.18)] backdrop-blur-md shadow-2xl">
-        <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
-          <h3 className="text-[14px] font-bold font-display text-white tracking-wide flex items-center gap-2">
-            <Terminal className="w-4 h-4 text-cyan-400" />
-            LIVE EXECUTION TERMINAL LOG
-          </h3>
-          <div className="flex items-center gap-2.5 font-mono text-[10px]">
-            <button
-              onClick={() => setLogMode('stream')}
-              className={`px-3.5 py-1.5 rounded-md border tracking-[0.14em] font-semibold uppercase transition-all cursor-pointer ${
-                logMode === 'stream'
-                  ? 'border-cyan-400/50 text-cyan-300 bg-cyan-950/50 shadow-[0_0_12px_rgba(111,246,255,0.2)]'
-                  : 'border-slate-800 text-slate-400 hover:border-slate-700 bg-slate-900/40'
-              }`}
-            >
-              STREAM
-            </button>
-            <button
-              onClick={() => setLogMode('store')}
-              className={`px-3.5 py-1.5 rounded-md border tracking-[0.14em] font-semibold uppercase transition-all cursor-pointer ${
-                logMode === 'store'
-                  ? 'border-cyan-400/50 text-cyan-300 bg-cyan-950/50 shadow-[0_0_12px_rgba(111,246,255,0.2)]'
-                  : 'border-slate-800 text-slate-400 hover:border-slate-700 bg-slate-900/40'
-              }`}
-            >
-              STORE
-            </button>
-          </div>
-        </div>
-
-        <div className="term rounded-xl border border-[rgba(146,196,255,0.18)] bg-[#030810] overflow-hidden shadow-inner">
-          <div className="term-head px-4.5 py-3 bg-[#050d17] border-b border-[rgba(146,196,255,0.12)] flex items-center justify-between">
-            <div className="flex items-center">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#ff6b7a] inline-block mr-1.5" />
-              <span className="w-2.5 h-2.5 rounded-full bg-[#ffb65c] inline-block mr-1.5" />
-              <span className="w-2.5 h-2.5 rounded-full bg-[#3ee6a0] inline-block mr-2.5" />
-              <span className="font-mono text-[9.5px] font-semibold text-slate-400 tracking-[0.24em] uppercase">
-                PIPELINE STDOUT / STDERR STREAM
-              </span>
-            </div>
-            <span className="font-mono text-[9px] text-cyan-400">SELENE-ENGINE v2.0</span>
-          </div>
-
-          <div
-            ref={terminalRef}
-            className="h-64 overflow-y-auto p-4.5 space-y-2 font-mono text-[11.5px] leading-relaxed overscroll-contain"
-          >
-            {logs.length === 0 ? (
-              <div className="text-slate-500 font-mono text-[11.5px]">
-                <span className="text-[#54738c] mr-2.5">[19:52:07]</span>
-                <span className="text-[#e3f2fd]">SELENE-MATCH Workbench initialized. Ready for pipeline execution.</span>
-              </div>
-            ) : (
-              logs.map((log) => (
-                <div key={log.id} className="term-line flex items-start gap-2.5">
-                  <span className="text-[#54738c] font-mono shrink-0">
-                    [{log.timestamp}]
-                  </span>
-                  <span
-                    className={
-                      log.type === 'error'
-                        ? 'text-red-400 font-mono font-semibold'
-                        : log.type === 'success'
-                        ? 'text-emerald-400 font-mono font-semibold'
-                        : 'text-[#e3f2fd] font-mono'
-                    }
-                  >
-                    {log.message}
-                  </span>
-                </div>
-              ))
-            )}
-          </div>
+            ))
+          )}
         </div>
       </div>
     </section>
