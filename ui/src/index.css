@@ -2,31 +2,49 @@
 
 /* ============ SELENE LUNAR REGISTRATION WORKBENCH — MODERN DESIGN TOKENS ============ */
 :root {
-  --bg0: #F5F5F5;
-  --bg1: #FFFFFF;
-  --glass: #FFFFFF;
-  --glass-hi: #F2F4F6;
-  --glass2: #FFFFFF;
-  --line: #D0D0D0;
-  --line-strong: #B0B0B0;
-  --text: #222222;
-  --muted: #555555;
-  --dim: #777777;
-  --cyan: #1F4E79;
-  --blue: #1F4E79;
-  --blue2: #163A5C;
-  --ice: #E8F1F8;
-  --green: #2E7D32;
-  --amber: #B26A00;
-  --red: #C62828;
+  --bg0: #000000;
+  --bg1: #000000;
+  --glass: rgba(15, 23, 42, 0.85);
+  --glass-hi: rgba(30, 41, 59, 0.9);
+  --glass2: rgba(15, 23, 42, 0.7);
+  --line: rgba(255, 255, 255, 0.12);
+  --line-strong: rgba(56, 189, 248, 0.35);
+  --text: #f8fafc;
+  --muted: #cbd5e1;
+  --dim: #94a3b8;
+  --cyan: #38bdf8;
+  --blue: #0284c7;
+  --blue2: #0369a1;
+  --ice: rgba(56, 189, 248, 0.12);
+  --green: #10b981;
+  --amber: #f59e0b;
+  --red: #ef4444;
   --font-d: "Inter", Arial, sans-serif;
   --font-m: "JetBrains Mono", monospace;
   --font-tech: "Inter", sans-serif;
-  --r: 4px;
+  --r: 8px;
   --sidebar-w: 230px;
   --header-h: 60px;
   --footer-h: 0px;
-  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.06);
+  --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+:root.light {
+  --bg0: #f8fafc;
+  --bg1: #ffffff;
+  --glass: rgba(255, 255, 255, 0.9);
+  --glass-hi: rgba(241, 245, 249, 0.95);
+  --glass2: rgba(255, 255, 255, 0.75);
+  --line: rgba(0, 0, 0, 0.1);
+  --line-strong: rgba(2, 132, 199, 0.4);
+  --text: #0f172a;
+  --muted: #475569;
+  --dim: #64748b;
+  --cyan: #0284c7;
+  --blue: #0284c7;
+  --blue2: #0369a1;
+  --ice: rgba(2, 132, 199, 0.08);
+  --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.06);
 }
 
 * {
@@ -1824,12 +1842,7 @@ input[type="checkbox"] {
 /* ============ SIDEBAR ============ */
 #view-app #main-sidebar {
   width: var(--sidebar-w);
-  background: linear-gradient(180deg, rgba(5, 11, 20, 0.96) 0%, rgba(3, 8, 15, 0.98) 100%);
-  border-right: 1px solid var(--line);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
   transition: width 0.26s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 1px 0 0 rgba(146,196,255,0.04);
 }
 
 #view-app .sidebar-collapsed {
@@ -1882,62 +1895,9 @@ input[type="checkbox"] {
   animation: ledpulse 2.2s ease-in-out infinite;
 }
 
-#view-app .nav-section-label {
-  font-family: var(--font-m);
-  font-size: 8px;
-  letter-spacing: 0.24em;
-  color: var(--dim);
-  padding: 14px 12px 5px;
-  text-transform: uppercase;
-}
-
-#view-app .nav-item {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 9px 12px;
-  margin: 1px 6px;
-  border-radius: 12px;
-  font-size: 12.5px;
-  color: #7a96b0;
-  border: 1px solid transparent;
-  transition: all 0.18s ease;
-  cursor: pointer;
-  letter-spacing: 0.02em;
-}
-
-#view-app .nav-item:hover {
-  background: rgba(255,255,255,0.04);
-  color: #d8edf8;
-  border-color: rgba(146,196,255,0.07);
-}
-
-#view-app .nav-item.nav-active {
-  background: linear-gradient(90deg, rgba(69,166,255,0.13) 0%, rgba(111,246,255,0.05) 100%);
-  color: #fff;
-  border-color: rgba(111,246,255,0.20);
-  box-shadow: 0 0 16px rgba(111,246,255,0.06);
-}
-
-#view-app .nav-item.nav-active i,
-#view-app .nav-item.nav-active svg {
-  color: var(--cyan);
-}
-
-#view-app .project-info-panel {
-  background: rgba(111, 246, 255, 0.03);
-  border: 1px solid var(--line);
-}
-
 /* ============ HEADER ============ */
 #view-app .app-header {
   height: var(--header-h);
-  background: linear-gradient(180deg, rgba(6, 16, 28, 0.97) 0%, rgba(3, 10, 20, 0.99) 100%);
-  border-bottom: 1px solid rgba(146,196,255,0.09);
-  box-shadow: 0 1px 0 rgba(111,246,255,0.05), 0 6px 28px rgba(0,0,0,0.5);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
 }
 
 #view-app .clock-chip {
