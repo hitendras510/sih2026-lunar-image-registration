@@ -698,15 +698,11 @@ Certified by SELENE-MATCH Automated Pipeline Core.
 
   if (!isComplete) {
     return (
-      <section id="view-exports" className="view-section active flex flex-col items-center justify-center min-h-[500px] text-center space-y-5">
-        <Activity className="w-16 h-16 text-cyan-400/50 mx-auto animate-pulse" />
-        <h2 className="text-2xl font-bold font-display text-white tracking-wide">Processing Pipeline Active</h2>
-        <p className="text-slate-400 text-[13px] max-w-md mx-auto leading-relaxed">
-          The final PDF report and deliverable products (GeoTIFF, CSV matrix) will only be generated and available for download <b>after</b> the registration job has successfully completed.
+      <section id="view-exports" className="view-section active flex flex-col items-center justify-center min-h-[400px] text-center space-y-4">
+        <h2 className="text-xl font-bold text-[#222222]">Registration Pipeline Pending</h2>
+        <p className="text-[#555555] text-xs max-w-md mx-auto leading-relaxed">
+          The final registered GeoTIFF rasters, CSV correspondence matrices, and PDF reports will be available for download once the pipeline run completes.
         </p>
-        <span className="badge font-mono text-[10.5px] tracking-[0.14em] font-semibold text-amber-400 bg-amber-950/40 border border-amber-500/30 px-3 py-1 rounded-md mt-4">
-          AWAITING EXECUTION COMPLETION
-        </span>
       </section>
     );
   }
@@ -714,50 +710,31 @@ Certified by SELENE-MATCH Automated Pipeline Core.
   return (
     <section id="view-exports" className="view-section active space-y-6">
       {/* PAGE HEADER */}
-      <div>
-        <h1 className="text-2xl font-bold text-white tracking-tight">
-          Export Products & Deliverables
+      <div className="pb-3 border-b border-[#D0D0D0]">
+        <h1 className="text-xl font-bold text-[#222222]">
+          Export Products &amp; Deliverables
         </h1>
-        <div className="text-xs text-slate-400 font-mono tracking-wide mt-1">
+        <p className="text-xs text-[#555555] mt-0.5">
           Download GeoTIFF rasters, CSV correspondence matrices, and printable registration reports.
-        </div>
+        </p>
       </div>
 
       {/* EXPORTS CARDS GRID */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
         {exports.map((exp) => (
-          <div key={exp.filename} className="p-6 rounded-2xl border border-slate-800 bg-slate-900/60 backdrop-blur-md flex flex-col justify-between">
+          <div key={exp.filename} className="p-5 rounded bg-white border border-[#D0D0D0] flex flex-col justify-between space-y-4">
             <div>
-              <div className="w-10 h-10 rounded-lg bg-sky-500/10 border border-sky-500/20 text-sky-400 flex items-center justify-center mb-4">
-                {exp.icon}
-              </div>
-              <h3 className="text-white font-mono text-sm font-bold">{exp.filename}</h3>
-              <p className="text-xs text-slate-400 font-mono mt-2 leading-relaxed">{exp.description}</p>
+              <h3 className="text-[#222222] font-mono text-sm font-bold">{exp.filename}</h3>
+              <p className="text-xs text-[#555555] mt-1.5 leading-relaxed">{exp.description}</p>
             </div>
             <button
               onClick={() => handleDownload(exp.productPath, exp.filename)}
-              className="px-4 py-2.5 mt-6 rounded-lg text-xs font-semibold bg-sky-500 hover:bg-sky-400 text-white flex items-center justify-center gap-2 transition-all shadow-md shadow-sky-500/20"
+              className="px-4 py-2 rounded text-xs font-semibold bg-[#1F4E79] hover:bg-[#163A5C] text-white flex items-center justify-center gap-2 transition-colors"
             >
-              {exp.label} <Download className="w-3.5 h-3.5 text-white" />
+              {exp.label}
             </button>
           </div>
         ))}
-      </div>
-
-      {/* RUN PACKAGE TERMINAL PANEL */}
-      <div className="p-6 rounded-2xl border border-slate-800 bg-slate-900/60 backdrop-blur-md">
-        <h3 className="text-sm font-bold text-white tracking-wide uppercase">
-          Output Package Directory Structure
-        </h3>
-        <div className="mt-4 p-4 rounded-xl border border-slate-800 bg-slate-950 font-mono text-xs text-slate-300 leading-relaxed space-y-1">
-          <div className="text-sky-400 font-bold mb-2">products/{isReal ? jobId : 'job_xxxxxxxx'}/</div>
-          <div className="text-slate-400">├── registered.tif (GeoTIFF)</div>
-          <div className="text-slate-400">├── matches.csv (GCP Matrix)</div>
-          <div className="text-slate-400">├── plot_checkerboard.png</div>
-          <div className="text-slate-400">├── plot_quiver.png</div>
-          <div className="text-slate-400">├── plot_coverage.png</div>
-          <div className="text-slate-400">└── registration_report.pdf</div>
-        </div>
       </div>
     </section>
   );
