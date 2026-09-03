@@ -126,23 +126,23 @@ export const ResultsView: React.FC = () => {
   return (
     <section id="view-results" className="view-section active space-y-6">
       {/* HEADER */}
-      <div className="pb-3 border-b border-[#D0D0D0] flex items-center justify-between flex-wrap gap-4">
+      <div className="pb-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between flex-wrap gap-4">
         <div>
-          <h1 className="text-xl font-bold text-[#222222]">
+          <h1 className="text-xl font-extrabold text-slate-900 dark:text-white">
             Visual Comparison &amp; Results
           </h1>
-          <p className="text-xs text-[#555555] mt-0.5">
+          <p className="text-xs text-slate-600 dark:text-slate-300 mt-1">
             Inspect the registered raster against the reference image with split curtain, checkerboard, and vector overlays.
           </p>
         </div>
 
         <div className="flex items-center gap-2">
           {isComplete ? (
-            <span className="px-2.5 py-1 rounded text-xs font-semibold bg-[#E8F5E9] text-[#2E7D32] border border-[#2E7D32]/30">
+            <span className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30">
               Registration Complete (RMSE {results.rmse} px)
             </span>
           ) : (
-            <span className="px-2.5 py-1 rounded text-xs font-semibold bg-[#F8F9FA] text-[#555555] border border-[#D0D0D0]">
+            <span className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-slate-950 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-800">
               Awaiting Pipeline Execution
             </span>
           )}
@@ -150,16 +150,16 @@ export const ResultsView: React.FC = () => {
       </div>
 
       {/* COMPARISON TABS CONTAINER */}
-      <div className="p-6 rounded bg-white border border-[#D0D0D0] space-y-5">
+      <div className="p-6 rounded-2xl bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 space-y-5 shadow-xl transition-colors">
         {/* TABS */}
-        <div className="flex flex-wrap border-b border-[#D0D0D0] gap-2 pb-3">
+        <div className="flex flex-wrap border-b border-slate-200 dark:border-slate-800 gap-2 pb-3">
           {(['wipe', 'checker', 'gcp', 'residual'] as const).map(tab => (
             <button
               key={tab}
-              className={`px-4 py-2 rounded text-xs font-semibold border transition-colors ${
+              className={`px-4 py-2 rounded-lg text-xs font-semibold border transition-all ${
                 activeTab === tab
-                  ? 'bg-[#1F4E79] text-white border-[#1F4E79]'
-                  : 'bg-white text-[#222222] border-[#D0D0D0] hover:bg-[#F2F4F6]'
+                  ? 'bg-sky-600 text-white border-sky-400/40 shadow-sm'
+                  : 'bg-slate-100 dark:bg-slate-950 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-800 hover:bg-slate-200 dark:hover:bg-slate-800'
               }`}
               onClick={() => setActiveTab(tab)}
             >
@@ -175,14 +175,14 @@ export const ResultsView: React.FC = () => {
           {/* WIPE / CURTAIN TAB */}
           {activeTab === 'wipe' && (
             <div className="space-y-4 font-sans">
-              <div className="relative h-[420px] rounded border border-[#D0D0D0] overflow-hidden bg-[#F8F9FA] select-none">
+              <div className="relative h-[420px] rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden bg-slate-950 select-none shadow-inner">
                 {/* Base Layer: Reference (Fixed) */}
                 <img
                   src={refUrl}
                   alt="Reference Layer"
                   className="absolute inset-0 w-full h-full object-cover"
                 />
-                <span className="absolute top-3 left-3 z-20 px-3 py-1 rounded bg-white/90 border border-[#D0D0D0] text-xs font-semibold text-[#1F4E79] shadow-xs">
+                <span className="absolute top-3 left-3 z-20 px-3 py-1.5 rounded-lg bg-slate-950/90 border border-slate-700 text-xs font-semibold text-sky-400 shadow-md">
                   Reference: LRO NAC (Fixed)
                 </span>
 
@@ -193,25 +193,25 @@ export const ResultsView: React.FC = () => {
                   className="absolute inset-0 w-full h-full object-cover z-10 transition-none"
                   style={{ clipPath: `inset(0 0 0 ${wipeVal}%)` }}
                 />
-                <span className="absolute top-3 right-3 z-20 px-3 py-1 rounded bg-white/90 border border-[#D0D0D0] text-xs font-semibold text-[#2E7D32] shadow-xs">
+                <span className="absolute top-3 right-3 z-20 px-3 py-1.5 rounded-lg bg-slate-950/90 border border-slate-700 text-xs font-semibold text-emerald-400 shadow-md">
                   {registeredUrl ? 'Registered: TPS Warped Output' : 'Target: OHRC Moving'}
                 </span>
 
                 {/* Vertical Curtain Divider Laser Line & Handle */}
                 <div
-                  className="absolute top-0 bottom-0 z-30 w-0.5 bg-[#1F4E79] pointer-events-none"
+                  className="absolute top-0 bottom-0 z-30 w-0.5 bg-sky-400 pointer-events-none shadow-[0_0_12px_rgba(56,189,248,0.8)]"
                   style={{ left: `${wipeVal}%` }}
                 >
-                  <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-6 h-6 rounded-full bg-[#1F4E79] text-white flex items-center justify-center text-xs font-bold border border-white">
+                  <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-7 h-7 rounded-full bg-sky-500 text-white flex items-center justify-center text-xs font-bold border border-white/40 shadow-lg">
                     ↔
                   </div>
                 </div>
               </div>
 
               {/* Curtain Control Bar */}
-              <div className="p-4 rounded bg-[#F8F9FA] border border-[#D0D0D0] flex items-center gap-4 text-xs">
-                <span className="text-[#555555] font-semibold shrink-0">
-                  Curtain Position: <span className="text-[#1F4E79] font-bold">{wipeVal}%</span>
+              <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 flex items-center gap-4 text-xs">
+                <span className="text-slate-700 dark:text-slate-300 font-semibold shrink-0">
+                  Curtain Position: <span className="text-sky-600 dark:text-sky-400 font-bold font-mono">{wipeVal}%</span>
                 </span>
                 <input
                   type="range"
@@ -219,7 +219,7 @@ export const ResultsView: React.FC = () => {
                   max="100"
                   value={wipeVal}
                   onChange={(e) => setWipeVal(parseInt(e.target.value, 10))}
-                  className="flex-1 accent-[#1F4E79] cursor-pointer h-1.5 bg-[#D0D0D0] rounded"
+                  className="flex-1 accent-sky-500 cursor-pointer h-1.5 bg-slate-200 dark:bg-slate-800 rounded-full"
                 />
               </div>
             </div>
@@ -228,12 +228,12 @@ export const ResultsView: React.FC = () => {
           {/* CHECKERBOARD TAB */}
           {activeTab === 'checker' && (
             <div className="result-pane">
-              <div className="h-80 rounded border border-[#D0D0D0] grid grid-cols-8 grid-rows-8 overflow-hidden relative">
+              <div className="h-80 rounded-xl border border-slate-800 grid grid-cols-8 grid-rows-8 overflow-hidden relative bg-slate-950">
                 {checkerCells.map((isRef, idx) => {
                   const row = Math.floor(idx / 8);
                   const col = idx % 8;
                   return (
-                    <div key={idx} className="relative overflow-hidden border-[0.5px] border-[#D0D0D0]">
+                    <div key={idx} className="relative overflow-hidden border-[0.5px] border-slate-800/60">
                       <img
                         src={isRef ? refUrl : (registeredUrl || srcUrl)}
                         alt=""
@@ -245,7 +245,7 @@ export const ResultsView: React.FC = () => {
                           top: `${-(row * 100)}%`
                         }}
                       />
-                      <span className="absolute bottom-0.5 right-0.5 font-mono text-[9px] bg-white/90 text-[#222222] px-1 rounded border border-[#D0D0D0]">
+                      <span className="absolute bottom-0.5 right-0.5 font-mono text-[9px] bg-slate-950/90 text-slate-200 px-1 rounded border border-slate-700">
                         {isRef ? 'REF' : registeredUrl ? 'REG' : 'SRC'}
                       </span>
                     </div>
@@ -258,7 +258,7 @@ export const ResultsView: React.FC = () => {
           {/* GCP + QUIVER TAB */}
           {activeTab === 'gcp' && (
             <div className="result-pane">
-              <div className="h-80 rounded overflow-hidden relative border border-[#D0D0D0]">
+              <div className="h-80 rounded-xl overflow-hidden relative border border-slate-800 bg-slate-950">
                 {isComplete ? (
                   <GcpCanvas
                     refUrl={refUrl}
@@ -267,9 +267,9 @@ export const ResultsView: React.FC = () => {
                     rmse={results.rmse}
                   />
                 ) : (
-                  <div className="h-full flex flex-col items-center justify-center bg-[#F8F9FA] border border-[#D0D0D0] rounded">
-                    <div className="text-[#555555] text-xs font-mono">No GCP Data</div>
-                    <p className="text-xs text-[#555555] mt-1">Run registration pipeline to generate control points.</p>
+                  <div className="h-full flex flex-col items-center justify-center bg-slate-950 border border-slate-800 rounded-xl">
+                    <div className="text-slate-300 text-xs font-mono font-bold">No GCP Data</div>
+                    <p className="text-xs text-slate-400 mt-1">Run registration pipeline to generate control points.</p>
                   </div>
                 )}
               </div>
@@ -278,7 +278,7 @@ export const ResultsView: React.FC = () => {
 
           {/* RESIDUAL HEATMAP TAB */}
           {activeTab === 'residual' && (
-            <div className="result-pane h-80 relative overflow-hidden bg-[#F8F9FA] rounded border border-[#D0D0D0] flex items-center justify-center">
+            <div className="result-pane h-80 relative overflow-hidden bg-slate-950 rounded-xl border border-slate-800 flex items-center justify-center">
               {residualHeatmapUrl ? (
                 <img
                   src={residualHeatmapUrl}
@@ -295,7 +295,7 @@ export const ResultsView: React.FC = () => {
                   />
                 </div>
               ) : (
-                <p className="text-xs text-[#555555] font-mono">
+                <p className="text-xs text-slate-400 font-mono">
                   Heatmap will populate after registration completes.
                 </p>
               )}

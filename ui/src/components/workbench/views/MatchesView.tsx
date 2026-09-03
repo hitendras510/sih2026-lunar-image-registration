@@ -167,71 +167,66 @@ export const MatchesView: React.FC = () => {
   const inliers = results.inliers || 18742;
   const ratio   = results.ratio   || 87.6;
   const outliers = raw - inliers;
-  const inlierRatio = inliers / raw;
-  const coverage = results.coverage || 81;
-  const nni = results.nni || 0.84;
-  const rmse = results.rmse || 0.68;
-  const ce90 = results.ce90 || 0.91;
   const matcherName = results.matcherUsed || 'lightglue';
 
   return (
     <section id="view-matches" className="view-section active space-y-6">
-      {/* HEADER */}
-      <div className="pb-3 border-b border-[#D0D0D0]">
-        <h1 className="text-xl font-bold text-[#222222]">
+      {/* PAGE HEADER */}
+      <div className="pb-4 border-b border-slate-200 dark:border-slate-800">
+        <h1 className="text-xl font-extrabold text-slate-900 dark:text-white">
           Feature Correspondences
         </h1>
-        <p className="text-xs text-[#555555] mt-0.5">
+        <p className="text-xs text-slate-600 dark:text-slate-300 mt-1">
           Inspect keypoint correspondence vectors, MAGSAC++ inlier filtering, and geometric transformation residuals.
         </p>
       </div>
 
       {/* TOP KPIS */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="p-4 rounded bg-white border border-[#D0D0D0]">
-          <div className="text-xs font-semibold text-[#555555] uppercase tracking-wider">Raw Matches</div>
-          <div id="match-raw" className="text-xl font-bold text-[#222222] font-mono mt-1">{raw.toLocaleString()}</div>
-          <div className="text-xs text-[#555555] mt-1 font-mono">Before filtering</div>
+        <div className="p-5 rounded-2xl bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 shadow-xl transition-colors">
+          <div className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Raw Matches</div>
+          <div id="match-raw" className="text-2xl font-extrabold text-slate-900 dark:text-white font-mono mt-1">{raw.toLocaleString()}</div>
+          <div className="text-xs text-slate-500 dark:text-slate-400 mt-1 font-mono">Before filtering</div>
         </div>
 
-        <div className="p-4 rounded bg-white border border-[#D0D0D0]">
-          <div className="text-xs font-semibold text-[#555555] uppercase tracking-wider">Robust Inliers</div>
-          <div id="match-inliers" className="text-xl font-bold text-[#2E7D32] font-mono mt-1">
+        <div className="p-5 rounded-2xl bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 shadow-xl transition-colors">
+          <div className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Robust Inliers</div>
+          <div id="match-inliers" className="text-2xl font-extrabold text-emerald-600 dark:text-emerald-400 font-mono mt-1">
             {inliers.toLocaleString()}
           </div>
-          <div className="text-xs text-[#555555] mt-1 font-mono">After MAGSAC++</div>
+          <div className="text-xs text-slate-500 dark:text-slate-400 mt-1 font-mono">After MAGSAC++</div>
         </div>
 
-        <div className="p-4 rounded bg-white border border-[#D0D0D0]">
-          <div className="text-xs font-semibold text-[#555555] uppercase tracking-wider">Inlier Ratio</div>
-          <div className="text-xl font-bold text-[#1F4E79] font-mono mt-1">
+        <div className="p-5 rounded-2xl bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 shadow-xl transition-colors">
+          <div className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Inlier Ratio</div>
+          <div className="text-2xl font-extrabold text-sky-600 dark:text-sky-400 font-mono mt-1">
             {ratio.toFixed(1)}%
           </div>
-          <div className="w-full bg-[#F2F4F6] rounded h-1.5 overflow-hidden border border-[#D0D0D0] mt-2">
-            <div className="h-full bg-[#1F4E79]" style={{ width: `${ratio}%` }} />
+          <div className="w-full bg-slate-100 dark:bg-slate-950 rounded-full h-2 overflow-hidden border border-slate-200 dark:border-slate-800 mt-2">
+            <div className="h-full bg-sky-500 shadow-[0_0_8px_rgba(56,189,248,0.6)]" style={{ width: `${ratio}%` }} />
           </div>
         </div>
 
-        <div className="p-4 rounded bg-white border border-[#D0D0D0]">
-          <div className="text-xs font-semibold text-[#555555] uppercase tracking-wider">Selected Matcher</div>
-          <div id="match-method" className="text-base font-bold text-[#1F4E79] font-mono mt-1 uppercase truncate">
+        <div className="p-5 rounded-2xl bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 shadow-xl transition-colors">
+          <div className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Selected Matcher</div>
+          <div id="match-method" className="text-lg font-extrabold text-sky-600 dark:text-sky-300 font-mono mt-1 uppercase truncate">
             {matcherName.replace(/_/g, ' ')}
           </div>
-          <div className="text-xs text-[#555555] mt-1 font-mono">Gate-routed engine</div>
+          <div className="text-xs text-slate-500 dark:text-slate-400 mt-1 font-mono">Gate-routed engine</div>
         </div>
       </div>
 
       {/* CORRESPONDENCE CANVAS */}
-      <div className="p-5 rounded bg-white border border-[#D0D0D0] space-y-3">
-        <div className="flex justify-between items-center flex-wrap gap-2 border-b border-[#D0D0D0] pb-2">
-          <h2 className="text-sm font-bold text-[#222222] uppercase tracking-wider">
+      <div className="p-6 rounded-2xl bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 space-y-4 shadow-xl transition-colors">
+        <div className="flex justify-between items-center flex-wrap gap-2 border-b border-slate-200 dark:border-slate-800 pb-3">
+          <h2 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">
             Keypoint Correspondence Canvas
           </h2>
           <div className="flex gap-2 font-mono text-xs">
-            <span className="px-2 py-0.5 rounded bg-[#E8F5E9] text-[#2E7D32] border border-[#2E7D32]/30">
+            <span className="px-3 py-1 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 font-semibold">
               Inliers: {inliers.toLocaleString()}
             </span>
-            <span className="px-2 py-0.5 rounded bg-[#FFF3E0] text-[#B26A00] border border-[#B26A00]/30">
+            <span className="px-3 py-1 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30 font-semibold">
               Outliers: {outliers.toLocaleString()}
             </span>
           </div>
@@ -251,46 +246,46 @@ export const MatchesView: React.FC = () => {
       </div>
 
       {/* PARAMETER RECOVERY TABLE */}
-      <div className="p-5 rounded bg-white border border-[#D0D0D0] space-y-3">
-        <div className="flex justify-between items-center border-b border-[#D0D0D0] pb-2">
-          <h2 className="text-xs font-bold text-[#222222] uppercase tracking-wider">
+      <div className="p-6 rounded-2xl bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 space-y-4 shadow-xl transition-colors">
+        <div className="flex justify-between items-center border-b border-slate-200 dark:border-slate-800 pb-3">
+          <h2 className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">
             Ground-Truth Parameter Recovery Benchmark
           </h2>
-          <span className="text-xs font-mono text-[#1F4E79]">Synthetic Verification Test</span>
+          <span className="text-xs font-mono text-sky-600 dark:text-sky-400 bg-sky-500/10 px-2.5 py-1 rounded border border-sky-500/20">Synthetic Verification Test</span>
         </div>
         <table className="w-full text-left border-collapse text-xs">
           <thead>
-            <tr className="bg-[#F8F9FA] border-b border-[#D0D0D0] text-[#555555] font-mono">
-              <th className="py-2 px-3">Parameter</th>
-              <th className="py-2 px-3">Ground Truth</th>
-              <th className="py-2 px-3">Recovered Value</th>
-              <th className="py-2 px-3 text-right">Residual Error</th>
+            <tr className="bg-slate-50 dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 font-mono font-bold uppercase">
+              <th className="py-2.5 px-4">Parameter</th>
+              <th className="py-2.5 px-4">Ground Truth</th>
+              <th className="py-2.5 px-4">Recovered Value</th>
+              <th className="py-2.5 px-4 text-right">Residual Error</th>
             </tr>
           </thead>
-          <tbody className="font-mono text-[#222222] divide-y divide-[#F2F4F6]">
+          <tbody className="font-mono text-slate-800 dark:text-slate-200 divide-y divide-slate-100 dark:divide-slate-800/80">
             <tr>
-              <td className="py-2 px-3 font-semibold">Rotation</td>
-              <td className="py-2 px-3">{GT_ROTATION}°</td>
-              <td className="py-2 px-3 text-[#2E7D32]">{EST_ROTATION}°</td>
-              <td className="py-2 px-3 text-right font-bold text-[#2E7D32]">Δ 0.17°</td>
+              <td className="py-3 px-4 font-semibold text-slate-900 dark:text-slate-100">Rotation</td>
+              <td className="py-3 px-4">{GT_ROTATION}°</td>
+              <td className="py-3 px-4 text-emerald-600 dark:text-emerald-400">{EST_ROTATION}°</td>
+              <td className="py-3 px-4 text-right font-bold text-emerald-600 dark:text-emerald-400">Δ 0.17°</td>
             </tr>
             <tr>
-              <td className="py-2 px-3 font-semibold">Scale Factor</td>
-              <td className="py-2 px-3">{GT_SCALE}×</td>
-              <td className="py-2 px-3 text-[#2E7D32]">{EST_SCALE}×</td>
-              <td className="py-2 px-3 text-right font-bold text-[#2E7D32]">Δ 0.001×</td>
+              <td className="py-3 px-4 font-semibold text-slate-900 dark:text-slate-100">Scale Factor</td>
+              <td className="py-3 px-4">{GT_SCALE}×</td>
+              <td className="py-3 px-4 text-emerald-600 dark:text-emerald-400">{EST_SCALE}×</td>
+              <td className="py-3 px-4 text-right font-bold text-emerald-600 dark:text-emerald-400">Δ 0.001×</td>
             </tr>
             <tr>
-              <td className="py-2 px-3 font-semibold">Translation X</td>
-              <td className="py-2 px-3">{GT_TX} px</td>
-              <td className="py-2 px-3 text-[#2E7D32]">{EST_TX} px</td>
-              <td className="py-2 px-3 text-right font-bold text-[#2E7D32]">Δ 1.4 px</td>
+              <td className="py-3 px-4 font-semibold text-slate-900 dark:text-slate-100">Translation X</td>
+              <td className="py-3 px-4">{GT_TX} px</td>
+              <td className="py-3 px-4 text-emerald-600 dark:text-emerald-400">{EST_TX} px</td>
+              <td className="py-3 px-4 text-right font-bold text-emerald-600 dark:text-emerald-400">Δ 1.4 px</td>
             </tr>
             <tr>
-              <td className="py-2 px-3 font-semibold">Translation Y</td>
-              <td className="py-2 px-3">{GT_TY} px</td>
-              <td className="py-2 px-3 text-[#2E7D32]">{EST_TY} px</td>
-              <td className="py-2 px-3 text-right font-bold text-[#2E7D32]">Δ 1.3 px</td>
+              <td className="py-3 px-4 font-semibold text-slate-900 dark:text-slate-100">Translation Y</td>
+              <td className="py-3 px-4">{GT_TY} px</td>
+              <td className="py-3 px-4 text-emerald-600 dark:text-emerald-400">{EST_TY} px</td>
+              <td className="py-3 px-4 text-right font-bold text-emerald-600 dark:text-emerald-400">Δ 1.3 px</td>
             </tr>
           </tbody>
         </table>
