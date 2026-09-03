@@ -1,63 +1,101 @@
-import React, { useRef, useEffect, useState, useCallback } from 'react';
-import {
-  motion,
-  useScroll,
-  useTransform,
-  useSpring,
-  useMotionValueEvent,
-} from 'framer-motion';
+import React, { useState } from 'react';
+import { motion } from 'framer-motion';
 import { useApp } from '../../context/AppContext';
-
-const TOTAL_FRAMES = 150;
+import { Sliders, GitMerge, CheckCircle, ArrowRight } from 'lucide-react';
 
 export const ScrollSequenceHero: React.FC = () => {
   const { openWorkbench } = useApp();
-  const containerRef = useRef<HTMLDivElement | null>(null);
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const [sliderPos, setSliderPos] = useState<number>(50);
 
-  const [images, setImages] = useState<HTMLImageElement[]>([]);
-  const [loadedCount, setLoadedCount] = useState<number>(0);
-  const [isPreloading, setIsPreloading] = useState<boolean>(true);
+  return (
+    <div className="py-16 px-6 max-w-7xl mx-auto">
+      <div className="rounded-2xl border border-slate-800 bg-slate-900/90 p-6 md:p-8 backdrop-blur-md">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-6 pb-6 border-b border-slate-800">
+          <div>
+            <h3 className="text-xl font-bold text-white flex items-center gap-2">
+              <Sliders className="w-5 h-5 text-sky-400" />
+              Interactive Registration Preview
+            </h3>
+            <p className="text-xs text-slate-400 mt-1">
+              Drag the curtain slider below to compare Reference (LRO NAC) vs Target (Chandrayaan-2 OHRC) lunar surface alignment.
+            </p>
+          </div>
+          <button
+            onClick={() => openWorkbench('upload')}
+            className="px-4 py-2 rounded-lg bg-sky-500 hover:bg-sky-400 text-white font-semibold text-xs transition-all flex items-center gap-2 shrink-0"
+          >
+            Load Custom Image Pair
+            <ArrowRight className="w-3.5 h-3.5" />
+          </button>
+        </div>
 
-  // Framer Motion Scroll tracking
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ['start start', 'end end'],
-  });
+        {/* Interactive Split Comparison Card */}
+        <div className="relative mt-6 rounded-xl border border-slate-800 bg-slate-950 overflow-hidden aspect-[16/9] max-h-[460px] select-none">
+          {/* Reference Image (Underneath) */}
+          <div className="absolute inset-0 bg-slate-900 flex items-center justify-center">
+            <div className="relative w-full h-full bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-slate-800 via-slate-900 to-slate-950 p-8 flex flex-col justify-between">
+              <div className="px-3 py-1 rounded bg-slate-900/80 border border-slate-700 text-[10px] font-mono text-sky-400 w-max">
+                REF: LRO NAC (0.5m GSD)
+              </div>
+              <div className="grid grid-cols-6 gap-4 opacity-40">
+                {Array.from({ length: 24 }).map((_, i) => (
+                  <div key={i} className="h-12 border border-slate-700/50 rounded flex items-center justify-center text-[10px] font-mono text-slate-500">
+                    Crater #{i + 101}
+                  </div>
+                ))}
+              </div>
+              <div className="text-[10px] font-mono text-slate-500 text-right">
+                Solar Elevation: 42.1°
+              </div>
+            </div>
+          </div>
 
-  // Spring physics for buttery smooth 60fps scrolling
-  const smoothProgress = useSpring(scrollYProgress, {
-    stiffness: 220,
-    damping: 32,
-    restDelta: 0.0001,
-  });
+          {/* Registered Target Image (Overlaid with clip-path) */}
+          <div
+            className="absolute inset-0 bg-slate-950 flex items-center justify-center transition-all duration-75"
+            style={{ clipPath: `polygon(0 0, ${sliderPos}% 0, ${sliderPos}% 100%, 0 100%)` }}
+          >
+            <div className="relative w-full h-full bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-slate-900 via-slate-950 to-black p-8 flex flex-col justify-between border-r-2 border-sky-400">
+              <div className="px-3 py-1 rounded bg-sky-950/80 border border-sky-600/40 text-[10px] font-mono text-emerald-400 w-max">
+                REGISTERED: Chandrayaan-2 OHRC (0.25m GSD)
+              </div>
+              <div className="grid grid-cols-6 gap-4 opacity-70">
+                {Array.from({ length: 24 }).map((_, i) => (
+                  <div key={i} className="h-12 border border-sky-500/30 bg-sky-500/5 rounded flex items-center justify-center text-[10px] font-mono text-sky-300">
+                    Aligned #{i + 101}
+                  </div>
+                ))}
+              </div>
+              <div className="text-[10px] font-mono text-emerald-400 text-left flex items-center gap-1">
+                <CheckCircle className="w-3 h-3" /> RMSE: 0.42 px (Sub-pixel Accurate)
+              </div>
+            </div>
+          </div>
 
-  // Map progress (0..1) to frame index (0..149)
-  const rawFrameIndex = useTransform(smoothProgress, [0, 1], [0, TOTAL_FRAMES - 1]);
+          {/* Slider Control Handle */}
+          <input
+            type="range"
+            min="0"
+            max="100"
+            value={sliderPos}
+            onChange={(e) => setSliderPos(Number(e.target.value))}
+            className="absolute inset-0 w-full h-full opacity-0 cursor-ew-resize z-30"
+          />
 
-  // Framer Motion scroll animations for Hero UI text
-  const titleOpacity = useTransform(smoothProgress, [0, 0.25, 0.38], [1, 1, 0]);
-  const titleY = useTransform(smoothProgress, [0, 0.38], [0, -60]);
-  const titleScale = useTransform(smoothProgress, [0, 0.38], [1, 0.92]);
-
-  const descOpacity = useTransform(smoothProgress, [0, 0.2, 0.34], [1, 1, 0]);
-  const statusOpacity = useTransform(smoothProgress, [0, 0.18, 0.3], [1, 1, 0]);
-
-  // Floating sequence overlay cards as you scroll through the 3D moon
-  const feature1Opacity = useTransform(smoothProgress, [0.32, 0.42, 0.58, 0.68], [0, 1, 1, 0]);
-  const feature1Y = useTransform(smoothProgress, [0.32, 0.42, 0.68], [30, 0, -30]);
-
-  const feature2Opacity = useTransform(smoothProgress, [0.55, 0.65, 0.8, 0.9], [0, 1, 1, 0]);
-  const feature2Y = useTransform(smoothProgress, [0.55, 0.65, 0.9], [30, 0, -30]);
-
-  // Preload all 150 WebP frames into memory
-  useEffect(() => {
-    let isMounted = true;
-    const loadedImages: HTMLImageElement[] = [];
-    let count = 0;
-
-    for (let i = 0; i < TOTAL_FRAMES; i++) {
-      const img = new Image();
+          {/* Visual Divider Line */}
+          <div
+            className="absolute top-0 bottom-0 w-0.5 bg-sky-400 pointer-events-none z-20 shadow-[0_0_12px_rgba(56,189,248,0.8)]"
+            style={{ left: `${sliderPos}%` }}
+          >
+            <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-7 h-7 rounded-full bg-sky-500 text-white flex items-center justify-center shadow-lg border border-white/20">
+              <Sliders className="w-3.5 h-3.5 rotate-90" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
       const padNum = String(i).padStart(3, '0');
       img.src = `/sequence/frame_${padNum}_delay-0.067s.webp`;
 
