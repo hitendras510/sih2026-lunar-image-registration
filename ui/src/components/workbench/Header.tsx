@@ -30,61 +30,49 @@ export const Header: React.FC = () => {
   const meta = viewMeta[currentView] ?? { title: 'Workbench', sub: 'SELENE' };
 
   return (
-    <header className="h-14 shrink-0 flex items-center justify-between px-6 border-b border-slate-800 bg-slate-900/90 backdrop-blur-md">
+    <header className="h-14 shrink-0 flex items-center justify-between px-6 border-b border-slate-800 bg-slate-900">
       {/* LEFT: Home navigation + Title Block */}
-      <div className="flex items-center gap-4 min-w-0">
+      <div className="flex items-center gap-3 min-w-0">
         <button
           onClick={(e) => { e.preventDefault(); goHome(); }}
-          className="p-1.5 rounded-lg border border-slate-700 text-slate-400 hover:text-white hover:border-slate-500 hover:bg-slate-800 transition-all flex items-center justify-center shrink-0"
+          className="p-1.5 rounded border border-slate-700 text-slate-400 hover:text-white hover:border-slate-500 hover:bg-slate-800 transition-colors flex items-center justify-center shrink-0"
           title="Back to Landing Page"
         >
           <ArrowLeft className="w-4 h-4" />
         </button>
 
-        <div className="flex items-center gap-2 min-w-0">
-          <div className="min-w-0">
-            <div className="flex items-center gap-2">
-              <h2 id="header-title" className="text-white font-bold text-base tracking-tight truncate">
-                {meta.title}
-              </h2>
-              {isProcessing && (
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20">
-                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
-                  Processing
-                </span>
-              )}
-              {isComplete && !isProcessing && (
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                  Registered
-                </span>
-              )}
-            </div>
-            <p id="header-subtitle" className="text-xs text-slate-400 truncate">
-              {meta.sub}
-            </p>
+        <div className="min-w-0">
+          <div className="flex items-center gap-2">
+            <h2 id="header-title" className="text-white font-bold text-sm truncate">
+              {meta.title}
+            </h2>
+            {isProcessing && (
+              <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-amber-500/20 text-amber-400 border border-amber-500/30">
+                Processing
+              </span>
+            )}
+            {isComplete && !isProcessing && (
+              <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                Registered
+              </span>
+            )}
           </div>
+          <p id="header-subtitle" className="text-xs text-slate-400 truncate">
+            {meta.sub}
+          </p>
         </div>
       </div>
 
-      {/* RIGHT: Clock & System Telemetry */}
-      <div className="flex items-center gap-3 shrink-0">
+      {/* RIGHT: Status indicators */}
+      <div className="flex items-center gap-3 shrink-0 text-xs">
         {isComplete && (
-          <div className="hidden lg:flex items-center gap-1.5 px-3 py-1 rounded-lg border border-emerald-500/30 bg-emerald-500/10 text-xs font-medium text-emerald-400">
-            <Cpu className="w-3.5 h-3.5" />
-            <span>RMSE: <strong>{results.rmse} px</strong></span>
+          <div className="px-3 py-1 rounded bg-slate-950 border border-slate-800 text-emerald-400 font-mono">
+            RMSE: <strong className="text-white">{results.rmse} px</strong>
           </div>
         )}
 
-        <div className="hidden md:flex items-center gap-2 px-3 py-1 rounded-lg border border-slate-800 bg-slate-950 text-xs font-mono text-slate-400">
-          <Satellite className="w-3.5 h-3.5 text-slate-500" />
-          <span>UTC</span>
-          <span id="utc-clock" className="text-slate-200 font-semibold">{utcTime}</span>
-        </div>
-
-        <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-emerald-500/20 bg-emerald-500/5 text-xs font-medium text-emerald-400">
-          <Radio className="w-3.5 h-3.5" />
-          <span className="hidden sm:inline">Online</span>
+        <div className="hidden sm:flex items-center gap-2 px-3 py-1 rounded bg-slate-950 border border-slate-800 font-mono text-slate-400">
+          <span>UTC {utcTime}</span>
         </div>
       </div>
     </header>
