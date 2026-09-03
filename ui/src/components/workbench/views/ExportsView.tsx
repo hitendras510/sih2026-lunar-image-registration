@@ -699,8 +699,8 @@ Certified by SELENE-MATCH Automated Pipeline Core.
   if (!isComplete) {
     return (
       <section id="view-exports" className="view-section active flex flex-col items-center justify-center min-h-[400px] text-center space-y-4">
-        <h2 className="text-xl font-bold text-[#222222]">Registration Pipeline Pending</h2>
-        <p className="text-[#555555] text-xs max-w-md mx-auto leading-relaxed">
+        <h2 className="text-xl font-extrabold text-slate-900 dark:text-white">Registration Pipeline Pending</h2>
+        <p className="text-slate-600 dark:text-slate-300 text-xs max-w-md mx-auto leading-relaxed font-normal">
           The final registered GeoTIFF rasters, CSV correspondence matrices, and PDF reports will be available for download once the pipeline run completes.
         </p>
       </section>
@@ -710,11 +710,11 @@ Certified by SELENE-MATCH Automated Pipeline Core.
   return (
     <section id="view-exports" className="view-section active space-y-6">
       {/* PAGE HEADER */}
-      <div className="pb-3 border-b border-[#D0D0D0]">
-        <h1 className="text-xl font-bold text-[#222222]">
+      <div className="pb-4 border-b border-slate-200 dark:border-slate-800">
+        <h1 className="text-xl font-extrabold text-slate-900 dark:text-white">
           Export Products &amp; Deliverables
         </h1>
-        <p className="text-xs text-[#555555] mt-0.5">
+        <p className="text-xs text-slate-600 dark:text-slate-300 mt-1">
           Download GeoTIFF rasters, CSV correspondence matrices, and printable registration reports.
         </p>
       </div>
@@ -722,14 +722,14 @@ Certified by SELENE-MATCH Automated Pipeline Core.
       {/* EXPORTS CARDS GRID */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
         {exports.map((exp) => (
-          <div key={exp.filename} className="p-5 rounded bg-white border border-[#D0D0D0] flex flex-col justify-between space-y-4">
+          <div key={exp.filename} className="p-6 rounded-2xl bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 flex flex-col justify-between space-y-4 shadow-xl hover:border-sky-500/40 transition-all">
             <div>
-              <h3 className="text-[#222222] font-mono text-sm font-bold">{exp.filename}</h3>
-              <p className="text-xs text-[#555555] mt-1.5 leading-relaxed">{exp.description}</p>
+              <h3 className="text-slate-900 dark:text-white font-mono text-sm font-bold">{exp.filename}</h3>
+              <p className="text-xs text-slate-600 dark:text-slate-300 mt-2 leading-relaxed font-medium">{exp.description}</p>
             </div>
             <button
               onClick={() => handleDownload(exp.productPath, exp.filename)}
-              className="px-4 py-2 rounded text-xs font-semibold bg-[#1F4E79] hover:bg-[#163A5C] text-white flex items-center justify-center gap-2 transition-colors"
+              className="px-4 py-2.5 rounded-xl text-xs font-semibold bg-sky-600 hover:bg-sky-500 text-white flex items-center justify-center gap-2 transition-all shadow-md shadow-sky-600/20 border border-sky-400/30"
             >
               {exp.label}
             </button>
