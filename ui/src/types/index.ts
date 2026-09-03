@@ -75,4 +75,5 @@ export interface SettingsConfig {
   coordinateSystem: string;
   apiUrl: string;
   autoSave: boolean;
+  theme?: 'dark' | 'light';
 }

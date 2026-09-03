@@ -18,6 +18,7 @@ export interface AppContextType {
   currentView: WorkbenchView;
   isAppMode: boolean;
   sidebarCollapsed: boolean;
+  theme: 'dark' | 'light';
   referenceImage: ImageMetadata | null;
   sourceImage: ImageMetadata | null;
   sourceSensor: string;
@@ -40,6 +41,8 @@ export interface AppContextType {
   openWorkbench: (view?: WorkbenchView) => void;
   goHome: () => void;
   toggleSidebar: () => void;
+  toggleTheme: () => void;
+  setTheme: (theme: 'dark' | 'light') => void;
   setReferenceFile: (file: File) => void;
   setSourceFile: (file: File) => void;
   setSourceSensor: (sensor: string) => void;
@@ -77,6 +80,7 @@ const defaultSettings: SettingsConfig = {
   coordinateSystem: 'Selenographic (Lat / Lon)',
   apiUrl: 'http://localhost:8000/api/v1',
   autoSave: true,
+  theme: 'dark',
 };
 
 export const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -105,6 +109,30 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [currentView, setCurrentView] = useState<WorkbenchView>('dashboard');
   const [isAppMode, setIsAppMode] = useState<boolean>(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState<boolean>(false);
+  const [theme, setThemeState] = useState<'dark' | 'light'>(() => {
+    const saved = localStorage.getItem('selene_theme');
+    return (saved === 'light' || saved === 'dark') ? saved : 'dark';
+  });
+
+  useEffect(() => {
+    const root = document.documentElement;
+    if (theme === 'light') {
+      root.classList.add('light');
+      root.classList.remove('dark');
+    } else {
+      root.classList.add('dark');
+      root.classList.remove('light');
+    }
+    localStorage.setItem('selene_theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setThemeState((prev) => (prev === 'dark' ? 'light' : 'dark'));
+  };
+
+  const setTheme = (newTheme: 'dark' | 'light') => {
+    setThemeState(newTheme);
+  };
 
   const [referenceImage, setReferenceImage] = useState<ImageMetadata | null>(defaultReferenceImage);
   const [sourceImage, setSourceImage] = useState<ImageMetadata | null>(defaultSourceImage);
@@ -378,6 +406,9 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       if (newSettings.apiUrl) {
         seleneApi.setBaseUrl(newSettings.apiUrl);
       }
+      if (newSettings.theme) {
+        setThemeState(newSettings.theme);
+      }
       return updated;
     });
   };
@@ -388,6 +419,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         currentView,
         isAppMode,
         sidebarCollapsed,
+        theme,
         referenceImage,
         sourceImage,
         sourceSensor,
@@ -408,6 +440,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         openWorkbench,
         goHome,
         toggleSidebar,
+        toggleTheme,
+        setTheme,
         setReferenceFile,
         setSourceFile,
         setSourceSensor,
