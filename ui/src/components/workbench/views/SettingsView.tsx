@@ -17,35 +17,32 @@ export const SettingsView: React.FC = () => {
   return (
     <section id="view-settings" className="view-section active space-y-6">
       {/* PAGE HEADER */}
-      <div className="flex items-center gap-3 flex-wrap pb-1">
-        <h1 className="text-2xl font-bold font-display text-white tracking-wide">
-          Settings
+      <div>
+        <h1 className="text-2xl font-bold text-white tracking-tight">
+          Workbench Preferences & Configuration
         </h1>
-        <span className="badge font-mono text-[10.5px] tracking-[0.14em] font-semibold text-cyan-300 bg-cyan-950/40 border border-cyan-500/30 px-3 py-1 rounded-md">
-          WORKBENCH CONFIG
-        </span>
-        <div className="screen-subtitle w-full text-[12.5px] text-slate-400 font-mono tracking-wide mt-1">
-          Workbench display parameters, default pipeline routing, and API endpoint configuration.
+        <div className="text-xs text-slate-400 font-mono tracking-wide mt-1">
+          Configure default registration strategies, API server endpoints, and user interface preferences.
         </div>
       </div>
 
       {/* SETTINGS CARD */}
-      <div className="card p-6 sm:p-8 rounded-xl bg-slate-950/60 border border-[rgba(146,196,255,0.14)] backdrop-blur-md space-y-8 max-w-4xl">
+      <div className="p-6 sm:p-8 rounded-2xl border border-slate-800 bg-slate-900/60 backdrop-blur-md space-y-8 max-w-4xl">
         {/* REGISTRATION ENGINE */}
         <div>
-          <h3 className="text-[13px] font-bold font-display text-cyan-300 border-b border-[rgba(146,196,255,0.14)] pb-3 tracking-[0.14em] uppercase flex items-center gap-2">
-            <Sliders className="w-4 h-4 text-cyan-400" />
-            • REGISTRATION ENGINE
+          <h3 className="text-sm font-bold text-sky-400 border-b border-slate-800 pb-3 uppercase flex items-center gap-2">
+            <Sliders className="w-4 h-4 text-sky-400" />
+            Registration Engine Defaults
           </h3>
           <div className="grid md:grid-cols-2 gap-6 mt-4">
-            <label className="text-[11.5px] text-slate-400 font-mono flex flex-col gap-2">
-              <span className="font-semibold text-slate-300">DEFAULT GSD STRATEGY</span>
+            <label className="text-xs font-mono text-slate-400 flex flex-col gap-2">
+              <span className="font-semibold text-slate-300">Default GSD Strategy</span>
               <select
                 value={settings.defaultGsdStrategy}
                 onChange={(e) =>
                   updateSettings({ defaultGsdStrategy: e.target.value })
                 }
-                className="w-full p-3 bg-[#060f19] border border-[rgba(146,196,255,0.18)] rounded-lg text-white font-mono text-[13px] focus:border-cyan-400 focus:outline-none transition-colors"
+                className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-lg text-white font-mono text-xs focus:border-sky-400 focus:outline-none"
               >
                 <option value="Common coarsest GSD">Common coarsest GSD</option>
                 <option value="Reference GSD">Reference GSD</option>
