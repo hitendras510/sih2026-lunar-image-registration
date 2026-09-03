@@ -174,67 +174,64 @@ export const MatchesView: React.FC = () => {
   const ce90 = results.ce90 || 0.91;
   const matcherName = results.matcherUsed || 'lightglue';
 
-  // Inlier ratio colour
-  const ratioColor = ratio >= 80 ? '#3ee6a0' : ratio >= 55 ? '#ffb65c' : '#ff6b6b';
-
   return (
     <section id="view-matches" className="view-section active space-y-6">
-      {/* ── Header ── */}
-      <div>
-        <h1 className="text-2xl font-bold text-white tracking-tight">
+      {/* HEADER */}
+      <div className="pb-3 border-b border-[#D0D0D0]">
+        <h1 className="text-xl font-bold text-[#222222]">
           Feature Correspondences
         </h1>
-        <div className="text-xs text-slate-400 font-mono tracking-wide mt-1">
+        <p className="text-xs text-[#555555] mt-0.5">
           Inspect keypoint correspondence vectors, MAGSAC++ inlier filtering, and geometric transformation residuals.
-        </div>
+        </p>
       </div>
 
-      {/* ── Top KPIs ── */}
+      {/* TOP KPIS */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="p-5 rounded-xl border border-slate-800 bg-slate-900/60 backdrop-blur-sm">
-          <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Raw Correspondences</div>
-          <div id="match-raw" className="text-2xl font-bold text-white font-mono mt-1">{raw.toLocaleString()}</div>
-          <div className="text-xs text-slate-500 mt-1 font-mono">Before MAGSAC++ filter</div>
+        <div className="p-4 rounded bg-white border border-[#D0D0D0]">
+          <div className="text-xs font-semibold text-[#555555] uppercase tracking-wider">Raw Matches</div>
+          <div id="match-raw" className="text-xl font-bold text-[#222222] font-mono mt-1">{raw.toLocaleString()}</div>
+          <div className="text-xs text-[#555555] mt-1 font-mono">Before filtering</div>
         </div>
 
-        <div className="p-5 rounded-xl border border-slate-800 bg-slate-900/60 backdrop-blur-sm">
-          <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Robust Inliers</div>
-          <div id="match-inliers" className="text-2xl font-bold text-emerald-400 font-mono mt-1">
+        <div className="p-4 rounded bg-white border border-[#D0D0D0]">
+          <div className="text-xs font-semibold text-[#555555] uppercase tracking-wider">Robust Inliers</div>
+          <div id="match-inliers" className="text-xl font-bold text-[#2E7D32] font-mono mt-1">
             {inliers.toLocaleString()}
           </div>
-          <div className="text-xs text-slate-500 mt-1 font-mono">After MAGSAC++ filter</div>
+          <div className="text-xs text-[#555555] mt-1 font-mono">After MAGSAC++</div>
         </div>
 
-        <div className="p-5 rounded-xl border border-slate-800 bg-slate-900/60 backdrop-blur-sm">
-          <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Inlier Ratio</div>
-          <div className="text-2xl font-bold text-sky-400 font-mono mt-1">
+        <div className="p-4 rounded bg-white border border-[#D0D0D0]">
+          <div className="text-xs font-semibold text-[#555555] uppercase tracking-wider">Inlier Ratio</div>
+          <div className="text-xl font-bold text-[#1F4E79] font-mono mt-1">
             {ratio.toFixed(1)}%
           </div>
-          <div className="w-full bg-slate-950 rounded-full h-1.5 overflow-hidden border border-slate-800 mt-2">
-            <div className="h-full bg-sky-400" style={{ width: `${ratio}%` }} />
+          <div className="w-full bg-[#F2F4F6] rounded h-1.5 overflow-hidden border border-[#D0D0D0] mt-2">
+            <div className="h-full bg-[#1F4E79]" style={{ width: `${ratio}%` }} />
           </div>
         </div>
 
-        <div className="p-5 rounded-xl border border-slate-800 bg-slate-900/60 backdrop-blur-sm">
-          <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Selected Matcher</div>
-          <div id="match-method" className="text-lg font-bold text-sky-400 font-mono mt-1 uppercase truncate">
+        <div className="p-4 rounded bg-white border border-[#D0D0D0]">
+          <div className="text-xs font-semibold text-[#555555] uppercase tracking-wider">Selected Matcher</div>
+          <div id="match-method" className="text-base font-bold text-[#1F4E79] font-mono mt-1 uppercase truncate">
             {matcherName.replace(/_/g, ' ')}
           </div>
-          <div className="text-xs text-slate-500 mt-1 font-mono">Gate-routed algorithm</div>
+          <div className="text-xs text-[#555555] mt-1 font-mono">Gate-routed engine</div>
         </div>
       </div>
 
-      {/* ── Correspondence Canvas ── */}
-      <div className="p-6 rounded-2xl border border-slate-800 bg-slate-900/60 backdrop-blur-md">
-        <div className="flex justify-between items-center mb-4 flex-wrap gap-2">
-          <h3 className="text-sm font-bold text-white tracking-wide">
-            Interactive Feature Vector Correspondence Canvas
-          </h3>
+      {/* CORRESPONDENCE CANVAS */}
+      <div className="p-5 rounded bg-white border border-[#D0D0D0] space-y-3">
+        <div className="flex justify-between items-center flex-wrap gap-2 border-b border-[#D0D0D0] pb-2">
+          <h2 className="text-sm font-bold text-[#222222] uppercase tracking-wider">
+            Keypoint Correspondence Canvas
+          </h2>
           <div className="flex gap-2 font-mono text-xs">
-            <span className="px-2.5 py-1 rounded bg-sky-500/10 text-sky-400 border border-sky-500/20">
+            <span className="px-2 py-0.5 rounded bg-[#E8F5E9] text-[#2E7D32] border border-[#2E7D32]/30">
               Inliers: {inliers.toLocaleString()}
             </span>
-            <span className="px-2.5 py-1 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20">
+            <span className="px-2 py-0.5 rounded bg-[#FFF3E0] text-[#B26A00] border border-[#B26A00]/30">
               Outliers: {outliers.toLocaleString()}
             </span>
           </div>
@@ -251,162 +248,52 @@ export const MatchesView: React.FC = () => {
           txPx={GT_TX}
           tyPx={GT_TY}
         />
-
-        <p className="font-mono text-[9px] text-slate-400 mt-3 tracking-[0.08em]">
-          ▸ ACTIVE SUB-PIXEL SCANNING VIA INVERSE-COMPOSITIONAL LUCAS-KANADE (IC-LK) / ECC CORRELATION.
-          · Continuous beam sweeps sub-pixel mesh grids across moving and reference frames to verify sub-pixel convergence (&lt;1.0 px RMSE target).
-        </p>
       </div>
 
-      {/* ── Middle row: histogram + heatmap + stats ── */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
-
-        {/* Score Histogram */}
-        <div className="card p-5">
-          <h3 className="text-[12px] font-semibold text-white mb-3 tracking-wide">
-            MATCH CONFIDENCE DISTRIBUTION
-          </h3>
-          <ScoreHistogram inlierRatio={inlierRatio} />
-          <div className="flex justify-between mt-2 text-[10px] font-mono text-slate-500">
-            <span>Score 0.0 (outlier)</span>
-            <span>Score 1.0 (inlier)</span>
-          </div>
-          <div className="mt-3 space-y-1.5 text-[11px]">
-            <div className="flex justify-between">
-              <span className="text-slate-400">Mean inlier score</span>
-              <span className="font-mono text-success">0.847</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-slate-400">Mean outlier score</span>
-              <span className="font-mono text-warning">0.193</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-slate-400">Score std-dev</span>
-              <span className="font-mono text-slate-200">0.134</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-slate-400">P95 inlier score</span>
-              <span className="font-mono text-brand-300">0.941</span>
-            </div>
-          </div>
+      {/* PARAMETER RECOVERY TABLE */}
+      <div className="p-5 rounded bg-white border border-[#D0D0D0] space-y-3">
+        <div className="flex justify-between items-center border-b border-[#D0D0D0] pb-2">
+          <h2 className="text-xs font-bold text-[#222222] uppercase tracking-wider">
+            Ground-Truth Parameter Recovery Benchmark
+          </h2>
+          <span className="text-xs font-mono text-[#1F4E79]">Synthetic Verification Test</span>
         </div>
-
-        {/* Spatial Heatmap */}
-        <div className="card p-5 flex flex-col">
-          <h3 className="text-[12px] font-semibold text-white mb-3 tracking-wide">
-            INLIER SPATIAL DISTRIBUTION
-          </h3>
-          <div className="flex gap-4 items-start">
-            <InlierHeatmap inlierRatio={inlierRatio} coveragePct={coverage} />
-            <div className="flex-1 space-y-3 text-[11px] mt-1">
-              <div>
-                <div className="mini-label mb-1">Grid Coverage (8×8)</div>
-                <div className="text-[18px] font-semibold" style={{ color: '#3ee6a0' }}>
-                  {coverage}%
-                </div>
-                <div className="progress-shell mt-1.5">
-                  <div
-                    className="progress-fill"
-                    style={{ width: `${coverage}%`, background: 'linear-gradient(90deg,#1fae74,#3ee6a0)' }}
-                  />
-                </div>
-              </div>
-              <div>
-                <div className="mini-label mb-1">NNI Uniformity</div>
-                <div className="font-mono text-[16px] text-brand-300">{nni.toFixed(3)}</div>
-                <div className="text-[10px] text-slate-500 mt-0.5">
-                  {nni >= 1.0 ? '✓ Well-dispersed' : nni >= 0.7 ? '~ Moderate spread' : '⚠ Clustered'}
-                </div>
-              </div>
-              <div>
-                <div className="mini-label mb-1">Outlier Rate</div>
-                <div className="font-mono text-[16px] text-warning">
-                  {(100 - ratio).toFixed(1)}%
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Registration Quality summary */}
-        <div className="card p-5">
-          <h3 className="text-[12px] font-semibold text-white mb-3 tracking-wide">
-            REGISTRATION QUALITY
-          </h3>
-          <div className="space-y-3 text-[11px]">
-            {/* RMSE bar */}
-            {[
-              { label: 'RMSE (px)', val: rmse, max: 3.0, good: rmse < 1.0, unit: ' px' },
-              { label: 'CE90 (px)', val: ce90, max: 4.0, good: ce90 < 1.5, unit: ' px' },
-              { label: 'Inlier Ratio', val: ratio / 100, max: 1.0, good: ratio > 70, unit: `${ratio.toFixed(1)}%` },
-            ].map(({ label, val, max, good, unit }) => (
-              <div key={label}>
-                <div className="flex justify-between mb-1">
-                  <span className="text-slate-400">{label}</span>
-                  <span className="font-mono" style={{ color: good ? '#3ee6a0' : '#ffb65c' }}>
-                    {unit}
-                  </span>
-                </div>
-                <div className="progress-shell">
-                  <div
-                    className="progress-fill"
-                    style={{
-                      width: `${Math.min(100, (val / max) * 100)}%`,
-                      background: good
-                        ? 'linear-gradient(90deg,#1fae74,#3ee6a0)'
-                        : 'linear-gradient(90deg,#c87028,#ffb65c)',
-                    }}
-                  />
-                </div>
-              </div>
-            ))}
-
-            <div className="pt-2 border-t border-[rgba(146,196,255,0.07)]">
-              <div className="flex justify-between">
-                <span className="text-slate-400">Subpixel target (&lt;1.0 px)</span>
-                <span className={`badge text-[10px] ${rmse < 1.0 ? 'text-success border-success/30' : 'text-warning border-warning/30'}`}>
-                  {rmse < 1.0 ? '✓ MET' : '✗ FAILED'}
-                </span>
-              </div>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-slate-400">Min inliers (≥4)</span>
-              <span className="badge text-[10px] text-success border-success/30">✓ MET ({inliers})</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* ── Parameter Recovery Table ── */}
-      <div className="card p-5">
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="text-[13px] font-semibold text-white tracking-wide">
-            GROUND-TRUTH PARAMETER RECOVERY
-          </h3>
-          <span className="badge text-brand-300 text-[10px]">SYNTHETIC PAIR · KNOWN GT</span>
-        </div>
-        <div className="overflow-x-auto">
-          <table className="w-full text-left">
-            <thead>
-              <tr className="text-[10px] font-mono text-slate-500 uppercase tracking-wider">
-                <th className="pb-2 pr-3 font-normal">Parameter</th>
-                <th className="pb-2 pr-3 font-normal">Ground Truth</th>
-                <th className="pb-2 pr-3 font-normal">Recovered</th>
-                <th className="pb-2 text-right font-normal">Error</th>
-              </tr>
-            </thead>
-            <tbody>
-              <ParamRow label="Rotation"     gt={`${GT_ROTATION}`}  est={`${EST_ROTATION}`}  err="0.17"  errNum={0.17}  unit="°"  />
-              <ParamRow label="Scale"        gt={`${GT_SCALE}`}     est={`${EST_SCALE}`}     err="0.001" errNum={0.1}   unit=""   />
-              <ParamRow label="Translation X" gt={`${GT_TX}`}       est={`${EST_TX}`}        err="1.4"   errNum={1.4}   unit=" px" />
-              <ParamRow label="Translation Y" gt={`${GT_TY}`}       est={`${EST_TY}`}        err="1.3"   errNum={1.3}   unit=" px" />
-              <ParamRow label="Illumination γ" gt={`${GT_GAMMA}`}   est="—"                  err="—"     errNum={0}     unit=""   />
-            </tbody>
-          </table>
-        </div>
-        <p className="text-[10px] text-slate-500 font-mono mt-3">
-          ▸ Parameter recovery uses full-pipeline MAGSAC++ homography decomposition on synthetic OHRC pair (7° rotation · 0.92× scale · 35px/20px shift · γ=0.70 illumination variance).
-        </p>
+        <table className="w-full text-left border-collapse text-xs">
+          <thead>
+            <tr className="bg-[#F8F9FA] border-b border-[#D0D0D0] text-[#555555] font-mono">
+              <th className="py-2 px-3">Parameter</th>
+              <th className="py-2 px-3">Ground Truth</th>
+              <th className="py-2 px-3">Recovered Value</th>
+              <th className="py-2 px-3 text-right">Residual Error</th>
+            </tr>
+          </thead>
+          <tbody className="font-mono text-[#222222] divide-y divide-[#F2F4F6]">
+            <tr>
+              <td className="py-2 px-3 font-semibold">Rotation</td>
+              <td className="py-2 px-3">{GT_ROTATION}°</td>
+              <td className="py-2 px-3 text-[#2E7D32]">{EST_ROTATION}°</td>
+              <td className="py-2 px-3 text-right font-bold text-[#2E7D32]">Δ 0.17°</td>
+            </tr>
+            <tr>
+              <td className="py-2 px-3 font-semibold">Scale Factor</td>
+              <td className="py-2 px-3">{GT_SCALE}×</td>
+              <td className="py-2 px-3 text-[#2E7D32]">{EST_SCALE}×</td>
+              <td className="py-2 px-3 text-right font-bold text-[#2E7D32]">Δ 0.001×</td>
+            </tr>
+            <tr>
+              <td className="py-2 px-3 font-semibold">Translation X</td>
+              <td className="py-2 px-3">{GT_TX} px</td>
+              <td className="py-2 px-3 text-[#2E7D32]">{EST_TX} px</td>
+              <td className="py-2 px-3 text-right font-bold text-[#2E7D32]">Δ 1.4 px</td>
+            </tr>
+            <tr>
+              <td className="py-2 px-3 font-semibold">Translation Y</td>
+              <td className="py-2 px-3">{GT_TY} px</td>
+              <td className="py-2 px-3 text-[#2E7D32]">{EST_TY} px</td>
+              <td className="py-2 px-3 text-right font-bold text-[#2E7D32]">Δ 1.3 px</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </section>
   );
