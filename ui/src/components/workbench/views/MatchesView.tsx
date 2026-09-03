@@ -178,84 +178,64 @@ export const MatchesView: React.FC = () => {
   const ratioColor = ratio >= 80 ? '#3ee6a0' : ratio >= 55 ? '#ffb65c' : '#ff6b6b';
 
   return (
-    <section id="view-matches" className="view-section active">
+    <section id="view-matches" className="view-section active space-y-6">
       {/* ── Header ── */}
-      <div className="mb-5">
-        <div className="screen-title">Matches</div>
-        <div className="screen-subtitle">
-          Correspondence inspection · MAGSAC++ robust filtering · parameter recovery analysis
+      <div>
+        <h1 className="text-2xl font-bold text-white tracking-tight">
+          Feature Correspondences
+        </h1>
+        <div className="text-xs text-slate-400 font-mono tracking-wide mt-1">
+          Inspect keypoint correspondence vectors, MAGSAC++ inlier filtering, and geometric transformation residuals.
         </div>
       </div>
 
       {/* ── Top KPIs ── */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-5">
-        <div className="card bracket p-4">
-          <div className="mini-label">Raw Correspondences</div>
-          <div id="match-raw" className="metric-value mt-1.5">{raw.toLocaleString()}</div>
-          <div className="text-[10px] text-slate-500 mt-1">Before MAGSAC++ filtering</div>
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="p-5 rounded-xl border border-slate-800 bg-slate-900/60 backdrop-blur-sm">
+          <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Raw Correspondences</div>
+          <div id="match-raw" className="text-2xl font-bold text-white font-mono mt-1">{raw.toLocaleString()}</div>
+          <div className="text-xs text-slate-500 mt-1 font-mono">Before MAGSAC++ filter</div>
         </div>
 
-        <div className="card bracket p-4">
-          <div className="mini-label">Robust Inliers</div>
-          <div
-            id="match-inliers"
-            className="metric-value mt-1.5"
-            style={{ color: ratioColor, textShadow: `0 0 22px ${ratioColor}44` }}
-          >
+        <div className="p-5 rounded-xl border border-slate-800 bg-slate-900/60 backdrop-blur-sm">
+          <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Robust Inliers</div>
+          <div id="match-inliers" className="text-2xl font-bold text-emerald-400 font-mono mt-1">
             {inliers.toLocaleString()}
           </div>
-          <div className="text-[10px] text-slate-500 mt-1">After MAGSAC++ filtering</div>
+          <div className="text-xs text-slate-500 mt-1 font-mono">After MAGSAC++ filter</div>
         </div>
 
-        <div className="card bracket p-4">
-          <div className="mini-label">Inlier Ratio</div>
-          <div className="metric-value mt-1.5" style={{ color: ratioColor }}>
+        <div className="p-5 rounded-xl border border-slate-800 bg-slate-900/60 backdrop-blur-sm">
+          <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Inlier Ratio</div>
+          <div className="text-2xl font-bold text-sky-400 font-mono mt-1">
             {ratio.toFixed(1)}%
           </div>
-          {/* Ratio bar */}
-          <div className="progress-shell mt-2">
-            <div
-              className="progress-fill transition-all duration-1000"
-              style={{
-                width: `${ratio}%`,
-                background: `linear-gradient(90deg, ${ratioColor}aa, ${ratioColor})`,
-                boxShadow: `0 0 10px ${ratioColor}55`,
-              }}
-            />
+          <div className="w-full bg-slate-950 rounded-full h-1.5 overflow-hidden border border-slate-800 mt-2">
+            <div className="h-full bg-sky-400" style={{ width: `${ratio}%` }} />
           </div>
         </div>
 
-        <div className="card bracket p-4">
-          <div className="mini-label">Matcher Expert</div>
-          <div
-            id="match-method"
-            className="text-[17px] text-brand-300 font-semibold mt-2 tracking-tight uppercase"
-            style={{ textShadow: '0 0 18px rgba(111,246,255,0.3)' }}
-          >
+        <div className="p-5 rounded-xl border border-slate-800 bg-slate-900/60 backdrop-blur-sm">
+          <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Selected Matcher</div>
+          <div id="match-method" className="text-lg font-bold text-sky-400 font-mono mt-1 uppercase truncate">
             {matcherName.replace(/_/g, ' ')}
           </div>
-          <div className="text-[10px] text-slate-500 mt-1">Gate-routed expert</div>
+          <div className="text-xs text-slate-500 mt-1 font-mono">Gate-routed algorithm</div>
         </div>
       </div>
 
       {/* ── Correspondence Canvas ── */}
-      <div className="card p-5 mb-4">
+      <div className="p-6 rounded-2xl border border-slate-800 bg-slate-900/60 backdrop-blur-md">
         <div className="flex justify-between items-center mb-4 flex-wrap gap-2">
-          <h3 className="text-[13px] font-semibold text-white tracking-wide">
-            CORRESPONDENCE INSPECTION & SUB-PIXEL SCANNER
-            <span className="ml-2 font-mono text-[10px] text-brand-300 font-normal">
-              continuous sub-pixel mesh scanning active · hover/inspect patch keypoints
-            </span>
+          <h3 className="text-sm font-bold text-white tracking-wide">
+            Interactive Feature Vector Correspondence Canvas
           </h3>
-          <div className="flex gap-2">
-            <span className="badge text-cyan-300" style={{ borderColor: 'rgba(111,246,255,0.35)' }}>
-              SUB-PIXEL ACCURACY: 0.01 PX
+          <div className="flex gap-2 font-mono text-xs">
+            <span className="px-2.5 py-1 rounded bg-sky-500/10 text-sky-400 border border-sky-500/20">
+              Inliers: {inliers.toLocaleString()}
             </span>
-            <span className="badge text-success" style={{ borderColor: 'rgba(62,230,160,0.35)' }}>
-              INLIER ({inliers.toLocaleString()})
-            </span>
-            <span className="badge text-warning" style={{ borderColor: 'rgba(255,182,92,0.35)' }}>
-              OUTLIER ({outliers.toLocaleString()})
+            <span className="px-2.5 py-1 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20">
+              Outliers: {outliers.toLocaleString()}
             </span>
           </div>
         </div>
