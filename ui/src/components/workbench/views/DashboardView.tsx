@@ -95,150 +95,158 @@ export const DashboardView: React.FC = () => {
   const { navigateTo, isProcessing, isComplete, results } = useApp();
 
   return (
-    <section id="view-dashboard" className="view-section active space-y-5">
+    <section id="view-dashboard" className="view-section active space-y-6">
 
-      {/* ── PAGE HEADER ── */}
-      <div className="flex items-center justify-between flex-wrap gap-4 pb-2 border-b border-slate-800">
+      {/* PAGE HEADER */}
+      <div className="pb-3 border-b border-[#D0D0D0] flex items-center justify-between flex-wrap gap-4">
         <div>
-          <h1 className="text-xl font-bold text-white tracking-tight">
-            ISRO Lunar Registration Portal Dashboard
+          <h1 className="text-xl font-bold text-[#222222]">
+            System Overview &amp; Status
           </h1>
-          <p className="text-xs text-slate-400 font-mono mt-1">
-            Department of Space · Chandrayaan-2 Optical Data Processing Suite · SIH Problem #26166
+          <p className="text-xs text-[#555555] mt-0.5">
+            Smart India Hackathon 2026 · Problem Statement 26166 · ISRO
           </p>
         </div>
-        <div className="flex items-center gap-2 font-mono text-xs">
-          <span className="px-3 py-1 rounded bg-slate-900 border border-slate-800 text-emerald-400 font-semibold flex items-center gap-1.5">
-            <CheckCircle className="w-3.5 h-3.5" />
-            System Operational
-          </span>
-          <span className="px-3 py-1 rounded bg-slate-900 border border-slate-800 text-sky-400 font-semibold">
-            OHRC / TMC-2 / IIRS
-          </span>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => navigateTo('upload')}
+            className="px-4 py-2 text-xs font-semibold rounded bg-[#1F4E79] hover:bg-[#163A5C] text-white transition-colors"
+          >
+            Upload Image Pair
+          </button>
+          <button
+            onClick={() => navigateTo('register')}
+            className="px-4 py-2 text-xs font-semibold rounded bg-white hover:bg-[#F2F4F6] text-[#222222] border border-[#D0D0D0] transition-colors"
+          >
+            Configure Registration
+          </button>
         </div>
       </div>
 
-      {/* ── STAT CARDS ── */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard
-          label="Input Sensors"
-          value="OHRC / TMC-2 / IIRS"
-          sub="vs LRO NAC Reference"
-          icon={Layers}
-          color="sky"
-        />
-        <StatCard
-          label="Scale Range"
-          value="320× Mismatch"
-          sub="GSD disparity handled"
-          icon={Maximize2}
-          color="sky"
-        />
-        <StatCard
-          label="Target Accuracy"
-          value="< 0.5 px RMSE"
-          sub="Sub-pixel refinement"
-          icon={Target}
-          color="emerald"
-        />
-        <StatCard
-          label="Pipeline Status"
-          value={isProcessing ? 'Processing...' : isComplete ? 'Registered' : 'Ready'}
-          sub={isProcessing ? 'Executing alignment' : isComplete ? results.method : 'Awaiting image pair'}
-          icon={Clock}
-          color={isProcessing ? 'amber' : isComplete ? 'emerald' : 'slate'}
-        />
-      </div>
-
-      {/* ── MAIN PANELS ── */}
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
-        {/* HOW IT WORKS — 3/5 */}
-        <div className="lg:col-span-3 rounded-2xl border border-slate-800 bg-slate-900/60 backdrop-blur-md p-6 flex flex-col justify-between">
-          <div>
-            <div className="flex items-center justify-between pb-4 border-b border-slate-800">
-              <div>
-                <h3 className="text-sm font-bold text-white uppercase tracking-wider">
-                  Registration Workflow
-                </h3>
-                <p className="text-xs text-slate-400 font-mono mt-0.5">
-                  4-step automated processing pipeline
-                </p>
-              </div>
-              <Shield className="w-5 h-5 text-sky-400" />
-            </div>
-
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-6">
-              <StepCard n="01" title="Ingest"    desc="Read image & metadata"          icon={UploadCloud}       />
-              <StepCard n="02" title="Equalize"  desc="Multi-scale GSD pyramid"        icon={SlidersHorizontal} />
-              <StepCard n="03" title="Match"     desc="Adaptive feature matcher"       icon={Share2}            />
-              <StepCard n="04" title="Register"  desc="Sub-pixel alignment"            icon={CheckCircle2} last />
-            </div>
-          </div>
-
-          <div className="flex flex-wrap gap-3 border-t border-slate-800 pt-5 mt-6">
-            <button
-              className="flex items-center gap-2 px-5 py-2.5 rounded-lg text-xs font-semibold bg-sky-500 hover:bg-sky-400 text-white transition-all shadow-md shadow-sky-500/20"
-              onClick={() => navigateTo('upload')}
-            >
-              <Upload className="w-4 h-4" />
-              Upload Image Pair
-            </button>
-            <button
-              className="flex items-center gap-2 px-5 py-2.5 rounded-lg text-xs font-semibold border border-slate-800 bg-slate-950 text-slate-300 hover:text-white hover:border-slate-700 transition-all"
-              onClick={() => navigateTo('register')}
-            >
-              Configure Pipeline
-              <ExternalLink className="w-3.5 h-3.5" />
-            </button>
-          </div>
-        </div>
-
-        {/* CHALLENGE → SOLUTION — 2/5 */}
-        <div className="lg:col-span-2 rounded-2xl border border-slate-800 bg-slate-900/60 backdrop-blur-md p-6">
-          <div className="pb-4 border-b border-slate-800 flex items-center justify-between">
-            <div>
-              <h3 className="text-sm font-bold text-white uppercase tracking-wider">
-                Core Capabilities
-              </h3>
-              <p className="text-xs text-slate-400 font-mono mt-0.5">SIH Problem #26166</p>
-            </div>
-            <ArrowRight className="w-4 h-4 text-slate-500" />
-          </div>
-
-          <div className="space-y-3 mt-4">
-            <ChallengeRow icon={Sun}      label="Illumination" desc="Phase congruency & shadow invariant feature extraction." />
-            <ChallengeRow icon={Scale}    label="Scale Disparity" desc="GSD pyramid handles up to 320× resolution mismatch." />
-            <ChallengeRow icon={Compass}  label="Geometry Model"  desc="Homography & Thin Plate Spline piecewise warping." />
-            <ChallengeRow icon={KeyRound} label="Sub-Pixel RMSE" desc="Lucas-Kanade optical flow refines matched control points." />
-          </div>
+      {/* SYSTEM INFORMATION TABLE */}
+      <div className="p-5 rounded bg-white border border-[#D0D0D0] space-y-4">
+        <h2 className="text-sm font-bold text-[#222222] uppercase tracking-wider">
+          System Information
+        </h2>
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse text-xs">
+            <thead>
+              <tr className="bg-[#F8F9FA] border-b border-[#D0D0D0] text-[#555555] font-semibold">
+                <th className="py-2.5 px-4 w-1/3">Parameter</th>
+                <th className="py-2.5 px-4">Value</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-[#D0D0D0] text-[#222222]">
+              <tr>
+                <td className="py-2.5 px-4 font-semibold text-[#555555]">Supported Sensors</td>
+                <td className="py-2.5 px-4 font-medium">Chandrayaan-2 OHRC (0.25m GSD), TMC-2 (5m GSD), IIRS (80m GSD)</td>
+              </tr>
+              <tr>
+                <td className="py-2.5 px-4 font-semibold text-[#555555]">Reference Dataset</td>
+                <td className="py-2.5 px-4 font-medium">LRO NAC (~0.5m GSD) / LRO WAC (~100m GSD)</td>
+              </tr>
+              <tr>
+                <td className="py-2.5 px-4 font-semibold text-[#555555]">Scale Disparity Range</td>
+                <td className="py-2.5 px-4 font-medium">Up to 320× GSD Mismatch Handled</td>
+              </tr>
+              <tr>
+                <td className="py-2.5 px-4 font-semibold text-[#555555]">Target Accuracy</td>
+                <td className="py-2.5 px-4 font-semibold text-[#2E7D32]">&lt; 0.5 px RMSE (Sub-pixel Accurate)</td>
+              </tr>
+              <tr>
+                <td className="py-2.5 px-4 font-semibold text-[#555555]">Current Pipeline Status</td>
+                <td className="py-2.5 px-4">
+                  {isProcessing ? (
+                    <span className="inline-block px-2.5 py-0.5 rounded text-xs font-semibold bg-[#FFF3E0] text-[#B26A00] border border-[#B26A00]/30">
+                      Processing Pipeline...
+                    </span>
+                  ) : isComplete ? (
+                    <span className="inline-block px-2.5 py-0.5 rounded text-xs font-semibold bg-[#E8F5E9] text-[#2E7D32] border border-[#2E7D32]/30">
+                      Registration Complete ({results.method})
+                    </span>
+                  ) : (
+                    <span className="inline-block px-2.5 py-0.5 rounded text-xs font-semibold bg-[#F2F4F6] text-[#555555] border border-[#D0D0D0]">
+                      Ready (Awaiting Image Pair)
+                    </span>
+                  )}
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
 
-      {/* ── QUICK METRICS (only when complete) ── */}
+      {/* CORE CAPABILITIES & WORKFLOW */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* WORKFLOW */}
+        <div className="p-5 rounded bg-white border border-[#D0D0D0] space-y-3">
+          <h2 className="text-sm font-bold text-[#222222] uppercase tracking-wider pb-2 border-b border-[#D0D0D0]">
+            Processing Workflow
+          </h2>
+          <ol className="space-y-2 text-xs text-[#222222] list-decimal list-inside font-medium leading-relaxed">
+            <li><strong className="text-[#1F4E79]">Image Ingestion:</strong> Load Reference &amp; Target PDS3/PDS4/GeoTIFF rasters</li>
+            <li><strong className="text-[#1F4E79]">Pyramid Equalization:</strong> Common meter/pixel GSD resampling</li>
+            <li><strong className="text-[#1F4E79]">Feature Matching:</strong> Gate router selects SIFT, ORB, SuperPoint or LOFTR</li>
+            <li><strong className="text-[#1F4E79]">Geometric Warping:</strong> MAGSAC++ outlier filter &amp; Thin Plate Splines</li>
+            <li><strong className="text-[#1F4E79]">Sub-pixel Refinement:</strong> IC-LK optical flow optimization</li>
+            <li><strong className="text-[#1F4E79]">Export Deliverables:</strong> Warped GeoTIFF, GCP CSV &amp; PDF Report</li>
+          </ol>
+        </div>
+
+        {/* CORE CAPABILITIES */}
+        <div className="p-5 rounded bg-white border border-[#D0D0D0] space-y-3">
+          <h2 className="text-sm font-bold text-[#222222] uppercase tracking-wider pb-2 border-b border-[#D0D0D0]">
+            Core Capabilities
+          </h2>
+          <ul className="space-y-2 text-xs text-[#555555]">
+            <li className="pb-1.5 border-b border-[#F2F4F6]">
+              <strong className="text-[#222222] block">Illumination Invariance:</strong>
+              Handles severe solar elevation/azimuth disparity across lunar phase angles.
+            </li>
+            <li className="pb-1.5 border-b border-[#F2F4F6]">
+              <strong className="text-[#222222] block">Scale Invariance:</strong>
+              Aligns optical datasets captured at 0.25m (OHRC) to 80m (IIRS) GSD.
+            </li>
+            <li>
+              <strong className="text-[#222222] block">Piecewise Alignment:</strong>
+              Non-rigid Thin Plate Splines correct localized crater rim topography shifts.
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      {/* REGISTRATION METRICS TABLE (When complete) */}
       {isComplete && (
-        <div className="rounded-2xl border border-[rgba(62,230,160,0.15)] bg-gradient-to-r from-[rgba(6,24,16,0.5)] to-[rgba(4,14,10,0.5)] backdrop-blur-md px-6 py-4">
-          <div className="flex items-center gap-2 mb-4">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(62,230,160,0.9)]" />
-            <span className="font-mono text-[9px] text-emerald-500 tracking-[0.2em] uppercase font-bold">
-              Latest Registration Results
-            </span>
-            <span className="ml-2 font-mono text-[9px] text-slate-500">— via {results.method}</span>
+        <div className="p-5 rounded bg-white border border-[#2E7D32] space-y-3">
+          <div className="flex items-center justify-between border-b border-[#D0D0D0] pb-2">
+            <h2 className="text-xs font-bold text-[#2E7D32] uppercase tracking-wider">
+              Latest Registration Metrics ({results.method})
+            </h2>
+            <span className="text-xs font-mono text-[#555555]">Job ID: {results.jobId}</span>
           </div>
-          <div className="grid grid-cols-3 sm:grid-cols-6 gap-3">
-            {[
-              { label: 'RMSE',      value: `${results.rmse} px`,  color: 'text-cyan-300' },
-              { label: 'RAW MATCHES', value: results.raw?.toLocaleString() ?? '—', color: 'text-white' },
-              { label: 'INLIERS',   value: results.inliers?.toLocaleString() ?? '—', color: 'text-emerald-300' },
-              { label: 'RATIO',     value: `${results.ratio}%`,   color: 'text-emerald-300' },
-              { label: 'CE90',      value: `${results.ce90} px`,  color: 'text-white' },
-              { label: 'TIME',      value: `${results.time}s`,    color: 'text-amber-300' },
-            ].map(({ label, value, color }) => (
-              <div key={label} className="text-center">
-                <div className={`font-display font-bold text-[17px] ${color} tabular-nums`}>{value}</div>
-                <div className="font-mono text-[8.5px] text-slate-600 mt-0.5 tracking-wider">{label}</div>
-              </div>
-            ))}
-          </div>
+
+          <table className="w-full text-left border-collapse text-xs">
+            <thead>
+              <tr className="bg-[#F8F9FA] border-b border-[#D0D0D0] text-[#555555] font-mono">
+                <th className="py-2 px-3">RMSE</th>
+                <th className="py-2 px-3">Raw Matches</th>
+                <th className="py-2 px-3">Inliers</th>
+                <th className="py-2 px-3">Inlier Ratio</th>
+                <th className="py-2 px-3">CE90 Error</th>
+                <th className="py-2 px-3">Runtime</th>
+              </tr>
+            </thead>
+            <tbody className="font-mono text-[#222222]">
+              <tr>
+                <td className="py-2 px-3 font-bold text-[#2E7D32]">{results.rmse} px</td>
+                <td className="py-2 px-3">{results.raw}</td>
+                <td className="py-2 px-3 font-bold text-[#1F4E79]">{results.inliers}</td>
+                <td className="py-2 px-3">{results.ratio}%</td>
+                <td className="py-2 px-3">{results.ce90} px</td>
+                <td className="py-2 px-3">{results.time}s</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       )}
 
