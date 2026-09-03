@@ -7,58 +7,57 @@ export const HeroSection: React.FC = () => {
   const { openWorkbench } = useApp();
 
   return (
-    <section className="relative z-10 pt-36 pb-20 px-6 max-w-7xl mx-auto flex flex-col items-center text-center" id="home">
-      {/* Kicker Badge */}
+    <section className="relative z-10 pt-12 pb-12 px-6 max-w-7xl mx-auto flex flex-col items-center text-center" id="home">
+      {/* Official Kicker Banner */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-sky-500/10 text-sky-400 border border-sky-500/20 text-xs font-semibold uppercase tracking-wider mb-6"
+        transition={{ duration: 0.4 }}
+        className="inline-flex items-center gap-2 px-3.5 py-1 rounded bg-slate-900 text-sky-400 border border-slate-800 text-xs font-mono font-semibold uppercase tracking-wider mb-6"
       >
-        <Sparkles className="w-3.5 h-3.5" />
-        <span>ISRO Smart India Hackathon 2026 · Problem #26166</span>
+        <span>ISRO Smart India Hackathon 2026 · Problem Statement #26166</span>
       </motion.div>
 
       {/* Heading */}
       <motion.h1
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.1 }}
-        className="text-4xl sm:text-6xl lg:text-7xl font-extrabold text-white tracking-tight leading-[1.1] max-w-5xl"
+        transition={{ duration: 0.4, delay: 0.1 }}
+        className="text-3xl sm:text-5xl lg:text-6xl font-bold text-white tracking-tight leading-tight max-w-4xl"
       >
-        Precision <span className="text-sky-400">Lunar Image Registration</span> & Georeferencing Suite
+        Chandrayaan-2 Lunar Image Registration &amp; Georeferencing Suite
       </motion.h1>
 
       {/* Subtitle */}
       <motion.p
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.2 }}
-        className="mt-6 text-lg sm:text-xl text-slate-400 max-w-3xl leading-relaxed font-medium"
+        transition={{ duration: 0.4, delay: 0.2 }}
+        className="mt-4 text-base sm:text-lg text-slate-400 max-w-3xl leading-relaxed font-normal"
       >
-        Align Chandrayaan-2 (OHRC, TMC-2, IIRS) and LRO satellite pairs automatically. Handles extreme illumination variation, shadow shifts, and multi-resolution GSD mismatch with sub-pixel RMSE accuracy.
+        Automated alignment of Chandrayaan-2 (OHRC, TMC-2, IIRS) imagery with LRO reference datasets. Resolves extreme solar elevation disparity, crater distortion, and scale mismatch with sub-pixel precision.
       </motion.p>
 
       {/* Action Buttons */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.3 }}
-        className="mt-10 flex flex-wrap items-center justify-center gap-4"
+        transition={{ duration: 0.4, delay: 0.3 }}
+        className="mt-8 flex flex-wrap items-center justify-center gap-4"
       >
         <button
           onClick={() => openWorkbench('upload')}
-          className="px-6 py-3.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-white font-semibold text-sm transition-all flex items-center gap-2 shadow-lg shadow-sky-500/25"
+          className="px-6 py-3 rounded-md bg-sky-600 hover:bg-sky-500 text-white font-semibold text-xs transition-all flex items-center gap-2 shadow-md"
         >
-          Start Image Alignment
+          Select &amp; Upload Image Pair
           <ArrowRight className="w-4 h-4" />
         </button>
 
         <button
           onClick={() => openWorkbench('dashboard')}
-          className="px-6 py-3.5 rounded-xl bg-slate-800/80 hover:bg-slate-800 text-slate-200 border border-slate-700 font-semibold text-sm transition-all"
+          className="px-6 py-3 rounded-md bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 font-semibold text-xs transition-all"
         >
-          Explore Workbench
+          Open Portal Dashboard
         </button>
       </motion.div>
 
