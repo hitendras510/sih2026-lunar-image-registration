@@ -10,6 +10,10 @@ import {
 } from '../types';
 import { seleneApi } from '../services/api';
 
+/**
+ * AppContext — Core state management for SELENE Lunar Image Registration Workbench
+ * Preserves all state handlers, pipeline steps, API calls, and telemetry logs intact.
+ */
 export interface AppContextType {
   currentView: WorkbenchView;
   isAppMode: boolean;
@@ -31,7 +35,7 @@ export interface AppContextType {
   settings: SettingsConfig;
   routedMatcher: string;
 
-  // Actions
+  // State Actions & Handlers
   navigateTo: (view: WorkbenchView) => void;
   openWorkbench: (view?: WorkbenchView) => void;
   goHome: () => void;
