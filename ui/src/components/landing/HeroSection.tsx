@@ -62,42 +62,37 @@ export const HeroSection: React.FC = () => {
       </motion.div>
 
       {/* Feature Highlights Grid */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.4 }}
-        className="mt-16 grid grid-cols-1 sm:grid-cols-3 gap-6 w-full max-w-4xl text-left"
-      >
-        <div className="p-5 rounded-xl border border-slate-800 bg-slate-900/60 backdrop-blur-sm">
-          <div className="w-10 h-10 rounded-lg bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-400 mb-3">
-            <Satellite className="w-5 h-5" />
+      <div className="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-5 w-full max-w-4xl text-left">
+        <div className="p-5 rounded-lg border border-slate-800 bg-slate-900">
+          <div className="w-8 h-8 rounded bg-blue-600/10 border border-blue-500/20 flex items-center justify-center text-blue-400 mb-3">
+            <Satellite className="w-4 h-4" />
           </div>
-          <h3 className="font-semibold text-white text-sm">Multi-Sensor Support</h3>
-          <p className="text-xs text-slate-400 mt-1 leading-normal">
-            OHRC (0.25m GSD), TMC-2 (5m GSD), LRO NAC, and PDS v3/v4 datasets.
+          <h3 className="font-semibold text-white text-xs">Multi-Sensor Data Ingestion</h3>
+          <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+            Native support for Chandrayaan-2 (OHRC, TMC-2, IIRS) and LRO datasets.
           </p>
         </div>
 
-        <div className="p-5 rounded-xl border border-slate-800 bg-slate-900/60 backdrop-blur-sm">
-          <div className="w-10 h-10 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 mb-3">
-            <Layers className="w-5 h-5" />
+        <div className="p-5 rounded-lg border border-slate-800 bg-slate-900">
+          <div className="w-8 h-8 rounded bg-emerald-600/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 mb-3">
+            <Layers className="w-4 h-4" />
           </div>
-          <h3 className="font-semibold text-white text-sm">Hybrid Matchers</h3>
-          <p className="text-xs text-slate-400 mt-1 leading-normal">
-            SIFT, ORB, SuperPoint, and LOFTR deep learning correspondence models.
+          <h3 className="font-semibold text-white text-xs">Adaptive Feature Extractors</h3>
+          <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+            SIFT, ORB, SuperPoint, and LOFTR feature correspondence engines.
           </p>
         </div>
 
-        <div className="p-5 rounded-xl border border-slate-800 bg-slate-900/60 backdrop-blur-sm">
-          <div className="w-10 h-10 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 mb-3">
-            <ShieldCheck className="w-5 h-5" />
+        <div className="p-5 rounded-lg border border-slate-800 bg-slate-900">
+          <div className="w-8 h-8 rounded bg-amber-600/10 border border-amber-500/20 flex items-center justify-center text-amber-400 mb-3">
+            <ShieldCheck className="w-4 h-4" />
           </div>
-          <h3 className="font-semibold text-white text-sm">Sub-Pixel Precision</h3>
-          <p className="text-xs text-slate-400 mt-1 leading-normal">
-            RANSAC & MAGSAC+ outlier filtering with Homography & Thin Plate Splines.
+          <h3 className="font-semibold text-white text-xs">Sub-Pixel Accuracy</h3>
+          <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+            MAGSAC++ outlier filtering and Thin Plate Spline piecewise warping.
           </p>
         </div>
-      </motion.div>
+      </div>
     </section>
   );
 };
