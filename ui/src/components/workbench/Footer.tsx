@@ -17,23 +17,22 @@ export const Footer: React.FC = () => {
   ];
 
   return (
-    <footer className="app-footer h-9 shrink-0 flex items-center px-5 gap-4 border-t border-[rgba(146,196,255,0.07)] bg-[rgba(3,8,14,0.92)] backdrop-blur-sm">
-      <div className="flex items-center gap-4 flex-1 min-w-0">
+    <footer className="h-9 shrink-0 flex items-center px-6 justify-between border-t border-slate-800 bg-slate-950 text-xs font-mono text-slate-400">
+      <div className="flex items-center gap-6">
         {chips.map(({ label, value, icon: Icon, highlight, hideSm }) => (
           <div
             key={label}
-            className={`flex items-center gap-1.5 font-mono text-[8.5px] tracking-[0.12em] ${hideSm ? 'hidden lg:flex' : 'flex'}`}
+            className={`flex items-center gap-2 ${hideSm ? 'hidden lg:flex' : 'flex'}`}
           >
-            <Icon className={`w-2.5 h-2.5 ${highlight ? 'text-amber-400' : 'text-slate-700'}`} />
-            <span className="text-slate-700 uppercase">{label}</span>
-            <span className={`font-semibold ${highlight ? 'text-amber-300' : 'text-slate-400'}`}>{value}</span>
+            <Icon className={`w-3 h-3 ${highlight ? 'text-amber-400 animate-pulse' : 'text-slate-500'}`} />
+            <span className="text-slate-500 font-medium uppercase text-[10px]">{label}:</span>
+            <span className={`font-semibold ${highlight ? 'text-amber-300' : 'text-slate-300'}`}>{value}</span>
           </div>
         ))}
       </div>
 
-      {/* Right: version pill */}
-      <span className="font-mono text-[8px] text-slate-700 tracking-[0.18em] shrink-0">
-        BUILD v2.0 · SIH 2026 · PS-26166
+      <span className="text-[10px] text-slate-500 tracking-wider">
+        SELENE Workbench v2.0 · ISRO SIH #26166
       </span>
     </footer>
   );
