@@ -31,21 +31,21 @@ const steps = [
 
 export const WorkflowSection: React.FC = () => {
   return (
-    <section id="workflow" className="py-20 px-6 max-w-7xl mx-auto">
+    <section id="workflow" className="py-8 px-6 max-w-7xl mx-auto">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.5 }}
-        className="text-center max-w-3xl mx-auto mb-16"
+        className="text-center max-w-3xl mx-auto mb-8"
       >
-        <span className="text-xs font-semibold uppercase tracking-wider text-sky-400">
+        <span className="text-xs font-bold uppercase tracking-widest text-sky-600 dark:text-sky-400">
           02 / Workflow Pipeline
         </span>
-        <h2 className="text-3xl sm:text-4xl font-bold text-white tracking-tight mt-2">
+        <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight mt-2">
           End-to-End Registration Process
         </h2>
-        <p className="text-slate-400 text-base mt-4 leading-relaxed">
+        <p className="text-slate-600 dark:text-slate-300 text-base mt-4 leading-relaxed font-normal">
           From raw satellite raster ingestion to sub-pixel georeferenced output — four intuitive steps designed for lunar scientists and GIS engineers.
         </p>
       </motion.div>
@@ -60,17 +60,17 @@ export const WorkflowSection: React.FC = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.4, delay: idx * 0.1 }}
-              className="p-6 rounded-2xl border border-slate-800 bg-slate-900/60 backdrop-blur-md flex flex-col justify-between"
+              className="p-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/80 backdrop-blur-md hover:border-sky-500/40 transition-all shadow-xl flex flex-col justify-between"
             >
               <div>
                 <div className="flex items-center justify-between mb-4">
-                  <span className="text-xs font-mono font-bold text-sky-400">{item.step}</span>
-                  <div className="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center text-slate-300">
+                  <span className="text-xs font-mono font-bold text-sky-600 dark:text-sky-400">{item.step}</span>
+                  <div className="w-8 h-8 rounded-lg bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-600 dark:text-sky-300">
                     <Icon className="w-4 h-4" />
                   </div>
                 </div>
-                <h3 className="text-base font-bold text-white">{item.title}</h3>
-                <p className="text-xs text-slate-400 mt-2 leading-relaxed">{item.desc}</p>
+                <h3 className="text-base font-bold text-slate-900 dark:text-white">{item.title}</h3>
+                <p className="text-xs text-slate-600 dark:text-slate-300 mt-2 leading-relaxed font-medium">{item.desc}</p>
               </div>
             </motion.div>
           );
