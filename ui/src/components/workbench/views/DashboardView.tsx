@@ -98,28 +98,22 @@ export const DashboardView: React.FC = () => {
     <section id="view-dashboard" className="view-section active space-y-5">
 
       {/* ── PAGE HEADER ── */}
-      <div className="flex items-start justify-between flex-wrap gap-3">
+      <div className="flex items-center justify-between flex-wrap gap-4 pb-2 border-b border-slate-800">
         <div>
-          <div className="font-mono text-[9px] text-cyan-500/70 tracking-[0.24em] uppercase mb-1.5 flex items-center gap-2">
-            <span className="w-4 h-[1px] bg-cyan-500/50" />
-            SIH 2026 · PROBLEM ID 26166
-          </div>
-          <h1 className="text-[22px] font-bold font-display text-white tracking-tight leading-none">
-            SELENE-MATCH
-            <span className="text-[13px] font-mono text-slate-500 ml-2 tracking-wider">Workbench</span>
+          <h1 className="text-xl font-bold text-white tracking-tight">
+            ISRO Lunar Registration Portal Dashboard
           </h1>
-          <p className="text-[11px] text-slate-500 font-mono tracking-wide mt-1.5 max-w-xl">
-            Multi-modal, sun-angle & scale invariant image registration for Chandrayaan-2 optical imagery.
+          <p className="text-xs text-slate-400 font-mono mt-1">
+            Department of Space · Chandrayaan-2 Optical Data Processing Suite · SIH Problem #26166
           </p>
         </div>
-        <div className="flex items-center gap-2">
-          <span className="inline-flex items-center gap-1.5 font-mono text-[9px] tracking-[0.14em] font-semibold text-emerald-400 bg-emerald-950/40 border border-emerald-500/20 px-3 py-1.5 rounded-full shadow-[0_0_12px_rgba(62,230,160,0.08)]">
-            <CheckCircle className="w-3 h-3" />
-            ALL SYSTEMS NOMINAL
+        <div className="flex items-center gap-2 font-mono text-xs">
+          <span className="px-3 py-1 rounded bg-slate-900 border border-slate-800 text-emerald-400 font-semibold flex items-center gap-1.5">
+            <CheckCircle className="w-3.5 h-3.5" />
+            System Operational
           </span>
-          <span className="inline-flex items-center gap-1.5 font-mono text-[9px] tracking-[0.14em] text-cyan-400 bg-cyan-950/30 border border-cyan-500/15 px-3 py-1.5 rounded-full">
-            <Zap className="w-3 h-3" />
-            OHRC · TMC-2 · IIRS
+          <span className="px-3 py-1 rounded bg-slate-900 border border-slate-800 text-sky-400 font-semibold">
+            OHRC / TMC-2 / IIRS
           </span>
         </div>
       </div>
