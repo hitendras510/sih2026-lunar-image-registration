@@ -2,36 +2,31 @@
 
 /* ============ SELENE LUNAR REGISTRATION WORKBENCH — MODERN DESIGN TOKENS ============ */
 :root {
-  --bg0: #0a0d14;
-  --bg1: #0f1420;
-  --glass: rgba(15, 20, 32, 0.75);
-  --glass-hi: rgba(22, 30, 46, 0.85);
-  --glass2: rgba(12, 16, 26, 0.92);
+  --bg0: #090d16;
+  --bg1: #0f172a;
+  --glass: rgba(15, 23, 42, 0.75);
+  --glass-hi: rgba(30, 41, 59, 0.85);
+  --glass2: rgba(15, 23, 42, 0.95);
   --line: rgba(255, 255, 255, 0.08);
-  --line-strong: rgba(255, 255, 255, 0.16);
-  --text: #f0f4f8;
+  --line-strong: rgba(255, 255, 255, 0.15);
+  --text: #f8fafc;
   --muted: #94a3b8;
   --dim: #64748b;
   --cyan: #38bdf8;
-  --blue: #2563eb;
-  --blue2: #1d4ed8;
-  --ice: #e0f2fe;
+  --blue: #0284c7;
+  --blue2: #0369a1;
+  --ice: #f0f9ff;
   --green: #10b981;
   --amber: #f59e0b;
   --red: #ef4444;
-  --font-d: "Plus Jakarta Sans", "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-m: "JetBrains Mono", "SF Mono", monospace;
-  --font-tech: "Space Grotesk", "Inter", sans-serif;
-  --r: 10px;
-  --sidebar-w: 250px;
+  --font-d: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-m: "JetBrains Mono", monospace;
+  --font-tech: "Inter", sans-serif;
+  --r: 8px;
+  --sidebar-w: 240px;
   --header-h: 56px;
   --footer-h: 36px;
-
-  /* Subtle Clean Shadows */
-  --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.25), 0 1px 0 rgba(255, 255, 255, 0.05) inset;
-  --shadow-glow-cyan: 0 0 16px rgba(56, 189, 248, 0.12);
-  --shadow-glow-blue: 0 0 16px rgba(37, 99, 235, 0.15);
-  --shadow-glow-green: 0 0 16px rgba(16, 185, 129, 0.12);
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 * {
