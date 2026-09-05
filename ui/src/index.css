@@ -86,9 +86,27 @@ button {
   cursor: pointer;
 }
 
+/* High-contrast, theme-aware text selection */
 ::selection {
-  background: rgba(111, 246, 255, 0.24);
-  color: #fff;
+  background: #0284c7;
+  color: #ffffff;
+}
+
+:root.dark ::selection,
+.dark ::selection {
+  background: #38bdf8;
+  color: #030712;
+}
+
+::-moz-selection {
+  background: #0284c7;
+  color: #ffffff;
+}
+
+:root.dark ::-moz-selection,
+.dark ::-moz-selection {
+  background: #38bdf8;
+  color: #030712;
 }
 
 /* scrollbars */
